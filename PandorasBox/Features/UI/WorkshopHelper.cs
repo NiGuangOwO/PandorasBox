@@ -85,6 +85,11 @@ namespace PandorasBox.Features.UI
             public ushort LevelReq { get; set; }
             public bool InsufficientRank { get; set; }
             public bool OnRestDay { get; set; }
+
+            public override string ToString()
+            {
+                return $"Key:{Key}|Name:{Name}|CraftingTime:{CraftingTime}|UIIndex:{UIIndex}|LevelReq:{LevelReq}|InsufficientRank:{InsufficientRank}|OnRestDay:{OnRestDay}";
+            }
         }
 
         public override void Draw()
@@ -437,6 +442,8 @@ namespace PandorasBox.Features.UI
                 (var items, var excessItems) = ParseItems(cycle);
                 if (items == null || items.Count == 0)
                     continue;
+                PrimarySchedule = items;
+                SecondarySchedule = excessItems;
                 MultiCycleList.Add(new CyclePreset { PrimarySchedule = items, SecondarySchedule = excessItems });
             }
         }
@@ -513,7 +520,7 @@ namespace PandorasBox.Features.UI
                             OnRestDay = isRest
                         };
                         item.InsufficientRank = !isCraftworkObjectCraftable(item);
-
+                        Svc.Log.Debug(item.ToString());
                         if (hours < 24)
                             items.Add(item);
                         else
@@ -526,15 +533,6 @@ namespace PandorasBox.Features.UI
                 if (!matchFound)
                 {
                     PluginLog.Debug($"Failed to match string to craftable: {itemString}");
-                    var invalidItem = new Item
-                    {
-                        Key = 0,
-                        Name = "Invalid",
-                        CraftingTime = 0,
-                        UIIndex = 0,
-                        LevelReq = 0
-                    };
-                    // items.Add(invalidItem);
                 }
             }
 
@@ -553,6 +551,8 @@ namespace PandorasBox.Features.UI
                 x = "开拓工房韭葱洋葱汤";
             if (x == "煎菜豆")
                 x = "开拓工房煎红花菜豆";
+            if (x == "甜新薯")
+                x = "开拓工房甜新薯";
             return y.Contains(x);
         }
 

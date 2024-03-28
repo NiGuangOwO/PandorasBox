@@ -36,6 +36,7 @@ namespace PandorasBox.Features.Other
         {
             if (Svc.ClientState.IsLoggedIn)
             {
+                TaskManager.Abort();
                 logging = false;
                 return;
             }
@@ -170,6 +171,7 @@ namespace PandorasBox.Features.Other
         public override void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
+            Svc.Framework.Update += CheckLogin;
 
             TaskManager.Enqueue(() => CheckTitle(), int.MaxValue, "CheckTitle");
             TaskManager.Enqueue(() => ClickStart(), true, "ClickStart");

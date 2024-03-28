@@ -45,7 +45,9 @@ namespace PandorasBox.Features.Targets
         private static uint LastChestId = 0;
 
         private void RunFeature(IFramework framework)
-        { 
+        {
+            if (!Player.Available)
+                return;
             if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas])
                 return;
 
