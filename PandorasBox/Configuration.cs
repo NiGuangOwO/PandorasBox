@@ -17,7 +17,7 @@ namespace PandorasBox
         public string AvailableVersion = "1.5.4.7";
 
         [NonSerialized]
-        private DalamudPluginInterface pluginInterface;
+        private DalamudPluginInterface? pluginInterface;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {

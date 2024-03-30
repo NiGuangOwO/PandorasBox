@@ -1,122 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Authors>Puni.sh</Authors>
-    <Version>1.5.4.17</Version>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Platforms>x64</Platforms>
-    <LangVersion>preview</LangVersion>
-    <PluginName>PandorasBox</PluginName>
-    <DalamudDevPlugins>$(appdata)\XIVLauncher\devPlugins\$(PluginName)\</DalamudDevPlugins>
-    <DalamudLibPath>..\..\DalamudDep\</DalamudLibPath>
-    <DalamudPluginPath>$(appdata)\XIVLauncher\installedPlugins\$(PluginName)\$(version)</DalamudPluginPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <AssemblyName>$(PluginName)</AssemblyName>
-    <PackageId>$(PluginName)</PackageId>
-    <Product>$(PluginName)</Product>
-    <RootNamespace>$(PluginName)</RootNamespace>
-    <Nullable>enable</Nullable>
-    <NoWarn>CS1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputPath>bin/Release</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <OutputPath>bin/Debug</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT' OR '$(CI)' == 'true'">
-    <DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ReactorLocation>"D:\.NET Reactor\dotNET_Reactor.Console.exe"</ReactorLocation>
-    <ReactorProject>""</ReactorProject>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Dalamud.ContextMenu" Version="1.3.1" />
-    <PackageReference Include="DalamudPackager" Version="2.1.12" />
-    <PackageReference Include="NAudio" Version="2.1.0" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Dalamud">
-      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ImGui.NET">
-      <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Lumina">
-      <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Lumina.Excel">
-      <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FFXIVClientStructs">
-      <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ImGuiScene">
-      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="pandora.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="PandorasBox.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="pandora_g.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\PandorasBox\Sounds\Light.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-    <Content Include="..\PandorasBox\Sounds\Strong.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-    <Content Include="..\PandorasBox\Sounds\Legendary.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="UI\MainWindow.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Features\Chat\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\moewcorp\ClickLib\ClickLib\ClickLib.csproj" />
-    <ProjectReference Include="..\..\moewcorp\ECommons\ECommons\ECommons.csproj" />
-    <ProjectReference Include="..\..\moewcorp\PunishLib\PunishLib\PunishLib.csproj" />
-  </ItemGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties Reactor_Commands="" Reactor_Configuration="Release" Reactor_Deploy="1" Reactor_Enabled="1" Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" Reactor_Project="" />
-    </VisualStudio>
-  </ProjectExtensions>
-  <Target Name="ReactorCall" AfterTargets="Compile">
-    <Exec Command="$(ReactorLocation) -file &quot;$(ProjectDir)$(IntermediateOutputPath)$(TargetFileName)&quot; -targetfile &quot;$(ProjectDir)$(IntermediateOutputPath)$(TargetFileName)&quot;" Condition="'$(ConfigurationName)' == 'Release' " />
-  </Target>
+    <PropertyGroup>
+        <Authors>Puni.sh</Authors>
+        <Version>1.5.4.18</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Platforms>x64</Platforms>
+        <LangVersion>preview</LangVersion>
+        <PluginName>PandorasBox</PluginName>
+        <DalamudDevPlugins>$(appdata)\XIVLauncher\devPlugins\$(PluginName)\</DalamudDevPlugins>
+        <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+        <DalamudPluginPath>$(appdata)\XIVLauncher\installedPlugins\$(PluginName)\$(version)</DalamudPluginPath>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <AssemblyName>$(PluginName)</AssemblyName>
+        <PackageId>$(PluginName)</PackageId>
+        <Product>$(PluginName)</Product>
+        <RootNamespace>$(PluginName)</RootNamespace>
+        <Nullable>enable</Nullable>
+        <NoWarn>CS1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <OutputPath>bin/Release</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <OutputPath>$(DalamudDevPlugins)</OutputPath>
+    </PropertyGroup>
+
+
+    <PropertyGroup Condition="'$(OS)' != 'Windows_NT' OR '$(CI)' == 'true'">
+        <DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dalamud.ContextMenu" Version="1.3.1" />
+        <PackageReference Include="DalamudPackager" Version="2.1.12" />
+        <PackageReference Include="NAudio" Version="2.1.0" />
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Dalamud">
+            <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="ImGui.NET">
+            <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Lumina">
+            <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Lumina.Excel">
+            <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="FFXIVClientStructs">
+            <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="ImGuiScene">
+            <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Icon.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="pandora.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="PandorasBox.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="pandora_g.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\PandorasBox\Sounds\Light.wav">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Visible>false</Visible>
+      </Content>
+      <Content Include="..\PandorasBox\Sounds\Strong.wav">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Visible>false</Visible>
+      </Content>
+      <Content Include="..\PandorasBox\Sounds\Legendary.wav">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Visible>false</Visible>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
+        <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
+        <ProjectReference Include="..\PunishLib\PunishLib\PunishLib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="UI\MainWindow.cs">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Chat\" />
+    </ItemGroup>
 </Project>

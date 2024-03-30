@@ -124,7 +124,10 @@
         "type": "Project"
       },
       "punishlib": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "ECommons": "[2.1.0.7, )"
+        }
       }
     }
   }

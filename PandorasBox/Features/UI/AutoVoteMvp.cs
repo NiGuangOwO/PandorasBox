@@ -2,6 +2,7 @@ using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Logging;
+using Dalamud.Memory;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
@@ -11,6 +12,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PandorasBox.FeaturesSetup;
+using Reloaded.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,11 +74,6 @@ public class AutoVoteMvp : Feature
                     Svc.Log.Debug($"Adding {partyMember.Name.ExtractText()} {partyMember.ObjectId} to premade list");
                     PremadePartyID.Add(partyMember.Name.ExtractText());
                 }
-
-                var countRemaining =
-                    Svc.Party.Where(i => i.ObjectId != Player.Object.ObjectId && i.GameObject != null && !PremadePartyID.Any(y => y == i.Name.ExtractText())).Count();
-
-                Svc.Log.Debug($"Party has {countRemaining} available to commend.");
             }
 
             if (flag == Dalamud.Game.ClientState.Conditions.ConditionFlag.BoundByDuty && !value)
@@ -102,12 +99,10 @@ public class AutoVoteMvp : Feature
 
         var bannerWindow = (AtkUnitBase*)Svc.GameGui.GetAddonByName("BannerMIP", 1);
         if (bannerWindow == null) return;
-
-        var agentBanner = AgentBannerMIP.Instance();
-
+ 
         try
         {
-            VoteBanner(bannerWindow, ChoosePlayer());
+            VoteBanner(bannerWindow, ChoosePlayer(bannerWindow));
         }
         catch (Exception e)
         {
@@ -151,12 +146,19 @@ public class AutoVoteMvp : Feature
         }
     }
 
-    private unsafe int ChoosePlayer()
+    private unsafe int ChoosePlayer(AtkUnitBase* bannerWindow)
     {
         var hud = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()
             ->GetUiModule()->GetAgentModule()->GetAgentHUD();
 
         if (hud == null) throw new Exception("HUD is empty!");
+
+        foreach (var member in Svc.Party.Cast<PartyMember>())
+        {
+            var m2 = (FFXIVClientStructs.FFXIV.Client.Game.Group.PartyMember*)member.Address;
+            var name = MemoryHelper.ReadSeString((IntPtr)m2->Name, 0x40);
+            Svc.Log.Debug($"{name} {m2->Flags.ToString("g")}");
+        }
 
         var list = Svc.Party.Where(i =>
         i.ObjectId != Player.Object.ObjectId && i.GameObject != null && !PremadePartyID.Any(y => y == i.Name.ExtractText()))
@@ -176,12 +178,12 @@ public class AutoVoteMvp : Feature
             }
         }
 
-        var tanks = list.Where(i => i.PartyMember.ClassJob.GameData.Role == 1);
-        var healer = list.Where(i => i.PartyMember.ClassJob.GameData.Role == 4);
-        var dps = list.Where(i => i.PartyMember.ClassJob.GameData.Role is 2 or 3);
-        var melee = list.Where(i => i.PartyMember.ClassJob.GameData.Role is 2);
-        var range = list.Where(i => i.PartyMember.ClassJob.GameData.Role is 3);
-        var myjob = Svc.ClientState.LocalPlayer.ClassJob.GameData.Role;
+        var tanks = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 1);
+        var healer = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 4);
+        var dps = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2 or 3);
+        var melee = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2);
+        var range = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 3);
+        var myjob = Svc.ClientState.LocalPlayer.ClassJob.GameData!.Role;
 
         (int index, PartyMember member) voteTarget = new();
         if (myjob == 1)
@@ -209,15 +211,25 @@ public class AutoVoteMvp : Feature
             payload.AddRange(new List<Payload>()
             {
                 new TextPayload("点赞给 "),
-                voteTarget.member.ClassJob.GameData.Role switch
+                voteTarget.member.ClassJob.GameData!.Role switch
                 {
                     1 => new IconPayload(BitmapFontIcon.Tank),
                     4 => new IconPayload(BitmapFontIcon.Healer),
                     _ => new IconPayload(BitmapFontIcon.DPS),
                 },
-                new PlayerPayload(voteTarget.member.Name.TextValue, voteTarget.member.World.GameData.RowId),
+                new PlayerPayload(voteTarget.member.Name.TextValue, voteTarget.member.World.GameData!.RowId),
             });
             Svc.Chat.Print(new SeString(payload));
+        }
+
+        for (int i = 22; i <= 22 + 7; i++)
+        {
+            var name = MemoryHelper.ReadSeStringNullTerminated(new nint(bannerWindow->AtkValues[i].String)).ToString();
+            if (name == voteTarget.member.Name.TextValue)
+            {
+                Svc.Log.Debug($"Commed {name} at index {i}, {bannerWindow->AtkValues[i - 14].UInt}");
+                return (int)bannerWindow->AtkValues[i - 14].UInt;
+            }
         }
 
         return voteTarget.index;
