@@ -1,22 +1,17 @@
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using PandorasBox.FeaturesSetup;
-using System;
-using System.Collections.Generic;
+using PandorasBox.Helpers;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ECommons.GameHelpers;
-using ECommons;
 
 namespace PandorasBox.Features.Targets
 {
     internal class FATETargeting : Feature
     {
-        public override string Name { get; } = "FATE Targeting Mode";
-        public override string Description { get; } = "When in a FATE and able to participate (synced), automatically targets FATE associated enemies.";
+        public override string Name { get; } = "FATE目标模式";
+        public override string Description { get; } = "当处于FATE并能够参与（等级同步）时，自动选中与FATE相关的敌人。";
         public override FeatureType FeatureType { get; } = FeatureType.Targeting;
 
         public override void Enable()
@@ -33,7 +28,7 @@ namespace PandorasBox.Features.Targets
                 var tar = Svc.Targets.Target;
                 if (tar == null || (tar.Struct()->FateId == 0 && tar.IsHostile()))
                 {
-                    if (Svc.Objects.OrderBy(x => x.GetTargetDistance()).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
+                    if (Svc.Objects.OrderBy(x => GameObjectHelper.GetTargetDistance(x)).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
                     {
                         Svc.Targets.Target = newTar;
                     }

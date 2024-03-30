@@ -12,6 +12,7 @@
         <PluginName>PandorasBox</PluginName>
         <DalamudDevPlugins>$(appdata)\XIVLauncher\devPlugins\$(PluginName)\</DalamudDevPlugins>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+        <DalamudLibPath>..\..\DalamudDep\</DalamudLibPath>
         <DalamudPluginPath>$(appdata)\XIVLauncher\installedPlugins\$(PluginName)\$(version)</DalamudPluginPath>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -104,9 +105,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ClickLib\ClickLib\ClickLib.csproj" />
-        <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
-        <ProjectReference Include="..\PunishLib\PunishLib\PunishLib.csproj" />
+        <ProjectReference Include="..\..\moewcorp\ClickLib\ClickLib\ClickLib.csproj" />
+        <ProjectReference Include="..\..\moewcorp\ECommons\ECommons\ECommons.csproj" />
+        <ProjectReference Include="..\..\moewcorp\PunishLib\PunishLib\PunishLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
