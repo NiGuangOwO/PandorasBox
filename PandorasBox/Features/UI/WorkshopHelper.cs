@@ -462,7 +462,7 @@ namespace PandorasBox.Features.UI
                     linesWithoutNumbers = line[(dotIndex + 1)..];
                     newcycle = true;
                 }
-                var pattern = @"\[[^\]]*\]|， ×[1-3]|，×[1-3]";
+                var pattern = @"\[[^\]]*\]|， ×[1-3]|，×[1-3]|[1-3]× ";
                 linesWithoutNumbers = Regex.Replace(linesWithoutNumbers, pattern, "");
                 PluginLog.Log(linesWithoutNumbers);
                 if (currentCycle.Count > 0 && newcycle)

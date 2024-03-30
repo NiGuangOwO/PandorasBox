@@ -28,7 +28,7 @@ namespace PandorasBox.Features.UI
 
         private DalamudContextMenu contextMenu;
 
-        private static readonly SeString DepositString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("Deposit into FC Chest"));
+        private static readonly SeString DepositString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("存入部队保险箱"));
 
         public override bool UseAutoConfig => true;
         public class Configs : FeatureConfig
