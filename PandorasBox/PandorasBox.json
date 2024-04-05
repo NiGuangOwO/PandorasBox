@@ -2,7 +2,7 @@
     "Author": "Taurenkey (Puni.sh), NiGuangOwO (本地化&功能维护)",
     "Name": "Pandora's Box",
     "Punchline": "你敢打开潘多拉的盒子吗？（在线安装 Only）",
-    "Description": "Pandora's Box是一个改善游戏体验和一些功能调整的集合\n闲鱼倒卖的家里人都死了，把仓库地址打码然后赚个信息差的，可真是牛逼",
+    "Description": "Pandora's Box是一个改善游戏体验和一些功能调整的集合\n\n闲鱼倒卖的家里人都死了，把仓库地址打码然后赚个信息差的，可真是牛逼",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 9,
@@ -12,5 +12,5 @@
         "punish",
         "plugin"
     ],
-    "Changelog": "更新.NET 8，适配无人岛作业格式变动\n不要在官方Discord提问题，官方开发者不做国服适配工作，不要再让我看到有笨比去提问\n遇到漏翻译的文本请用各种方式告诉我"
+    "Changelog": "无人岛排班功能 排班速度大幅增加\n不要在官方Discord提问题，官方开发者不做国服适配工作，不要再让我看到有笨比去提问\n遇到漏翻译的文本请用各种方式告诉我"
 }

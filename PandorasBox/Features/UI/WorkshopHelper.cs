@@ -12,6 +12,7 @@ using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
@@ -29,7 +30,7 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class WorkshopHelper : Feature
     {
-        public override string Name => "[国服已适配] 工房助手";
+        public override string Name => "[原版已弃坑][国服已适配] 工房排班助手";
 
         public override string Description => "为无人岛工房添加菜单，以便快速设置您的生产计划。国服已针对腾讯文档无人岛参考作业分享进行适配。";
 
@@ -541,8 +542,6 @@ namespace PandorasBox.Features.UI
 
         private static bool IsMatch(string x, string y)
         {
-            //var pattern = $@"\b{Regex.Escape(y)}\b";
-            //return Regex.IsMatch(x, pattern);
             if (x == "腌萝卜")
                 x = "腌小萝卜";
             if (x == "洋葱汤")
@@ -722,10 +721,6 @@ namespace PandorasBox.Features.UI
         {
             if (isScheduleRest)
             {
-                //var currentVal = selectedCycle;
-                //TaskManager.EnqueueImmediate(() => selectedCycle = currentDay, $"SetSelectedCycleToCurrentDay");
-                //TaskManager.EnqueueImmediate(() => SetRestDay(currentVal), $"SetRest");
-                //TaskManager.EnqueueImmediate(() => selectedCycle = currentVal, $"SetSelectedCycleBackToOriginal");
                 return true;
             }
 
@@ -741,22 +736,28 @@ namespace PandorasBox.Features.UI
                         foreach (var item in PrimarySchedule)
                         {
                             ws = i;
-                            TaskManager.DelayNextImmediate("PSOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"PSOpenAgendaW{ws + 1}");
-                            TaskManager.DelayNextImmediate("PSScheduleItemDelay", Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"PSScheduleItemW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("PSOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"PSOpenAgendaW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("PSScheduleItemDelay", Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"PSScheduleItemW{ws + 1}");
+                            //TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSIncrementHoursW{ws + 1}");
+                            TaskManager.EnqueueImmediate(() => MJIManager.Instance()->ScheduleCraft((ushort)item.Key, (byte)((hours + 17) % 24), (byte)(currentDay - 1), (byte)ws));
                             TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSIncrementHoursW{ws + 1}");
                         }
+                        TaskManager.EnqueueImmediate(ResetCurrentCycleToRefreshUI);
                     }
                     TaskManager.EnqueueImmediate(() => hours = 0, $"SSSetHours0");
                     foreach (var item in SecondarySchedule)
                     {
-                        TaskManager.DelayNextImmediate("SSOpenAgendaDelay", SecondarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
-                        TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, 3, hours), $"SSOpenAgendaW{maxWorkshops}");
-                        TaskManager.DelayNextImmediate("SSScheduleItemDelay", Config.taskDelay);
-                        TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"SSScheduleW{maxWorkshops}");
+                        //TaskManager.DelayNextImmediate("SSOpenAgendaDelay", SecondarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
+                        //TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, 3, hours), $"SSOpenAgendaW{maxWorkshops}");
+                        //TaskManager.DelayNextImmediate("SSScheduleItemDelay", Config.taskDelay);
+                        //TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"SSScheduleW{maxWorkshops}");
+                        //TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"SSIncrementHoursW{maxWorkshops}");
+                        TaskManager.EnqueueImmediate(() => MJIManager.Instance()->ScheduleCraft((ushort)item.Key, (byte)((hours + 17) % 24), (byte)(currentDay - 1), 3));
                         TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"SSIncrementHoursW{maxWorkshops}");
                     }
+                    TaskManager.EnqueueImmediate(ResetCurrentCycleToRefreshUI);
                 }
                 else
                 {
@@ -767,12 +768,15 @@ namespace PandorasBox.Features.UI
                         foreach (var item in PrimarySchedule)
                         {
                             ws = i;
-                            TaskManager.DelayNextImmediate("PSOOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"PSOOpenAgendaW{ws + 1}");
-                            TaskManager.DelayNextImmediate("PSOScheduleItemDelay", Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"PSOScheduleW{ws + 1}");
-                            TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSOIncrementHoursW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("PSOOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"PSOOpenAgendaW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("PSOScheduleItemDelay", Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"PSOScheduleW{ws + 1}");
+                            //TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSOIncrementHoursW{ws + 1}");
+                            TaskManager.EnqueueImmediate(() => MJIManager.Instance()->ScheduleCraft((ushort)item.Key, (byte)((hours + 17) % 24), (byte)(currentDay - 1), (byte)ws));
+                            TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSIncrementHoursW{ws + 1}");
                         }
+                        TaskManager.EnqueueImmediate(ResetCurrentCycleToRefreshUI);
                     }
                 }
             }
@@ -787,13 +791,16 @@ namespace PandorasBox.Features.UI
                         foreach (var item in PrimarySchedule)
                         {
                             ws = i;
-                            TaskManager.DelayNextImmediate("MOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"MOpenAgendaW{ws + 1}");
-                            TaskManager.DelayNextImmediate("MScheduleItemDelay", Config.taskDelay);
-                            TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"MScheduleW{ws + 1}");
-                            TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"MIncrementHoursW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("MOpenAgendaDelay", PrimarySchedule.IndexOf(item) == 0 ? Config.taskAfterCycleSwitchDelay : Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => OpenAgenda(item.UIIndex, ws, hours), $"MOpenAgendaW{ws + 1}");
+                            //TaskManager.DelayNextImmediate("MScheduleItemDelay", Config.taskDelay);
+                            //TaskManager.EnqueueImmediate(() => ScheduleItem(item), $"MScheduleW{ws + 1}");
+                            //TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"MIncrementHoursW{ws + 1}");
+                            TaskManager.EnqueueImmediate(() => MJIManager.Instance()->ScheduleCraft((ushort)item.Key, (byte)((hours + 17) % 24), (byte)(currentDay - 1), (byte)ws));
+                            TaskManager.EnqueueImmediate(() => hours += item.CraftingTime, $"PSIncrementHoursW{ws + 1}");
                             TaskManager.EnqueueImmediate(() => currentWorkshop += 1, $"MIncrementWFromW{ws + 1}");
                         }
+                        TaskManager.EnqueueImmediate(ResetCurrentCycleToRefreshUI);
                     }
                 }
                 TaskManager.EnqueueImmediate(() => currentWorkshop = 0, $"MSetWorkshop0");
@@ -847,6 +854,13 @@ namespace PandorasBox.Features.UI
             return Workshops.Skip(currentWorkshop).Any(pair => pair.Value);
         }
 
+        public static void ResetCurrentCycleToRefreshUI()
+        {
+            var agent = AgentMJICraftSchedule.Instance();
+            agent->SetDisplayedCycle(agent->Data->CycleDisplayed);
+            agent->Data->Flags1 |= AgentMJICraftSchedule.DataFlags1.MaterialsUpdated; // ensure material assignment addon is updated
+        }
+
         public void PrintPluginMessage(string msg)
         {
             var message = new XivChatEntry
@@ -856,21 +870,6 @@ namespace PandorasBox.Features.UI
                 .AddUiForeground($"{Name} ", 62)
                 .AddText(msg)
                 .Build()
-            };
-
-            Svc.Chat.Print(message);
-        }
-
-        public void PrintPluginMessageError(string msg)
-        {
-            var message = new XivChatEntry
-            {
-                Message = new SeStringBuilder()
-                .AddUiForeground($"[{P.Name}] ", 45)
-                .AddUiForeground($"{Name} ", 62)
-                .AddText(msg)
-                .Build(),
-                Type = XivChatType.ErrorMessage
             };
 
             Svc.Chat.Print(message);
