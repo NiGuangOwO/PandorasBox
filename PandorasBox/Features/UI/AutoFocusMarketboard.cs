@@ -9,9 +9,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoFocus : Feature
     {
-        public override string Name => "Auto-Focus Marketboard Search";
+        public override string Name => "自动聚焦市场版搜索";
 
-        public override string Description => "Automatically focuses the search bar for the marketboard.";
+        public override string Description => "自动聚焦到市场板的搜索框上";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

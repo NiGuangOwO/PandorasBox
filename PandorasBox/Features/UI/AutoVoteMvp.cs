@@ -20,9 +20,9 @@ namespace PandorasBox.Features.UI;
 
 public class AutoVoteMvp : Feature
 {
-    public override string Name => "Auto-Commendation after Duty";
+    public override string Name => "[国服已优化] 自动点赞";
 
-    public override string Description => "Automatically give a commendation to a random player in your party at the end of a duty.";
+    public override string Description => "副本结束时自动点赞小队中对位的队友。";
 
     public override FeatureType FeatureType => FeatureType.UI;
 
@@ -54,7 +54,7 @@ public class AutoVoteMvp : Feature
         if (GameMain.Instance()->CurrentContentFinderConditionId != 0)
         {
             var payload = PandoraPayload.Payloads.ToList();
-            payload.Add(new TextPayload(" [Auto-Commendation] Please note as this feature was enabled mid-duty, it may not operate correctly if you have queued into the duty with other players in your party before joining."));
+            payload.Add(new TextPayload(" [自动点赞] 请注意，由于此功能是在副本期间启用的，如果您在加入之前与队伍中的其他玩家一起匹配，则可能无法正常运行。"));
             Svc.Chat.Print(new SeString(payload));
         }
         Config = LoadConfig<Configs>() ?? new Configs();
@@ -181,32 +181,26 @@ public class AutoVoteMvp : Feature
         var tanks = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 1);
         var healer = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 4);
         var dps = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2 or 3);
+        var melee = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2);
+        var range = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 3);
+        var myjob = Svc.ClientState.LocalPlayer.ClassJob.GameData!.Role;
 
         (int index, IPartyMember member) voteTarget = new();
-        switch (Config.Priority)
+        if (myjob == 1)
         {
-            //tank
-            case 0:
-                if (tanks.Any()) voteTarget = RandomPick(tanks);
-                else if (healer.Any()) voteTarget = RandomPick(healer);
-                else voteTarget = RandomPick(dps);
-                break;
-            //Healer
-            case 1:
-                if (healer.Any()) voteTarget = RandomPick(healer);
-                else if (tanks.Any()) voteTarget = RandomPick(tanks);
-                else voteTarget = RandomPick(dps);
-                break;
-            //DPS
-            case 2:
-                if (dps.Any()) voteTarget = RandomPick(dps);
-                else if (tanks.Any()) voteTarget = RandomPick(tanks);
-                else voteTarget = RandomPick(healer);
-                break;
-            //No Priority
-            case 3:
-                voteTarget = RandomPick(list);
-                break;
+            voteTarget = tanks.Any() ? tanks.FirstOrDefault() : healer.FirstOrDefault();
+        }
+        else if (myjob == 4)
+        {
+            voteTarget = healer.Any() ? healer.FirstOrDefault() : tanks.FirstOrDefault();
+        }
+        else if (myjob == 2)
+        {
+            voteTarget = melee.Any() ? melee.FirstOrDefault() : range.FirstOrDefault();
+        }
+        else
+        {
+            voteTarget = range.Any() ? range.FirstOrDefault() : melee.FirstOrDefault();
         }
 
         if (voteTarget.member == null) return -1;
@@ -221,7 +215,7 @@ public class AutoVoteMvp : Feature
                     var payload = PandoraPayload.Payloads.ToList();
                     payload.AddRange(new List<Payload>()
                     {
-                        new TextPayload("Commend given to "),
+                        new TextPayload("点赞给 "),
                         voteTarget.member.ClassJob.GameData!.Role switch
                         {
                             1 => new IconPayload(BitmapFontIcon.Tank),
@@ -278,40 +272,17 @@ public class AutoVoteMvp : Feature
     protected override DrawConfigDelegate DrawConfigTree => (ref bool _) =>
     {
         bool hasChanged = false;
-        if (ImGui.RadioButton("Prioritize Tank Vote", Config.Priority == 0))
-        {
-            Config.Priority = 0;
-            hasChanged = true;
-        }
 
-        if (ImGui.RadioButton("Prioritize Healer Vote", Config.Priority == 1))
-        {
-            Config.Priority = 1;
-            hasChanged = true;
-        }
-
-        if (ImGui.RadioButton("Prioritize DPS Vote", Config.Priority == 2))
-        {
-            Config.Priority = 2;
-            hasChanged = true;
-        }
-
-        if (ImGui.RadioButton("No Priority", Config.Priority == 3))
-        {
-            Config.Priority = 3;
-            hasChanged = true;
-        }
-
-        if (ImGui.Checkbox("Hide Chat Message", ref Config.HideChat))
+        if (ImGui.Checkbox("不在聊天中显示点赞结果", ref Config.HideChat))
             hasChanged = true;
 
-        if (ImGui.Checkbox("Exclude Party Members That Die", ref Config.ExcludeDeaths))
+        if (ImGui.Checkbox("排除死亡过的队友", ref Config.ExcludeDeaths))
             hasChanged = true;
 
         if (Config.ExcludeDeaths)
         {
-            if (ImGuiEx.InputIntBounded("How Many Times?", ref Config.HowManyDeaths, 1, 100)) hasChanged = true;
-            if (ImGui.Checkbox("Reset Death Tracker on Wipe", ref Config.ResetOnWipe)) hasChanged = true;
+            if (ImGuiEx.InputIntBounded("大于等于多少次不投他？", ref Config.HowManyDeaths, 1, 100)) hasChanged = true;
+            if (ImGui.Checkbox("团灭时重置死亡次数统计", ref Config.ResetOnWipe)) hasChanged = true;
         }
 
         if (hasChanged)

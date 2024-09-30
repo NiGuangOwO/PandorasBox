@@ -14,9 +14,9 @@ namespace PandorasBox.Features.Targets
 {
     public unsafe class AutoInteractDungeons : Feature
     {
-        public override string Name => "Auto-interact with Objects in Instances";
+        public override string Name => "自动与副本中的物体交互";
 
-        public override string Description => "Automatically try to pick all the keys, levers, and other thingymabobs. Also works to try and open doors and stuff. (VERY EXPERIMENTAL)";
+        public override string Description => "自动尝试捡起所有的钥匙、杠杆和其他东西。也可以尝试打开门和其他东西。（非常实验性）";
 
         public override FeatureType FeatureType => FeatureType.Targeting;
 
@@ -159,25 +159,25 @@ namespace PandorasBox.Features.Targets
         {
             var defaultAttr = new FeatureConfigOptionAttribute("");
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat($"Set delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
-            if (ImGui.SliderFloat($"Cooldown after interacting (seconds)", ref Config.Cooldown, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
-            if (ImGui.SliderFloat($"Max Distance (yalms)", ref Config.MaxDistance, 0.5f, 5f, defaultAttr.Format)) hasChanged = true;
-            if (ImGui.SliderFloat($"Max Height Difference (yalms)", ref Config.MaxHeight, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
-            if (ImGui.Checkbox($"Exclude Combat", ref Config.ExcludeCombat)) hasChanged = true;
-            if (ImGui.Checkbox($"Exclude Exits", ref Config.ExcludeExit)) hasChanged = true;
-            if (ImGui.Checkbox($"Only Attempt Whilst Not Moving", ref Config.OnlyStanding)) hasChanged = true;
+            if (ImGui.SliderFloat($"设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
+            if (ImGui.SliderFloat($"交互后冷却 (秒)", ref Config.Cooldown, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
+            if (ImGui.SliderFloat($"最大距离 (yalms)", ref Config.MaxDistance, 0.5f, 5f, defaultAttr.Format)) hasChanged = true;
+            if (ImGui.SliderFloat($"最大高度差 (yalms)", ref Config.MaxHeight, 0.1f, 10f, defaultAttr.Format)) hasChanged = true;
+            if (ImGui.Checkbox($"战斗中禁用", ref Config.ExcludeCombat)) hasChanged = true;
+            if (ImGui.Checkbox($"排除出口", ref Config.ExcludeExit)) hasChanged = true;
+            if (ImGui.Checkbox($"仅在不移动的情况下尝试", ref Config.OnlyStanding)) hasChanged = true;
 
-            if (ImGui.RadioButton($"Try Interact Method 1 (interacts with most things)", Config.InteractMethod == 1))
+            if (ImGui.RadioButton($"尝试交互方法1 (与大多数事物交互)", Config.InteractMethod == 1))
             {
                 Config.InteractMethod = 1;
                 hasChanged = true;
             }
-            if (ImGui.RadioButton($"Try Interact Method 2 (interacts with things method 1 doesn't)", Config.InteractMethod == 2))
+            if (ImGui.RadioButton($"尝试交互方法2 (与方法1没有的东西交互)", Config.InteractMethod == 2))
             {
                 Config.InteractMethod = 2;
                 hasChanged = true;
             }
-            if (ImGui.RadioButton($"Try Interact with Both Methods (buggy on many things, use with caution)", Config.InteractMethod == 3))
+            if (ImGui.RadioButton($"尝试使用两种方法进行交互 (在许多事情上都有错误，请谨慎使用)", Config.InteractMethod == 3))
             {
                 Config.InteractMethod = 3;
                 hasChanged = true;

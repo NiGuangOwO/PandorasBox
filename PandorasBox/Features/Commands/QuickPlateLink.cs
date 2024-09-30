@@ -12,12 +12,12 @@ namespace PandorasBox.Features.Commands
 {
     public unsafe class QuickPlateLink : CommandFeature
     {
-        public override string Name => "Glamour Plate Link";
+        public override string Name => "投影模板关联";
         public override string Command { get; set; } = "/pglamlink";
         public override string[] Alias => new string[] { "/pgl" };
 
-        public override List<string> Parameters => new() { "[-r <role>]", "[-j <jobs>]", "[-g <gearset names/nums>]", "[-n plate number]" };
-        public override string Description => "For quickly linking multiple gearsets to a glamour plate.";
+        public override List<string> Parameters => new() { "[-r <职能>]", "[-j <职业>]", "[-g <套装名字/套装编号>]", "[-n 投影模板编号]" };
+        public override string Description => "快速将投影模板与多个套装预设关联。";
 
         public override FeatureType FeatureType => FeatureType.Commands;
 
@@ -31,7 +31,7 @@ namespace PandorasBox.Features.Commands
         }
 
         private readonly List<Gearset> gearsets = new();
-        private readonly List<string> roles = new() { "tanks", "healers", "dps", "ranged", "casters", "magical ranged", "melees", "physical ranged", "doh", "crafters", "doh", "gatherers" };
+        private readonly List<string> roles = new() { "坦克", "治疗", "输出", "远程", "读条职业", "远程魔法", "近战", "远程物理", "生产", "能工巧匠", "采集", "大地使者" };
         private List<ClassJob> jobsList = new();
         protected override void OnCommand(List<string> args)
         {
@@ -63,25 +63,25 @@ namespace PandorasBox.Features.Commands
 
             if (sortedArgs.ContainsKey("-h"))
             {
-                PrintModuleMessage("Usage: /pgl -j <jobs> <plate number>\n/pgl -r <role> <plate number>");
+                PrintModuleMessage("用法: /pgl -j <职业名称> <投影模板编号>\n/pgl -r <职能> <投影模板编号>");
                 return;
             }
 
             if (sortedArgs.TryGetValue("-j", out var plateValues) && plateValues.Count == 0)
             {
-                PrintModuleMessage("Invalid glamour plate number");
+                PrintModuleMessage("无效的投影模板编号");
                 return;
             }
 
             if (sortedArgs.TryGetValue("-j", out var jobValues) && jobValues.Count == 0)
             {
-                PrintModuleMessage("Invalid job names");
+                PrintModuleMessage("无效的职业名称");
                 return;
             }
 
             if (sortedArgs.TryGetValue("-r", out var roleValues) && roleValues.Count == 0)
             {
-                PrintModuleMessage($"Invalid role names\nValid role names: {string.Join(", ", roles)}");
+                PrintModuleMessage($"无效的职能名称\n有效的职能名称： {string.Join(", ", roles)}");
                 return;
             }
 
@@ -97,34 +97,34 @@ namespace PandorasBox.Features.Commands
                         {
                             switch (role)
                             {
-                                case "tanks":
+                                case "坦克":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => x.Role.EqualsAny<byte>(1)).ToList();
                                     break;
-                                case "healers":
+                                case "治疗":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => x.Role.EqualsAny<byte>(4)).ToList();
                                     break;
-                                case "dps":
+                                case "输出":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => x.Role.EqualsAny<byte>(2, 3)).ToList();
                                     break;
-                                case "melees":
+                                case "近战":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => x.Role.EqualsAny<byte>(2)).ToList();
                                     break;
-                                case "ranged":
+                                case "远程":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => (x.UIPriority / 10).EqualsAny<int>(3, 4)).ToList();
                                     break;
-                                case "magical ranged":
-                                case "casters":
+                                case "远程魔法":
+                                case "读条职业":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => (x.UIPriority / 10).Equals(4)).ToList();
                                     break;
-                                case "physical ranged":
+                                case "远程物理":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => (x.UIPriority / 10).Equals(3)).ToList();
                                     break;
-                                case "crafters":
-                                case "doh":
+                                case "制作":
+                                case "能工巧匠":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => (x.UIPriority / 10).Equals(10)).ToList();
                                     break;
-                                case "gatherers":
-                                case "dol":
+                                case "采集":
+                                case "大地使者":
                                     jobsList = Svc.Data.GetExcelSheet<ClassJob>().Where(x => (x.UIPriority / 10).Equals(20)).ToList();
                                     break;
                             }
@@ -133,14 +133,14 @@ namespace PandorasBox.Features.Commands
                         }
                         else
                         {
-                            PrintModuleMessage($"Invalid role name passed as an argument.\nRoles: {string.Join(", ", roles)}");
+                            PrintModuleMessage($"作为参数传递的职能名称无效。\n职能： {string.Join(", ", roles)}");
                         }
                         break;
                     case "-g":
                     case "-j":
                         ParseGearset(values, plate);
                         if (gearsets == null || gearsets.Count == 0)
-                            PrintModuleMessage($"Unable to match {string.Join(" ", values)} to any gearsets");
+                            PrintModuleMessage($"无法将 {string.Join(" ", values)} 与任何套装预设相匹配");
                         LinkPlateToGearset(plate);
                         break;
                 }

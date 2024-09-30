@@ -11,30 +11,30 @@ namespace PandorasBox.Features.Other
     {
         private ushort fateID;
 
-        public override string Name => "Auto-Sync FATEs";
+        public override string Name => "自动Fate等级同步";
 
-        public override string Description => "Syncs when entering a FATE if you're overlevelled.";
+        public override string Description => "进入Fate并处于超过推荐等级时自动开启等级同步。";
 
         public override FeatureType FeatureType => FeatureType.Other;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption($@"Exclude ""A Realm Reborn"" zones", "" , 1)]
+            [FeatureConfigOption($@"排除 ""重生之境"" 区域", "" , 1)]
             public bool ExcludeARR = false;
 
-            [FeatureConfigOption($@"Exclude ""Heavensward"" zones", "", 2)]
+            [FeatureConfigOption($@"排除 ""苍穹之禁城"" 区域", "", 2)]
             public bool ExcludeHW = false;
 
-            [FeatureConfigOption($@"Exclude ""Stormblood"" zones", "", 3)]
+            [FeatureConfigOption($@"排除 ""红莲之狂潮"" 区域", "", 3)]
             public bool ExcludeSB = false;
 
-            [FeatureConfigOption($@"Exclude ""Shadowbringers"" zones", "", 4)]
+            [FeatureConfigOption($@"排除 ""暗影之逆焰"" 区域", "", 4)]
             public bool ExcludeShB = false;
 
-            [FeatureConfigOption($@"Exclude ""Endwalker"" zones", "", 5)]
+            [FeatureConfigOption($@"排除 ""晓月之终途"" 区域", "", 5)]
             public bool ExcludeEW = false;
 
-            [FeatureConfigOption("Don't trigger when in combat", "", 6)]
+            [FeatureConfigOption("在战斗中不要同步", "", 6)]
             public bool ExcludeCombat = false;
         }
 

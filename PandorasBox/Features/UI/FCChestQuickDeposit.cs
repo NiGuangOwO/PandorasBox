@@ -21,20 +21,20 @@ namespace PandorasBox.Features.UI
         internal delegate nint AgentFreeCompanyChest_MoveFCItemDelegate(void* AgentFreeCompanyChest, InventoryType SourceInventory, uint SourceSlot, InventoryType TargetInventory, uint TargetSlot);
         internal Hook<AgentFreeCompanyChest_MoveFCItemDelegate> AgentFreeCompanyChest_MoveFCItem;
 
-        public override string Name => "FC Chest Quick Deposit";
+        public override string Name => "部队保险箱快速存入";
 
-        public override string Description => "Adds a context menu to items whilst the FC chest is open to quickly deposit them.";
+        public override string Description => "在部队保险箱打开时为道具添加右键菜单，以便快速存放它们。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
         private IContextMenu contextMenu;
 
-        private static readonly SeString DepositString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("Deposit into FC Chest"));
+        private static readonly SeString DepositString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("存入部队保险箱"));
 
         public override bool UseAutoConfig => true;
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption($"Ctrl + Right Click Shortcut")]
+            [FeatureConfigOption($"Ctrl + 右键 快速存入")]
             public bool UseShortcut = false;
         }
 

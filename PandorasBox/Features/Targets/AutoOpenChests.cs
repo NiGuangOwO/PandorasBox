@@ -15,18 +15,18 @@ namespace PandorasBox.Features.Targets
 {
     public unsafe class AutoOpenChests : Feature
     {
-        public override string Name => "Automatically Open Chests";
+        public override string Name => "自动打开宝箱";
 
-        public override string Description => "Walk up to a chest to automatically open it.";
+        public override string Description => "靠近宝箱时自动打开。";
 
         public override FeatureType FeatureType => FeatureType.Targeting;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Immediately Close Loot Window After Opening", "", 1)]
+            [FeatureConfigOption("打开后立刻自动关闭战利品窗口", "", 1)]
             public bool CloseLootWindow = false;
 
-            [FeatureConfigOption("Open Chests in High End Duties", "", 2)]
+            [FeatureConfigOption("在高难度任务中打开宝箱", "", 2)]
             public bool OpenInHighEndDuty = false;
         }
 

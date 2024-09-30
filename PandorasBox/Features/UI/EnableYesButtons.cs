@@ -10,9 +10,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class EnableYesButtons : Feature
     {
-        public override string Name => "Automatically Enabled Yes Buttons";
+        public override string Name => "自动启用“确定”按钮";
 
-        public override string Description => "Sets the Yes button on Yes/No prompts to automatically be enabled if normally a checkbox needed checked.";
+        public override string Description => "如果复选框需要二次确认勾选才能点击确定，则自动勾选复选框。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

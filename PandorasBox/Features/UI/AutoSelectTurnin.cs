@@ -12,9 +12,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoSelectTurnin : Feature
     {
-        public override string Name => "Auto-select Turn-ins";
+        public override string Name => "自动提交道具";
 
-        public override string Description => "Whenever you have to select an item to turn in, it will automatically fill in the interface.";
+        public override string Description => "每当你必须选择一个要上交的道具时，它会自动上交道具。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
@@ -22,7 +22,7 @@ namespace PandorasBox.Features.UI
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Automatically Confirm")]
+            [FeatureConfigOption("自动确认")]
             public bool AutoConfirm = false;
         }
 

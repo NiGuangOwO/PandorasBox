@@ -12,24 +12,24 @@ namespace PandorasBox.Features.Other
 {
     public unsafe class NoKill : Feature
     {
-        public override string Name => "Prevent Lobby Error Crashes";
+        public override string Name => "防止大厅错误关闭";
 
-        public override string Description => "Prevents the game from closing itself when it gets a lobby error";
+        public override string Description => "防止游戏在出现大厅错误时自行关闭。";
 
         public override FeatureType FeatureType => FeatureType.Other;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Skip Authentication Errors")]
+            [FeatureConfigOption("跳过账户验证错误")]
             public bool SkipAuthError = true;
 
-            [FeatureConfigOption(name: "Queue Mode: Use for lobby errors in queues", Disabled = true)]
+            [FeatureConfigOption(name: "排队模式：用于排队中的大厅错误", Disabled = true)]
             public bool QueueMode = false;
 
-            [FeatureConfigOption("Safer Mode: Filters invalid messages that may crash the client")]
+            [FeatureConfigOption("安全模式：过滤可能使客户端崩溃的无效消息")]
             public bool SaferMode = false;
 
-            [FeatureConfigOption("Try to Close Error Automatically")]
+            [FeatureConfigOption("尝试自动关闭错误提示")]
             public bool CloseAutomatically = false;
         }
 

@@ -39,8 +39,19 @@ public class PandorasBox : IDalamudPlugin
     private void Initialize()
     {
         ECommonsMain.Init(pi, P, ECommons.Module.All);
-        PunishLibMain.Init(pi, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey" });
-
+        PunishLibMain.Init(pi, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO" });
+#if !DEBUG
+        if (Svc.PluginInterface.IsDev || !Svc.PluginInterface.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
+        {
+            Svc.NotificationManager.AddNotification(new Notification()
+            {
+                Type = NotificationType.Error,
+                Title = "加载验证",
+                Content = "由于本地加载或安装来源仓库非NiGuangOwO个人仓库，插件加载失败",
+            });
+            return;
+        }
+#endif
         Ws = new();
         MainWindow = new();
         Ws.AddWindow(MainWindow);
@@ -49,7 +60,7 @@ public class PandorasBox : IDalamudPlugin
 
         Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Opens the Pandora menu.",
+            HelpMessage = "打开PandorasBox菜单。",
             ShowInHelp = true
         });
 
@@ -68,6 +79,14 @@ public class PandorasBox : IDalamudPlugin
 
     public void Dispose()
     {
+#if !DEBUG
+        if (Svc.PluginInterface.IsDev || !Svc.PluginInterface.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
+        {
+            PunishLibMain.Dispose();
+            ECommonsMain.Dispose();
+            return;
+        }
+#endif
         Svc.Commands.RemoveHandler(CommandName);
         foreach (var f in Features.Where(x => x is not null && x.Enabled))
         {

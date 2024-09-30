@@ -18,8 +18,8 @@ namespace PandorasBox.Features.Targets
     public unsafe class AutoInteractGathering : Feature
     {
 
-        public override string Name => "Auto-interact with Gathering Nodes";
-        public override string Description => "Interacts with gathering nodes when close enough and on the correct job.";
+        public override string Name => "自动与采集点交互";
+        public override string Description => "当距离足够近并且当前职业正确时与树木和岩石交互。";
 
         public override FeatureType FeatureType => FeatureType.Targeting;
 
@@ -27,34 +27,34 @@ namespace PandorasBox.Features.Targets
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
             public float Throttle = 0.1f;
 
-            [FeatureConfigOption("Cooldown after gathering (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
+            [FeatureConfigOption("采集后冷却 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
             public float Cooldown = 0.1f;
 
-            [FeatureConfigOption("Exclude Timed Unspoiled Nodes", "", 1)]
+            [FeatureConfigOption("排除未知的采集地点", "", 1)]
             public bool ExcludeTimedUnspoiled = false;
 
-            [FeatureConfigOption("Exclude Timed Ephemeral Nodes", "", 2)]
+            [FeatureConfigOption("排除限时的采集地点", "", 2)]
             public bool ExcludeTimedEphermeral = false;
 
-            [FeatureConfigOption("Exclude Timed Legendary Nodes", "", 3)]
+            [FeatureConfigOption("排除传说的采集地点", "", 3)]
             public bool ExcludeTimedLegendary = false;
 
-            [FeatureConfigOption("Required GP to Interact (>=)", IntMin = 0, IntMax = 1000, EditorSize = 300)]
+            [FeatureConfigOption("交互需要的GP (>=)", IntMin = 0, IntMax = 1000, EditorSize = 300)]
             public int RequiredGP = 0;
 
-            [FeatureConfigOption("Exclude Island Nodes", "", 7)]
+            [FeatureConfigOption("排除空岛的采集地点", "", 7)]
             public bool ExcludeIsland = false;
 
-            [FeatureConfigOption("Exclude Miner Nodes", "", 4)]
+            [FeatureConfigOption("排除采矿工的采集地点", "", 4)]
             public bool ExcludeMiner = false;
 
-            [FeatureConfigOption("Exclude Botanist Nodes", "", 5)]
+            [FeatureConfigOption("排除园艺工的采集地点", "", 5)]
             public bool ExcludeBotanist = false;
 
-            [FeatureConfigOption("Exclude Spearfishing Nodes", "", 6)]
+            [FeatureConfigOption("排除刺鱼的采集地点", "", 6)]
             public bool ExcludeFishing = false;
 
         }

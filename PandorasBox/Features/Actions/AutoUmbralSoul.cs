@@ -13,9 +13,9 @@ namespace PandorasBox.Features.Actions
 {
     internal class AutoUmbralSoul : Feature
     {
-        public override string Name => "Auto-Umbral Soul";
+        public override string Name => "自动灵极魂";
 
-        public override string Description => "Automatically use Umbral Soul when out of combat. If in Astral Fire, it will Transpose to Umbral Ice first. If not in an element it will do nothing.";
+        public override string Description => "脱离战斗时自动使用灵极魂。如果处于星极火，它会首先转换为灵极冰。如果不在元素中，它将不会执行任何操作。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 

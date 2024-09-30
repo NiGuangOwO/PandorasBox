@@ -7,9 +7,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoProspectTriangulate : Feature
     {
-        public override string Name => "Auto-Prospect/Triangulate";
+        public override string Name => "自动矿脉勘探/三角测量";
 
-        public override string Description => "When switching to MIN or BTN, automatically activate the other jobs searching ability.";
+        public override string Description => "当切换到采矿工或园艺工时，自动激活另一个职业的搜索技能。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -17,10 +17,10 @@ namespace PandorasBox.Features.Actions
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
             public float ThrottleF = 0.1f;
 
-            [FeatureConfigOption("Include Truth of Mountains/Forests", "", 1)]
+            [FeatureConfigOption("包括山岳之相/丛林之相", "", 1)]
             public bool AddTruth = false;
         }
 

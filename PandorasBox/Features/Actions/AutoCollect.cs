@@ -7,9 +7,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoCollect : Feature
     {
-        public override string Name => "Auto-Collect";
+        public override string Name => "自动开启收藏品采集";
 
-        public override string Description => "When switching to FSH, ensures Collector's Glove will always be on.";
+        public override string Description => "当切换到捕鱼人时, 保证收藏品采集处于开启。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -17,7 +17,7 @@ namespace PandorasBox.Features.Actions
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
             public float ThrottleF = 0.1f;
         }
 

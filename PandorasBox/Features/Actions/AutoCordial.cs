@@ -9,9 +9,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoCordial : Feature
     {
-        public override string Name => "Auto-Cordial";
+        public override string Name => "自动使用强心剂";
 
-        public override string Description => "Automatically use a cordial when below a given threshold.";
+        public override string Description => "当采集力低于阈值时自动使用强心剂。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -26,16 +26,16 @@ namespace PandorasBox.Features.Actions
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("GP Threshold", "", 1, IntMin = 0, IntMax = 1000, EditorSize = 300)]
+            [FeatureConfigOption("采集力阈值", "", 1, IntMin = 0, IntMax = 1000, EditorSize = 300)]
             public int Threshold = 1000;
 
-            [FeatureConfigOption("Invert Priority (Watered -> Regular -> Hi)", "", 2)]
+            [FeatureConfigOption("反转优先级 (轻型强心剂 -> 强心剂 -> 高级强心剂)", "", 2)]
             public bool InvertPriority = false;
 
-            [FeatureConfigOption("Prevent Overcap", "", 3)]
+            [FeatureConfigOption("防止浪费", "", 3)]
             public bool PreventOvercap = true;
 
-            [FeatureConfigOption("Use on Fisher", "", 4)]
+            [FeatureConfigOption("在捕鱼人时使用", "", 4)]
             public bool UseOnFisher = false;
         }
 

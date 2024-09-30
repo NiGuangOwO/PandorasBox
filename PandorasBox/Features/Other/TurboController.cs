@@ -11,8 +11,8 @@ namespace PandorasBox.Features.Other
 {
     internal class TurboController : Feature
     {
-        public override string Name { get; } = "Turbo Controller";
-        public override string Description { get; } = "Enable rapid fire button presses on controller by holding down a button.";
+        public override string Name { get; } = "Turbo手柄";
+        public override string Description { get; } = "通过按住一个按钮，在手柄上启用快速开火按键。";
 
         public override FeatureType FeatureType => FeatureType.Other;
 

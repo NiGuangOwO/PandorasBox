@@ -13,9 +13,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class TradeAllCollectibles : Feature
     {
-        public override string Name => "Trade All Collectables";
+        public override string Name => "交易所有收藏品";
 
-        public override string Description => "Replaces the Trade button on the collectables interface with a Trade All button for the selected collectable.";
+        public override string Description => "将收藏品界面上的“交易”按钮替换为所选收藏品的“全部交易”按钮。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
@@ -67,7 +67,7 @@ namespace PandorasBox.Features.UI
 
                 if (!Trading)
                 {
-                    if (ImGui.Button($"Trade All###StartTrade", size))
+                    if (ImGui.Button($"交易全部###StartTrade", size))
                     {
                         Trading = true;
                         TryTradeAll();
@@ -75,7 +75,7 @@ namespace PandorasBox.Features.UI
                 }
                 else
                 {
-                    if (ImGui.Button($"Trading. Click to abort.###AbortTrade", size))
+                    if (ImGui.Button($"交易中...点击来中止###AbortTrade", size))
                     {
                         Trading = false;
                         TaskManager.Abort();

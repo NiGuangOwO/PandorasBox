@@ -7,24 +7,24 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoFairy : Feature
     {
-        public override string Name => "Auto-Summon Fairy/Carbuncle";
+        public override string Name => "自动召唤仙女/宝石兽";
 
-        public override string Description => "Automatically summons your Fairy or Carbuncle upon switching to SCH or SMN respectively.";
+        public override string Description => "切换到学者或召唤时自动召唤仙女或宝石兽。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
             public float ThrottleF = 0.1f;
 
-            [FeatureConfigOption("Trigger at Duty Start")]
+            [FeatureConfigOption("副本开始时触发")]
             public bool DutyStart = false;
 
-            [FeatureConfigOption("Trigger on Respawn")]
+            [FeatureConfigOption("复活时触发")]
             public bool OnRespawn = false;
 
-            [FeatureConfigOption("Trigger on Job Change")]
+            [FeatureConfigOption("切换职业后触发")]
             public bool OnJobChange = true;
         }
 

@@ -16,9 +16,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoMountGathering : Feature
     {
-        public override string Name => "Auto-Mount after Gathering";
+        public override string Name => "采集后自动上坐骑";
 
-        public override string Description => "Mounts upon finishing gathering from a node. Will try to execute for up to 3 seconds after the delay if moving.";
+        public override string Description => "在采集点完成采集后使用随机坐骑或特定坐骑。如果在移动，则会在3秒内持续尝试上坐骑。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -112,10 +112,10 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Set Delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
-            if (ImGui.BeginCombo("Select Mount", preview))
+            if (ImGui.BeginCombo("选择坐骑", preview))
             {
                 if (ImGui.Selectable("", Config.SelectedMount == 0))
                 {
@@ -140,10 +140,10 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("Abort if moving", ref Config.AbortIfMoving)) hasChanged = true;
-            if (ImGui.Checkbox("Use on Island Sanctuary", ref Config.UseOnIsland)) hasChanged = true;
-            if (ImGui.Checkbox("Jump after mounting", ref Config.JumpAfterMount)) hasChanged = true;
-            hasChanged |= ImGui.Checkbox("Start moving after mounting", ref Config.MoveAfterMount);
+            if (ImGui.Checkbox("移动时中止", ref Config.AbortIfMoving)) hasChanged = true;
+            if (ImGui.Checkbox("在无人岛中使用", ref Config.UseOnIsland)) hasChanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) hasChanged = true;
+            hasChanged |= ImGui.Checkbox("上坐骑后自动移动", ref Config.MoveAfterMount);
         };
     }
 }

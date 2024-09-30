@@ -14,9 +14,9 @@ namespace PandorasBox.Features.ChatFeature
 {
     internal class AutoTPCoords : Feature
     {
-        public override string Name => "Auto-Teleport to Map Coords";
+        public override string Name => "自动传送到地图坐标";
 
-        public override string Description => "Automatically teleports to the nearest aetheryte to a map link posted in chat. Requires \"Teleporter\" plugin installed.";
+        public override string Description => "自动传送到聊天中发布的地图坐标最近的水晶。需要安装 \"Teleporter\" 插件。";
 
         public override FeatureType FeatureType => FeatureType.ChatFeature;
 
@@ -26,15 +26,15 @@ namespace PandorasBox.Features.ChatFeature
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Include Sonar links")]
+            [FeatureConfigOption("包括Sonar链接")]
             public bool IncludeSonar = false;
 
-            [FeatureConfigOption("Ignore <pos> flags")]
+            [FeatureConfigOption("忽略 <pos> 标签")]
             public bool IgnorePOS = false;
 
             public List<ushort> FilteredChannels = new();
 
-            [FeatureConfigOption("Disable in same zone")]
+            [FeatureConfigOption("在同一地图时禁用")]
             public bool DisableSameZone = false;
         }
 
@@ -216,10 +216,10 @@ namespace PandorasBox.Features.ChatFeature
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
-            if (ImGui.Checkbox("Include Sonar links", ref Config.IncludeSonar)) hasChanged = true;
-            if (ImGui.Checkbox("Ignore <pos> flags", ref Config.IgnorePOS)) hasChanged = true;
+            if (ImGui.Checkbox("包括Sonar链接", ref Config.IncludeSonar)) hasChanged = true;
+            if (ImGui.Checkbox("忽略 <pos> 标签", ref Config.IgnorePOS)) hasChanged = true;
 
-            if (ImGui.CollapsingHeader("Channel Filters (Whitelist)"))
+            if (ImGui.CollapsingHeader("频道过滤 (白名单)"))
             {
                 ImGui.Indent();
                 foreach (ushort chatType in Enum.GetValues(typeof(XivChatType)))

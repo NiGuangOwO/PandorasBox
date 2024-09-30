@@ -8,9 +8,9 @@ namespace PandorasBox.Features.Commands
 {
     public unsafe class MSQCountdown : CommandFeature
     {
-        public override string Name => "MSQ Countdown";
+        public override string Name => "主线任务倒计数";
 
-        public override string Description => "Prints a message in chat with how many main scenario quests left in the current expansion you have to complete.";
+        public override string Description => "在聊天中打印一条消息，说明当前大版本中还有多少主线任务需要完成。";
 
         public override string Command { get; set; } = "/pmsq";
 
@@ -94,11 +94,11 @@ namespace PandorasBox.Features.Commands
             {
                 if (Svc.Data.GetExcelSheet<ExVersion>().Max(x => x.RowId) == CurrentExpansion.RowId)
                 {
-                    Svc.Chat.Print($"You are currently in {CurrentExpansion.Name} with {diff} quests until completion.");
+                    Svc.Chat.Print($"你当前在 {CurrentExpansion.Name} 还剩 {diff} 任务待完成。");
                 }
                 else
                 {
-                    Svc.Chat.Print($"You are currently in {CurrentExpansion.Name} with {diff} quests until {Svc.Data.GetExcelSheet<ExVersion>().GetRow(CurrentExpansion.RowId + 1).Name}");
+                    Svc.Chat.Print($"你当前在 {CurrentExpansion.Name} 还剩 {diff} 任务到 {Svc.Data.GetExcelSheet<ExVersion>().GetRow(CurrentExpansion.RowId + 1).Name}");
                 }
             }
 
@@ -106,17 +106,17 @@ namespace PandorasBox.Features.Commands
             {
                 if (Svc.Data.GetExcelSheet<ExVersion>().Max(x => x.RowId) == CurrentExpansion.RowId)
                 {
-                    Svc.Chat.Print($"Congratulations! You have no more MSQ quests to complete.... for now!");
+                    Svc.Chat.Print($"恭喜你，没有要完成的主线任务了...至少现在！");
                 }
                 else
                 {
-                    Svc.Chat.Print($"Congratulations on beating {CurrentExpansion.Name}! Onwards to {Svc.Data.GetExcelSheet<ExVersion>().GetRow(CurrentExpansion.RowId + 1).Name}!!!");
+                    Svc.Chat.Print($"恭喜你完成 {CurrentExpansion.Name}！继续肝 {Svc.Data.GetExcelSheet<ExVersion>().GetRow(CurrentExpansion.RowId + 1).Name}吧！！！");
                 }
             }
 
             if (diff < 0)
             {
-                Svc.Chat.PrintError($"Something is wrong, you apparently have {diff} quests left? Surely not. Please contact the developer.");
+                Svc.Chat.PrintError($"出现错误，你看起来还有 {diff} 个任务？确定不是，请联系开发人员。");
             }
         }
     }

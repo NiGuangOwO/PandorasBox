@@ -18,9 +18,9 @@ namespace PandorasBox.Features.ChatFeature
 {
     internal class AutoOpenCoords : Feature
     {
-        public override string Name => "Auto-Open Map Coords";
+        public override string Name => "自动打开地图坐标";
 
-        public override string Description => "Automatically opens the map to coordinates posted in chat.";
+        public override string Description => "自动打开地图以查看聊天中发布的坐标。";
 
         public override FeatureType FeatureType => FeatureType.ChatFeature;
 
@@ -32,13 +32,13 @@ namespace PandorasBox.Features.ChatFeature
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Include Sonar links")]
+            [FeatureConfigOption("包括Sonar链接")]
             public bool IncludeSonar = false;
 
-            [FeatureConfigOption("Set <flag> without opening the map")]
+            [FeatureConfigOption("设置 <flag> 时不打开地图")]
             public bool DontOpenMap = false;
 
-            [FeatureConfigOption("Ignore <pos> flags")]
+            [FeatureConfigOption("忽略 <pos> 标签")]
             public bool IgnorePOS = false;
 
             public List<ushort> FilteredChannels = new();
@@ -167,11 +167,11 @@ namespace PandorasBox.Features.ChatFeature
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
-            if (ImGui.Checkbox("Include Sonar links", ref Config.IncludeSonar)) hasChanged = true;
-            if (ImGui.Checkbox("Ignore <pos> flags", ref Config.IgnorePOS)) hasChanged = true;
+            if (ImGui.Checkbox("包括Sonar链接", ref Config.IncludeSonar)) hasChanged = true;
+            if (ImGui.Checkbox("忽略 <pos> 标签", ref Config.IgnorePOS)) hasChanged = true;
             //ImGui.Checkbox("Set <flag> without opening the map", ref Config.DontOpenMap);
 
-            if (ImGui.CollapsingHeader("Channel Filters (Whitelist)"))
+            if (ImGui.CollapsingHeader("频道过滤 (白名单)"))
             {
                 ImGui.Indent();
                 foreach (ushort chatType in Enum.GetValues(typeof(XivChatType)))

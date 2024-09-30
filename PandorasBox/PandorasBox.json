@@ -1,17 +1,17 @@
 {
-    "Author": "Taurenkey (Puni.sh)",
+    "Author": "Taurenkey (Puni.sh) / NiGuangOwO (本地化&功能维护)",
     "Name": "Pandora's Box",
-    "Punchline": "Do you dare to open Pandora's Box?",
-    "Description": "Pandora's Box is a collection of major QoL tweaks and adjustments.\n\nOpen the box with /pandora",
+    "Punchline": "你敢打开潘多拉的盒子吗？（在线安装 Only）",
+    "Description": "Pandora's Box是一个改善游戏体验和一些功能调整的集合",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 10,
-    "IconUrl": "https://love.puni.sh/resources/pandora.png",
+    "IconUrl": "https://s3.puni.sh/media/plugin/8/icon-9opcpzqyh1h.png",
     "RepoUrl": "https://github.com/PunishXIV/PandorasBox",
     "DownloadLinkTesting": "https://love.puni.sh/plugins/Pandora/Testing/latest.zip",
     "Tags": [
         "punish",
         "plugin"
     ],
-    "ChangeLog":  "- Bug fixes for multiple features, including Auto-Tank stance, Reduce All, Repair All, Party Finder View More and Quick Lower Quality.\n- IPC were broken? Probably fixed now."
+    "ChangeLog": "适配国服7.0"
 }

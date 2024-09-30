@@ -14,9 +14,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoMountCombat : Feature
     {
-        public override string Name => "Auto-Mount After Combat ";
+        public override string Name => "脱战后自动上坐骑";
 
-        public override string Description => "Mounts upon ending combat.";
+        public override string Description => "在战斗结束时上坐骑。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -109,10 +109,10 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool haschanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Set Delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) haschanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) haschanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
-            if (ImGui.BeginCombo("Select Mount", preview))
+            if (ImGui.BeginCombo("选择坐骑", preview))
             {
                 if (ImGui.Selectable("", Config.SelectedMount == 0))
                 {
@@ -137,10 +137,10 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("Abort if moving", ref Config.AbortIfMoving)) haschanged = true;
-            if (ImGui.Checkbox("Disable in fates", ref Config.DisableInFates)) haschanged = true;
-            if (ImGui.Checkbox("Exclude Housing Zones", ref Config.ExcludeHousing)) haschanged = true;
-            if (ImGui.Checkbox("Jump after mounting", ref Config.JumpAfterMount)) haschanged = true;
+            if (ImGui.Checkbox("移动时中止", ref Config.AbortIfMoving)) haschanged = true;
+            if (ImGui.Checkbox("在Fate中禁用", ref Config.DisableInFates)) haschanged = true;
+            if (ImGui.Checkbox("在房区中禁用", ref Config.ExcludeHousing)) haschanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) haschanged = true;
 
         };
     }

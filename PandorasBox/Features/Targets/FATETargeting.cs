@@ -9,8 +9,8 @@ namespace PandorasBox.Features.Targets
 {
     internal class FATETargeting : Feature
     {
-        public override string Name { get; } = "FATE Targeting Mode";
-        public override string Description { get; } = "When in a FATE and able to participate (synced), automatically targets FATE associated enemies.";
+        public override string Name { get; } = "FATE目标模式";
+        public override string Description { get; } = "当处于FATE并能够参与（等级同步）时，自动选中与FATE相关的敌人。";
         public override FeatureType FeatureType { get; } = FeatureType.Targeting;
 
         public override void Enable()

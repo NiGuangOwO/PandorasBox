@@ -10,9 +10,9 @@ namespace PandorasBox.Features.Other
 {
     internal class AfkDummyReset : Feature
     {
-        public override string Name => "Inactivity Dummy Reset";
+        public override string Name => "挂机时清除木人仇恨";
 
-        public override string Description => "Automatically reset enmity on target dummies if you do not perform an action after a specified amount of time.";
+        public override string Description => "如果在指定时间后未使用过技能，则自动重置木人的仇恨。";
 
         public override FeatureType FeatureType => FeatureType.Other;
 
@@ -20,7 +20,7 @@ namespace PandorasBox.Features.Other
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Inactivity Timer (seconds)", EditorSize = 300, IntMax = 120, IntMin = 1, EnforcedLimit = true)]
+            [FeatureConfigOption("挂机时间 (秒)", EditorSize = 300, IntMax = 120, IntMin = 1, EnforcedLimit = true)]
             public int InactivityTimer = 1;
         }
 

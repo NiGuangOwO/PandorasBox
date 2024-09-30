@@ -10,15 +10,15 @@ namespace PandorasBox.Features.Other
 {
     public unsafe class AutoSwitchGatherer : Feature
     {
-        public override string Name => "Switch Gatherers Automatically";
+        public override string Name => "自动切换采集职业";
 
-        public override string Description => "Switches to the appropriate gathering job when approaching a gathering spot and you have both Triangulate & Prospect active. Must have a gearset for the job to switch to.";
+        public override string Description => "当接近采集点时，并且“三角测量”和“矿脉勘探”都处于激活状态时，自动切换到适合的采集职业。职业必须有一个套装预设才能切换到。";
 
         public override FeatureType FeatureType => FeatureType.Other;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
             public float Throttle = 0.1f;
         }
 

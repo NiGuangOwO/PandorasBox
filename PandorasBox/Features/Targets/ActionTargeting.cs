@@ -12,21 +12,21 @@ namespace PandorasBox.Features.Targets
 {
     public unsafe class ActionTargeting : Feature
     {
-        public override string Name => "Action Combat Targeting";
+        public override string Name => "技能战斗指向";
 
-        public override string Description => "Automatically targets and switches your target to the nearest within your line of sight.";
+        public override string Description => "将自动选择并切换目标到视线范围内最近的位置的敌人。";
 
         public override FeatureType FeatureType => FeatureType.Targeting;
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Unset Target if not in cone range (all times, use with caution)", "", 1)]
+            [FeatureConfigOption("如果不在锥形范围内，则取消选中（任何时候，小心使用）", "", 1)]
             public bool UnsetTargetRange = false;
 
-            [FeatureConfigOption("Unset Target if not in cone range (only in combat)")]
+            [FeatureConfigOption("如果不在锥形范围内，则取消选中，（仅在战斗中）")]
             public bool UnsetTargetCombat = false;
 
-            [FeatureConfigOption("Max Distance (yalms)", "", 2, FloatMin = 0.1f, FloatMax = 30f, FloatIncrements = 0.1f, EditorSize = 300)]
+            [FeatureConfigOption("最大距离（yalms）", "", 2, FloatMin = 0.1f, FloatMax = 30f, FloatIncrements = 0.1f, EditorSize = 300)]
             public float MaxDistance = 3f;
         }
 
@@ -130,21 +130,21 @@ namespace PandorasBox.Features.Targets
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Max Distance (yalms)", ref Config.MaxDistance, 0.1f, 30f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("最大距离（yalms）", ref Config.MaxDistance, 0.1f, 30f, "%.1f")) hasChanged = true;
 
-            if (ImGui.RadioButton("Don't Unset Target", !Config.UnsetTargetRange && !Config.UnsetTargetCombat))
+            if (ImGui.RadioButton("不要取消选中", !Config.UnsetTargetRange && !Config.UnsetTargetCombat))
             {
                 Config.UnsetTargetRange = false;
                 Config.UnsetTargetCombat = false;
                 hasChanged = true;
             }
-            if (ImGui.RadioButton("Unset Target if not in cone range (all times, use with caution)", Config.UnsetTargetRange))
+            if (ImGui.RadioButton("如果不在扇形范围内，则取消选中 (任何时候，小心使用)", Config.UnsetTargetRange))
             {
                 Config.UnsetTargetRange = true;
                 Config.UnsetTargetCombat = false;
                 hasChanged = true;
             }
-            if (ImGui.RadioButton("Unset Target if not in cone range (only in combat)", Config.UnsetTargetCombat))
+            if (ImGui.RadioButton("如果不在扇形范围内，则取消选中 (仅在战斗中)", Config.UnsetTargetCombat))
             {
                 Config.UnsetTargetRange = false;
                 Config.UnsetTargetCombat = true;

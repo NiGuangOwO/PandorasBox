@@ -18,9 +18,9 @@ namespace PandorasBox.Features
 {
     public unsafe class RepairAll : Feature
     {
-        public override string Name => "Replace Repair All";
+        public override string Name => "替换全部维修";
 
-        public override string Description => "Replace the Repair All button with one that will repair all your equipment, regardless of which dropdown is selected.";
+        public override string Description => "将“全部维修”按钮替换为一个将修复所有装备的按钮，无论选择了哪个下拉菜单。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
@@ -82,7 +82,7 @@ namespace PandorasBox.Features
 
                     if (!Repairing)
                     {
-                        if (ImGui.Button($"Repair All###StartRepair", size))
+                        if (ImGui.Button($"全部修理###StartRepair", size))
                         {
                             Repairing = true;
                             TaskManager.Enqueue(() => YesAlready.Lock());
@@ -94,7 +94,7 @@ namespace PandorasBox.Features
                     }
                     else
                     {
-                        if (ImGui.Button($"Repairing. Click to abort.###AbortRepair", size))
+                        if (ImGui.Button($"修复中...点击来中止###AbortRepair", size))
                         {
                             Repairing = false;
                             TaskManager.Abort();

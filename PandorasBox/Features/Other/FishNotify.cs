@@ -30,9 +30,9 @@ namespace PandorasBox.Features.Other
 {
     public unsafe class FishNotify : Feature
     {
-        public override string Name => "Fish Notify";
+        public override string Name => "钓鱼提醒";
 
-        public override string Description => "Play a sound or send a chat message when a fish is hooked.";
+        public override string Description => "当鱼上钩时，播放声音或发送聊天信息。";
 
         public override FeatureType FeatureType => FeatureType.Disabled;
 
@@ -95,19 +95,19 @@ namespace PandorasBox.Features.Other
                 {
                     case BiteType.Weak:
                         hasHooked = true;
-                        if (Config.LightTugs && Config.LightChat) TaskManager.Enqueue(() => SendChatAlert("light"));
+                        if (Config.LightTugs && Config.LightChat) TaskManager.Enqueue(() => SendChatAlert("轻杆"));
                         if (Config.LightTugs && Config.PlayLightSound && CheckIsSfxEnabled()) audioHandler.PlaySound(Helpers.AudioTrigger.Light);
                         break;
 
                     case BiteType.Strong:
                         hasHooked = true;
-                        if (Config.StrongTugs && Config.StrongChat) TaskManager.Enqueue(() => SendChatAlert("strong"));
+                        if (Config.StrongTugs && Config.StrongChat) TaskManager.Enqueue(() => SendChatAlert("中杆"));
                         if (Config.StrongTugs && Config.PlayStrongSound && CheckIsSfxEnabled()) audioHandler.PlaySound(Helpers.AudioTrigger.Strong);
                         break;
 
                     case BiteType.Legendary:
                         hasHooked = true;
-                        if (Config.LegendaryTugs && Config.LegendaryChat) TaskManager.Enqueue(() => SendChatAlert("legendary"));
+                        if (Config.LegendaryTugs && Config.LegendaryChat) TaskManager.Enqueue(() => SendChatAlert("鱼王杆"));
                         if (Config.LegendaryTugs && Config.PlayLegendarySound && CheckIsSfxEnabled()) audioHandler.PlaySound(Helpers.AudioTrigger.Legendary);
                         break;
 
@@ -167,9 +167,8 @@ namespace PandorasBox.Features.Other
             var message = new SeStringBuilder()
                 .AddUiForeground($"[{P.Name}] ", 45)
                 .AddUiForeground($"[{Name}] ", 62)
-                .AddText($"You hook a fish with a ")
+                .AddText($"有鱼上钩了，")
                 .AddUiForeground(size, 576)
-                .AddText(" bite.")
                 .Build();
             Svc.Chat.Print(message);
         }
@@ -194,36 +193,36 @@ namespace PandorasBox.Features.Other
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderInt("Volume", ref Config.Volume, 0, 100))
+            if (ImGui.SliderInt("音量", ref Config.Volume, 0, 100))
             {
                 audioHandler.Volume = Config.Volume / 100f;
                 hasChanged = true;
             }
 
-            if (ImGui.Checkbox("Light Tugs", ref Config.LightTugs)) hasChanged = true;
+            if (ImGui.Checkbox("轻杆", ref Config.LightTugs)) hasChanged = true;
             if (Config.LightTugs)
             {
                 ImGui.Indent();
-                if (ImGui.Checkbox("Chat Alerts##Light", ref Config.LightChat)) hasChanged = true;
-                if (ImGui.Checkbox("Sound Effect##Light", ref Config.PlayLightSound)) hasChanged = true;
+                if (ImGui.Checkbox("聊天提醒##Light", ref Config.LightChat)) hasChanged = true;
+                if (ImGui.Checkbox("音效##Light", ref Config.PlayLightSound)) hasChanged = true;
                 ImGui.Unindent();
             }
 
-            if (ImGui.Checkbox("Strong Tugs", ref Config.StrongTugs)) hasChanged = true;
+            if (ImGui.Checkbox("中杆", ref Config.StrongTugs)) hasChanged = true;
             if (Config.StrongTugs)
             {
                 ImGui.Indent();
-                if (ImGui.Checkbox("Chat Alerts##Strong", ref Config.StrongChat)) hasChanged = true;
-                if (ImGui.Checkbox("Sound Effect##Strong", ref Config.PlayStrongSound)) hasChanged = true;
+                if (ImGui.Checkbox("聊天提醒##Strong", ref Config.StrongChat)) hasChanged = true;
+                if (ImGui.Checkbox("音效##Strong", ref Config.PlayStrongSound)) hasChanged = true;
                 ImGui.Unindent();
             }
 
-            if (ImGui.Checkbox("Legendary Tugs", ref Config.LegendaryTugs)) hasChanged = true;
+            if (ImGui.Checkbox("鱼王杆", ref Config.LegendaryTugs)) hasChanged = true;
             if (Config.LegendaryTugs)
             {
                 ImGui.Indent();
-                if (ImGui.Checkbox("Chat Alerts##Legendary", ref Config.LegendaryChat)) hasChanged = true;
-                if (ImGui.Checkbox("Sound Effect##Legendary", ref Config.PlayLegendarySound)) hasChanged = true;
+                if (ImGui.Checkbox("聊天提醒##Legendary", ref Config.LegendaryChat)) hasChanged = true;
+                if (ImGui.Checkbox("音效##Legendary", ref Config.PlayLegendarySound)) hasChanged = true;
                 ImGui.Unindent();
             }
         };

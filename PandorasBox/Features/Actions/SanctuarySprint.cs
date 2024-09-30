@@ -9,9 +9,9 @@ namespace PandorasBox.Features
 {
     public unsafe class SanctuarySprint : Feature
     {
-        public override string Name => "Auto-Sprint on Island Sanctuary";
+        public override string Name => "无人岛自动冲刺";
 
-        public override string Description => "Automatically uses Isle Sprint.";
+        public override string Description => "自动使用海岛冲刺。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -20,7 +20,7 @@ namespace PandorasBox.Features
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Use whilst walk status is toggled", "", 1)]
+            [FeatureConfigOption("在行走状态时使用", "", 1)]
             public bool RPWalk = false;
         }
 

@@ -16,9 +16,9 @@ namespace PandorasBox.Features
 {
     public unsafe partial class CoordsToMapLink : Feature
     {
-        public override string Name => "Preserve Map Links in Clipboard";
+        public override string Name => "在剪贴板中保留地图链接";
 
-        public override string Description => "Preserves the formatting for map links so they can be interacted with after pasting.";
+        public override string Description => "保留地图链接的格式，以便在粘贴后可以与之交互。";
 
         public override FeatureType FeatureType => FeatureType.ChatFeature;
 

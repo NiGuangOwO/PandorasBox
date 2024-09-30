@@ -19,9 +19,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoSelectGardening : Feature
     {
-        public override string Name => "Auto-select Gardening Soil/Seeds";
+        public override string Name => "自动选择栽培土壤/种子";
 
-        public override string Description => "Automatically fill in gardening windows with seeds and soil.";
+        public override string Description => "自动用种子和土壤栽培。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
@@ -342,7 +342,7 @@ namespace PandorasBox.Features.UI
         {
             bool hasChanged = false;
 
-            if (ImGui.Checkbox("Show Only Inventory Items", ref Config.OnlyShowInventoryItems))
+            if (ImGui.Checkbox("仅显示背包道具", ref Config.OnlyShowInventoryItems))
                 hasChanged = true;
 
             var invSoil = Config.OnlyShowInventoryItems ? Soils.Where(x => InventoryManager.Instance()->GetInventoryItemCount(x.Value.RowId) > 0).ToArray() : Soils.ToArray();
@@ -350,7 +350,7 @@ namespace PandorasBox.Features.UI
             var invFert = Config.OnlyShowInventoryItems ? Fertilizers.Where(x => InventoryManager.Instance()->GetInventoryItemCount(x.Value.RowId) > 0).ToArray() : Fertilizers.ToArray();
 
             var soilPrev = Config.SelectedSoil == 0 ? "" : Soils[Config.SelectedSoil].Name.ExtractText();
-            if (ImGui.BeginCombo("Soil", soilPrev))
+            if (ImGui.BeginCombo("土壤", soilPrev))
             {
                 if (ImGui.Selectable("", Config.SelectedSoil == 0))
                 {
@@ -372,7 +372,7 @@ namespace PandorasBox.Features.UI
             }
 
             var seedPrev = Config.SelectedSeed == 0 ? "" : Seeds[Config.SelectedSeed].Name.ExtractText();
-            if (ImGui.BeginCombo("Seed", seedPrev))
+            if (ImGui.BeginCombo("种子", seedPrev))
             {
                 if (ImGui.Selectable("", Config.SelectedSeed == 0))
                 {
@@ -398,7 +398,7 @@ namespace PandorasBox.Features.UI
             if (Config.IncludeFertilzing)
             {
                 var fertPrev = Config.SelectedFertilizer == 0 ? "" : Fertilizers[Config.SelectedFertilizer].Name.ExtractText();
-                if (ImGui.BeginCombo("Fertilizer", fertPrev))
+                if (ImGui.BeginCombo("肥料", fertPrev))
                 {
                     if (ImGui.Selectable("", Config.SelectedFertilizer == 0))
                     {
@@ -420,7 +420,7 @@ namespace PandorasBox.Features.UI
                 }
             }
 
-            if (ImGui.Checkbox("Auto Confirm", ref Config.AutoConfirm))
+            if (ImGui.Checkbox("自动确认", ref Config.AutoConfirm))
                 hasChanged = true;
 
             if (hasChanged)

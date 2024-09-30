@@ -145,9 +145,9 @@ namespace PandorasBox.Features.Other
         internal Vector4 ClassicFFTheme = new Vector4(0.21f, 0f, 0.68f, 1f);
         internal Vector4 LightBlueTheme = new Vector4(0.21f, 0.36f, 0.59f, 0.25f);
 
-        public override string Name => "Pandora Quick Gather";
+        public override string Name => "潘多拉快速收集";
 
-        public override string Description => "Replaces the Quick Gather checkbox with a new one that enables better quick gathering. Works on all nodes and can be interrupted at any point by disabling the checkbox. Also remembers your settings between sessions.";
+        public override string Description => "将“快速收集”复选框替换为新的复选框，以实现更好的快速收集。适用于所有采集地点，并且可以通过禁用复选框在任何时候中断，还会记住采集点之间的设置。";
 
         public bool InDiadem => Svc.ClientState.TerritoryType == 939;
 
@@ -357,7 +357,7 @@ namespace PandorasBox.Features.Other
 
                 ImGui.Columns(3, null, false);
 
-                if (ImGui.Checkbox("Enable P. Gathering", ref Config.Gathering))
+                if (ImGui.Checkbox("启用潘多拉快速收集", ref Config.Gathering))
                 {
                     if (Config.Gathering && node->GetAsAtkComponentCheckBox()->IsChecked)
                         QuickGatherToggle(null);
@@ -370,13 +370,13 @@ namespace PandorasBox.Features.Other
 
                 ImGui.NextColumn();
 
-                if (ImGui.Checkbox("Remember Item", ref Config.RememberLastNode))
+                if (ImGui.Checkbox("在不同采集点间记住上次选择", ref Config.RememberLastNode))
                     SaveConfig(Config);
 
                 if (ImGui.IsItemHovered() && InDiadem)
                 {
                     ImGui.BeginTooltip();
-                    ImGui.Text("In the Diadem, this will remember the last slot selected and not the last item due to the varying nature of the nodes.");
+                    ImGui.Text("在云冠群岛中，由于采集点的性质不同，这将记住最后一个选定的插槽，而不是最后一个道具。");
                     ImGui.EndTooltip();
                 }
                 var language = Svc.ClientState.ClientLanguage;
@@ -384,56 +384,56 @@ namespace PandorasBox.Features.Other
                 {
                     case 17:
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(4087).Name.RawString}", ref Config.Use100GPYield))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(4087).Name.RawString}", ref Config.Use100GPYield))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(224).Name.RawString}", ref Config.Use500GPYield))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(224).Name.RawString}", ref Config.Use500GPYield))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(21204).Name.RawString}", ref Config.UseTidings))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(21204).Name.RawString}", ref Config.UseTidings))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(215).Name.RawString}", ref Config.UseSolidReason))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(215).Name.RawString}", ref Config.UseSolidReason))
                         {
                             SaveConfig(Config);
                         }
                         break;
                     case 16:
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(4073).Name.RawString}", ref Config.Use100GPYield))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(4073).Name.RawString}", ref Config.Use100GPYield))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(241).Name.RawString}", ref Config.Use500GPYield))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(241).Name.RawString}", ref Config.Use500GPYield))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(21203).Name.RawString}", ref Config.UseTidings))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(21203).Name.RawString}", ref Config.UseTidings))
                         {
                             Config.UseGivingLand = false;
                             Config.UseTwelvesBounty = false;
                             SaveConfig(Config);
                         }
                         ImGui.NextColumn();
-                        if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(232).Name.RawString}", ref Config.UseSolidReason))
+                        if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(232).Name.RawString}", ref Config.UseSolidReason))
                         {
                             SaveConfig(Config);
                         }
@@ -441,7 +441,7 @@ namespace PandorasBox.Features.Other
                 }
 
                 ImGui.NextColumn();
-                if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(4590).Name.RawString}", ref Config.UseGivingLand))
+                if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(4590).Name.RawString}", ref Config.UseGivingLand))
                 {
                     Config.Use100GPYield = false;
                     Config.Use500GPYield = false;
@@ -450,7 +450,7 @@ namespace PandorasBox.Features.Other
                 }
 
                 ImGui.NextColumn();
-                if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(282).Name.RawString.ToTitleCase()}", ref Config.UseTwelvesBounty))
+                if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(282).Name.RawString.ToTitleCase()}", ref Config.UseTwelvesBounty))
                 {
                     Config.Use100GPYield = false;
                     Config.Use500GPYield = false;
@@ -459,7 +459,7 @@ namespace PandorasBox.Features.Other
                 }
 
                 ImGui.NextColumn();
-                if (ImGui.Checkbox($"Reveal Hidden Items", ref Config.UseLuck))
+                if (ImGui.Checkbox($"显示隐藏道具", ref Config.UseLuck))
                     SaveConfig(Config);
 
                 ImGui.Columns(1);
@@ -511,7 +511,7 @@ namespace PandorasBox.Features.Other
 
                     if (ids.Any(x => Svc.Data.Excel.GetSheet<EventItem>().Any(y => y.RowId == x && y.Quest.Row > 0)))
                     {
-                        Svc.Chat.PrintError($"This node contains quest nodes which can result in soft-locking the quest. Pandora Gathering has been disabled.");
+                        Svc.Chat.PrintError($"此采集点包含可导致软锁定任务的任务节点。潘多拉采集已被禁用。");
                         Disable();
                         return;
                     }
@@ -596,7 +596,7 @@ namespace PandorasBox.Features.Other
 
                     if (ids.Any(x => Svc.Data.Excel.GetSheet<EventItem>().Any(y => y.RowId == x && y.Quest.Row > 0)))
                     {
-                        Svc.Chat.PrintError($"This node contains quest nodes which can result in soft-locking the quest. Pandora Gathering has been disabled.");
+                        Svc.Chat.PrintError($"此采集点包含可导致软锁定任务的任务节点。潘多拉采集已被禁用。");
                         Disable();
                         return;
                     }
@@ -700,15 +700,15 @@ namespace PandorasBox.Features.Other
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
-            if (ImGui.Checkbox($"Hold Shift / {GamePad.ControllerButtons[Dalamud.Game.ClientState.GamePad.GamepadButtons.L2]} to Temporarily Disable on Starting a Node", ref Config.ShiftStop))
+            if (ImGui.Checkbox($"按住 Shift / {GamePad.ControllerButtons[Dalamud.Game.ClientState.GamePad.GamepadButtons.L2]} 以在进入采集点时临时禁用", ref Config.ShiftStop))
                 SaveConfig(Config);
 
-            if (ImGui.Checkbox($"Disable Starting Buffs on Nodes with Collectibles", ref Config.CollectibleStop))
+            if (ImGui.Checkbox($"在具有收藏品的节点上禁用启动buff", ref Config.CollectibleStop))
                 SaveConfig(Config);
 
-            ImGuiComponents.HelpMarker("This will stop Pandora from using any actions when you start a node with a collectible on it. This is intended to prevent wasting GP on buffs that don't apply to collectibles.");
+            ImGuiComponents.HelpMarker("当你进入一个带有收藏品的采集点时，这将阻止Pandora使用任何操作。这是为了防止在不适用于收藏品的buff上浪费采集力。");
 
-            if (ImGui.Checkbox("Enable Pandora Gathering", ref Config.Gathering))
+            if (ImGui.Checkbox("启用潘多拉快速收集", ref Config.Gathering))
             {
                 if (!Config.Gathering)
                     TaskManager.Abort();
@@ -716,18 +716,18 @@ namespace PandorasBox.Features.Other
                 SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox("Remember Item Between Nodes", ref Config.RememberLastNode))
+            if (ImGui.Checkbox("在不同采集点间记住上次选择", ref Config.RememberLastNode))
                 SaveConfig(Config);
 
             if (ImGui.IsItemHovered() && InDiadem)
             {
                 ImGui.BeginTooltip();
-                ImGui.Text("In the Diadem, this will remember the last slot selected and not the last item due to the varying nature of the nodes.");
+                ImGui.Text("在云冠群岛中，由于采集点的性质不同，这将记住最后一个选定的插槽，而不是最后一个道具。");
                 ImGui.EndTooltip();
             }
             var language = Svc.ClientState.ClientLanguage;
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(4087).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(4073).Name.RawString}", ref Config.Use100GPYield))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(4087).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(4073).Name.RawString}", ref Config.Use100GPYield))
             {
                 Config.UseGivingLand = false;
                 Config.UseTwelvesBounty = false;
@@ -737,11 +737,11 @@ namespace PandorasBox.Features.Other
             if (Config.Use100GPYield)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP1", ref Config.GP100Yield, 100, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP1", ref Config.GP100Yield, 100, 1000))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(224).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(241).Name.RawString}", ref Config.Use500GPYield))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(224).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(241).Name.RawString}", ref Config.Use500GPYield))
             {
                 Config.UseGivingLand = false;
                 Config.UseTwelvesBounty = false;
@@ -751,11 +751,11 @@ namespace PandorasBox.Features.Other
             if (Config.Use500GPYield)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP2", ref Config.GP500Yield, 500, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP2", ref Config.GP500Yield, 500, 1000))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(21204).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(21203).Name.RawString}", ref Config.UseTidings))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(21204).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(21203).Name.RawString}", ref Config.UseTidings))
             {
                 Config.UseGivingLand = false;
                 Config.UseTwelvesBounty = false;
@@ -765,18 +765,18 @@ namespace PandorasBox.Features.Other
             if (Config.UseTidings)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP3", ref Config.GPTidings, 200, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP3", ref Config.GPTidings, 200, 1000))
                     SaveConfig(Config);
             }
 
             if (Config.UseTidings)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. Gatherer's Boon% For Tidings", ref Config.GatherersBoon, 1, 100))
+                if (ImGui.SliderInt("额外采集奖励发生率 至少百分比", ref Config.GatherersBoon, 1, 100))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(215).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(232).Name.RawString}", ref Config.UseSolidReason))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(215).Name.RawString} / {Svc.Data.GetExcelSheet<Action>(language).GetRow(232).Name.RawString}", ref Config.UseSolidReason))
             {
                 SaveConfig(Config);
             }
@@ -784,11 +784,11 @@ namespace PandorasBox.Features.Other
             if (Config.UseSolidReason)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP4", ref Config.GPSolidReason, 300, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP4", ref Config.GPSolidReason, 300, 1000))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(4590).Name.RawString}", ref Config.UseGivingLand))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(4590).Name.RawString}", ref Config.UseGivingLand))
             {
                 Config.Use100GPYield = false;
                 Config.Use500GPYield = false;
@@ -799,11 +799,11 @@ namespace PandorasBox.Features.Other
             if (Config.UseGivingLand)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP5", ref Config.GPGivingLand, 200, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP5", ref Config.GPGivingLand, 200, 1000))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Use {Svc.Data.GetExcelSheet<Action>(language).GetRow(282).Name.RawString.ToTitleCase()}", ref Config.UseTwelvesBounty))
+            if (ImGui.Checkbox($"使用 {Svc.Data.GetExcelSheet<Action>(language).GetRow(282).Name.RawString.ToTitleCase()}", ref Config.UseTwelvesBounty))
             {
                 Config.Use100GPYield = false;
                 Config.Use500GPYield = false;
@@ -814,17 +814,17 @@ namespace PandorasBox.Features.Other
             if (Config.UseTwelvesBounty)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP6", ref Config.GPTwelvesBounty, 150, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP6", ref Config.GPTwelvesBounty, 150, 1000))
                     SaveConfig(Config);
             }
 
-            if (ImGui.Checkbox($"Reveal Hidden Items", ref Config.UseLuck))
+            if (ImGui.Checkbox($"显示隐藏道具", ref Config.UseLuck))
                 SaveConfig(Config);
 
             if (Config.UseLuck)
             {
                 ImGui.PushItemWidth(300);
-                if (ImGui.SliderInt("Min. GP###MinGP7", ref Config.GPLuck, 200, 1000))
+                if (ImGui.SliderInt("采集力至少###MinGP7", ref Config.GPLuck, 200, 1000))
                     SaveConfig(Config);
             }
 

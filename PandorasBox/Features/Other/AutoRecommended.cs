@@ -6,13 +6,13 @@ namespace PandorasBox.Features.Other
 {
     public unsafe class AutoRecommended : Feature
     {
-        public override string Name => "Auto-Equip Recommended Gear";
+        public override string Name => "自动装备最强装备";
 
-        public override string Description => "Automatically equip recommended gear upon job changing.";
+        public override string Description => "更换职业时自动装备最强装备。";
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Update Gearset")]
+            [FeatureConfigOption("更新套装")]
             public bool UpdateGearset = false;
         }
 

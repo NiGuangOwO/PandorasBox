@@ -12,8 +12,8 @@ namespace PandorasBox.Features.UI
 {
     internal class SimplifyRelicQuest : Feature
     {
-        public override string Name { get; } = "Simplify Relic Quest Pickup";
-        public override string Description { get; } = "Adds a description of what stage a quest is for when talking to the NPC.";
+        public override string Name { get; } = "简化遗物任务拾取";
+        public override string Description { get; } = "在与 NPC 对话时，添加任务所处阶段的说明。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

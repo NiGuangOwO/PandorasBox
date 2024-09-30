@@ -13,9 +13,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class QuickLowerQuality : Feature
     {
-        public override string Name => "Quick Lower Quality";
+        public override string Name => "快速降低品质";
 
-        public override string Description => "Automatically confirms the lower quality popup menu.";
+        public override string Description => "自动确认降低品质的弹出菜单。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

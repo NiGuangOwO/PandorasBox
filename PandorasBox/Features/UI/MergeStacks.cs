@@ -11,9 +11,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class MergeStacks : Feature
     {
-        public override string Name => "Automatically merge stacks of same items";
+        public override string Name => "自动合并相同道具的堆叠";
 
-        public override string Description => "When you open your inventory, the plugin will try and pull all stacks of the same item together.";
+        public override string Description => "当您打开库存时，插件会尝试将同一物品的所有堆叠加到一起。";
 
         public override FeatureType FeatureType => FeatureType.Disabled;
 
@@ -36,7 +36,7 @@ namespace PandorasBox.Features.UI
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Sort after merging")]
+            [FeatureConfigOption("合并后排序")]
             public bool SortAfter = false;
         }
 

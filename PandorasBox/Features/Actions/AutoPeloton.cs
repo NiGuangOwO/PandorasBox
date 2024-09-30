@@ -14,9 +14,9 @@ namespace PandorasBox.Features
 {
     public unsafe class AutoPeloton : Feature
     {
-        public override string Name => "Auto-Peloton";
+        public override string Name => "自动速行";
 
-        public override string Description => "Uses Peloton automatically outside of combat. (Physical Ranged only)";
+        public override string Description => "在战斗外自动使用速行。（仅远敏）";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -24,19 +24,19 @@ namespace PandorasBox.Features
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
+            [FeatureConfigOption("设置延迟（秒）", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300)]
             public float ThrottleF = 0.1f;
 
-            [FeatureConfigOption("Function only in a duty")]
+            [FeatureConfigOption("仅在副本内使用")]
             public bool OnlyInDuty = false;
 
-            [FeatureConfigOption("Use whilst walk status is toggled")]
+            [FeatureConfigOption("在行走状态时使用")]
             public bool RPWalk = false;
 
-            [FeatureConfigOption("Exclude using in housing districts")]
+            [FeatureConfigOption("在住宅区禁用")]
             public bool ExcludeHousing = false;
 
-            [FeatureConfigOption("Abort pending Peloton use during countdown")]
+            [FeatureConfigOption("在倒计时期间中止使用")]
             public bool AbortCooldown = false;
         }
 
@@ -105,11 +105,11 @@ namespace PandorasBox.Features
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Set Delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
-            if (ImGui.Checkbox("Function only in a duty", ref Config.OnlyInDuty)) hasChanged = true;
-            if (ImGui.Checkbox("Use whilst walk status is toggled", ref Config.RPWalk)) hasChanged = true;
-            if (ImGui.Checkbox("Exclude Housing Zones", ref Config.ExcludeHousing)) hasChanged = true;
-            if (ImGui.Checkbox($"Abort pending Peloton use during countdown", ref Config.AbortCooldown)) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.Checkbox("仅在副本内使用", ref Config.OnlyInDuty)) hasChanged = true;
+            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk)) hasChanged = true;
+            if (ImGui.Checkbox("在住宅区禁用", ref Config.ExcludeHousing)) hasChanged = true;
+            if (ImGui.Checkbox($"在倒计时期间中止使用", ref Config.AbortCooldown)) hasChanged = true;
         };
     }
 }

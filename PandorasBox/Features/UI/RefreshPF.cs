@@ -22,7 +22,7 @@ namespace PandorasBox.Features.UI
 
         public override bool UseAutoConfig => true;
 
-        public override FeatureType FeatureType => FeatureType.UI;
+        public override FeatureType FeatureType => FeatureType.Disabled;
 
         private long ThrottleTime = Environment.TickCount64;
 

@@ -14,9 +14,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoTankStance : Feature
     {
-        public override string Name => "Auto-Tank Stance";
+        public override string Name => "自动盾姿";
 
-        public override string Description => "Activates your tank stance automatically upon job switching or entering a dungeon.";
+        public override string Description => "在切换职业或进入迷宫时自动激活你的盾姿。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -26,22 +26,22 @@ namespace PandorasBox.Features.Actions
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Set delay (seconds)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
+            [FeatureConfigOption("设置延迟 (秒)", FloatMin = 0.1f, FloatMax = 10f, EditorSize = 300, EnforcedLimit = true)]
             public float Throttle = 0.1f;
 
-            [FeatureConfigOption("Activate when party size is less than or equal to", IntMin = 1, IntMax = 8, EditorSize = 300)]
+            [FeatureConfigOption("当队伍人数小于或等于时开启", IntMin = 1, IntMax = 8, EditorSize = 300)]
             public int MaxParty = 1;
 
-            [FeatureConfigOption("Function only in a duty", "", 1)]
+            [FeatureConfigOption("仅在副本内使用", "", 1)]
             public bool OnlyInDuty = false;
 
-            [FeatureConfigOption("Activate if main tank dies (respects party size option)", "", 2)]
+            [FeatureConfigOption("如果MT挂了，则自动开启 (根据上方队伍人数选项)", "", 2)]
             public bool ActivateOnDeath = false;
 
-            [FeatureConfigOption("Only activate on entrance if no other tank has stance", "", 3)]
+            [FeatureConfigOption("只有在没有其他坦克有盾姿的情况下，才在入口处开启", "", 3)]
             public bool NoOtherTanks = false;
 
-            [FeatureConfigOption("Activate when synced to a fate", "", 4)]
+            [FeatureConfigOption("Fate等级同步时开启", "", 4)]
             public bool ActivateInFate = false;
         }
 

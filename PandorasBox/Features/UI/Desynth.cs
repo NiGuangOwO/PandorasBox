@@ -19,9 +19,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class Desynth : Feature
     {
-        public override string Name => "Desynth All";
+        public override string Name => "道具分解全部";
 
-        public override string Description => "Adds a button to the desynthesis window to desynth all from the current dropdown. (Disclaimer: Pandora takes no responsibility for the loss of any Ultimate weapons or other rare items. Please use responsibly.)";
+        public override string Description => "在道具分解窗口中添加一个按钮，分解当前下拉列表中的全部道具。（免责声明：PandorasBox对任何绝本武器或其他稀有物品的损失不承担任何责任，请负责任地使用。";
 
         private delegate IntPtr UpdateItemDelegate(IntPtr a1, ulong index, IntPtr a3, ulong a4);
         private delegate byte UpdateListDelegate(IntPtr a1, IntPtr a2, IntPtr a3);
@@ -115,13 +115,13 @@ namespace PandorasBox.Features.UI
 
                     if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Mounted])
                     {
-                        ImGui.Text("You are mounted, please dismount");
+                        ImGui.Text("你在骑乘中，请先下坐骑");
                     }
                     else
                     {
                         if (!Desynthing)
                         {
-                            if (ImGui.Button($"Desynth All"))
+                            if (ImGui.Button($"全部分解"))
                             {
                                 Desynthing = true;
                                 TaskManager.Enqueue(() => YesAlready.Lock());
@@ -131,7 +131,7 @@ namespace PandorasBox.Features.UI
                         }
                         else
                         {
-                            if (ImGui.Button("Desynthing. Click to Abort."))
+                            if (ImGui.Button("分解中...点击来中止"))
                             {
                                 Desynthing = false;
                                 TaskManager.Abort();

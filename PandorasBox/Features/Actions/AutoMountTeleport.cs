@@ -13,9 +13,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoMountZoneChange : Feature
     {
-        public override string Name => "Auto-Mount on Zone Change";
+        public override string Name => "过图后自动上坐骑";
 
-        public override string Description => "Mounts on zone change if not already mounted.";
+        public override string Description => "如果没有在坐骑上，则在过图后自动上坐骑。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -103,10 +103,10 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Set Delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
-            if (ImGui.BeginCombo("Select Mount", preview))
+            if (ImGui.BeginCombo("选择坐骑", preview))
             {
                 if (ImGui.Selectable("", Config.SelectedMount == 0))
                 {
@@ -131,9 +131,9 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("Abort if moving", ref Config.AbortIfMoving)) hasChanged = true;
-            if (ImGui.Checkbox("Exclude Housing Zones", ref Config.ExcludeHousing)) hasChanged = true;
-            if (ImGui.Checkbox("Jump after mounting", ref Config.JumpAfterMount)) hasChanged = true;
+            if (ImGui.Checkbox("移动时中止", ref Config.AbortIfMoving)) hasChanged = true;
+            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing)) hasChanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) hasChanged = true;
 
         };
     }

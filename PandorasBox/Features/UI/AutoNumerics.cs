@@ -14,9 +14,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoNumerics : Feature
     {
-        public override string Name => "Auto-Fill Numeric Dialogs";
+        public override string Name => "自动填充数字对话框";
 
-        public override string Description => "Automatically fills any numeric input dialog boxes. Works on a whitelist system. Hold shift when opening a numeric dialog to disable.";
+        public override string Description => "自动填充任何数字输入对话框。适用于白名单系统。在打开要禁用的数字对话框时按住shift键。";
 
         public override FeatureType FeatureType => FeatureType.Disabled;
 
@@ -232,41 +232,41 @@ namespace PandorasBox.Features.UI
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool _) =>
         {
-            DrawConfigsForAddon("Trading", ref Config.WorkOnTrading, ref Config.TradeMinOrMax, ref Config.TradeExcludeSplit, ref Config.TradeConfirm);
-            DrawConfigsForAddon("FC Chests", ref Config.WorkOnFCChest, ref Config.FCChestMinOrMax, ref Config.FCExcludeSplit, ref Config.FCChestConfirm);
-            DrawConfigsForAddon("Retainers", ref Config.WorkOnRetainers, ref Config.RetainersMinOrMax, ref Config.RetainerExcludeSplit, ref Config.RetainersConfirm);
-            DrawConfigsForAddon("Mail", ref Config.WorkOnMail, ref Config.MailMinOrMax, ref Config.MailExcludeSplit, ref Config.MailConfirm);
-            DrawConfigsForAddon("Materia Transmutation", ref Config.WorkOnTransmute, ref Config.TransmuteMinOrMax, ref Config.TransmuteExcludeSplit, ref Config.TransmuteConfirm);
+            DrawConfigsForAddon("交易", ref Config.WorkOnTrading, ref Config.TradeMinOrMax, ref Config.TradeExcludeSplit, ref Config.TradeConfirm);
+            DrawConfigsForAddon("部队箱", ref Config.WorkOnFCChest, ref Config.FCChestMinOrMax, ref Config.FCExcludeSplit, ref Config.FCChestConfirm);
+            DrawConfigsForAddon("雇员", ref Config.WorkOnRetainers, ref Config.RetainersMinOrMax, ref Config.RetainerExcludeSplit, ref Config.RetainersConfirm);
+            DrawConfigsForAddon("邮件", ref Config.WorkOnMail, ref Config.MailMinOrMax, ref Config.MailExcludeSplit, ref Config.MailConfirm);
+            DrawConfigsForAddon("魔晶石合成", ref Config.WorkOnTransmute, ref Config.TransmuteMinOrMax, ref Config.TransmuteExcludeSplit, ref Config.TransmuteConfirm);
         };
 
         private void DrawConfigsForAddon(string addonName, ref bool workOnAddon, ref int minOrMax, ref bool excludeSplit, ref bool autoConfirm)
         {
-            if (ImGui.Checkbox($"Work on {addonName}", ref workOnAddon))
+            if (ImGui.Checkbox($"在 {addonName} 上填充", ref workOnAddon))
                 SaveConfig(Config);
 
             if (workOnAddon)
             {
                 ImGui.PushID(addonName);
                 ImGui.Indent();
-                if (ImGui.RadioButton($"Auto fill highest amount possible", minOrMax == 1))
+                if (ImGui.RadioButton($"自动填充可能最高的数字", minOrMax == 1))
                 {
                     minOrMax = 1;
                     SaveConfig(Config);
                 }
-                if (ImGui.RadioButton($"Auto fill lowest amount possible", minOrMax == 0))
+                if (ImGui.RadioButton($"自动填充可能最低的数字", minOrMax == 0))
                 {
                     minOrMax = 0;
                     SaveConfig(Config);
                 }
-                if (ImGui.RadioButton($"Auto OK on manually entered amounts", minOrMax == -1))
+                if (ImGui.RadioButton($"对手动输入的金额自动确定", minOrMax == -1))
                 {
                     minOrMax = -1;
                     SaveConfig(Config);
                 }
-               if (ImGui.Checkbox("Exclude Split Dialog", ref excludeSplit))
+               if (ImGui.Checkbox("排除拆分对话框", ref excludeSplit))
                     SaveConfig(Config);
 
-                if (minOrMax != -1) { if (ImGui.Checkbox("Auto Confirm", ref autoConfirm)) { SaveConfig(Config); } }
+                if (minOrMax != -1) { if (ImGui.Checkbox("自动确认", ref autoConfirm)) { SaveConfig(Config); } }
                 ImGui.Unindent();
                 ImGui.PopID();
             }

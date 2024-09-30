@@ -15,9 +15,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class ExtractAll : Feature
     {
-        public override string Name => "Extract All Materia";
+        public override string Name => "精制所有魔晶石";
 
-        public override string Description => "Adds a button to the extract materia window to start extracting all.";
+        public override string Description => "在“精制魔晶石”窗口中添加一个按钮，来开始精制所有魔晶石。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
@@ -75,7 +75,7 @@ namespace PandorasBox.Features.UI
 
                     if (!Extracting)
                     {
-                        if (ImGui.Button($"Extract All###StartExtract", size))
+                        if (ImGui.Button($"精制所有###StartExtract", size))
                         {
                             Extracting = true;
                             TryExtractAll();
@@ -83,7 +83,7 @@ namespace PandorasBox.Features.UI
                     }
                     else
                     {
-                        if (ImGui.Button($"Extracting. Click to abort.###AbortExtract", size))
+                        if (ImGui.Button($"精制中...点击来中止###AbortExtract", size))
                         {
                             Extracting = false;
                             TaskManager.Abort();

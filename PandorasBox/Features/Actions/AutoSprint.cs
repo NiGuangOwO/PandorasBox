@@ -14,9 +14,9 @@ namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoSprint : Feature
     {
-        public override string Name => "Auto-Sprint in Sanctuaries";
+        public override string Name => "休息区自动冲刺";
 
-        public override string Description => "Automatically uses sprint when in an area you are gaining rested experience, such as cities.";
+        public override string Description => "当你在例如主城获得休息区经验时，自动使用冲刺。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 
@@ -86,9 +86,9 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("Set Delay (seconds)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
-            if (ImGui.Checkbox("Use whilst walk status is toggled", ref Config.RPWalk)) hasChanged = true;
-            if (ImGui.Checkbox("Exclude Housing Zones", ref Config.ExcludeHousing)) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk)) hasChanged = true;
+            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing)) hasChanged = true;
         };
     }
 }

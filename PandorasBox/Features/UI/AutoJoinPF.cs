@@ -11,9 +11,9 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoJoinPF : Feature
     {
-        public override string Name => "Auto-Join Party Finder Groups";
+        public override string Name => "自动加入招募板队伍";
 
-        public override string Description => "Whenever you click a Party Finder listing, this will bypass the description window and auto click the join button.";
+        public override string Description => "每当你点击招募板的招募时，跳过描述窗口并自动点击加入按钮。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

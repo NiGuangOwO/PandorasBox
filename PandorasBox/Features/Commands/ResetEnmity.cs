@@ -11,12 +11,12 @@ namespace PandorasBox.Features.Commands
 {
     public unsafe class ResetEnmity : CommandFeature
     {
-        public override string Name => "Reset Enmity";
+        public override string Name => "重置仇恨";
         public override string Command { get; set; } = "/presetenmity";
         public override string[] Alias => new string[] { "/pre" };
 
         public override List<string> Parameters => new() { "t", "a" };
-        public override string Description => "Resets the enmity of all enemies targeting you. Useful for target dummies. Accepts arguments for t(arget) or a(ll). Defaults to all.";
+        public override string Description => "重置所有以你为目标的敌人的仇恨。对目标木人有用。接受t（目标）或a（全部）的参数。默认为全部。";
         protected override void OnCommand(List<string> args)
         {
             foreach (var p in Parameters)

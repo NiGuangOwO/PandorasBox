@@ -15,15 +15,15 @@ namespace PandorasBox.Features.UI
 {
     public class OpenAllCoffers : Feature
     {
-        public override string Name => $@"Add ""Open All"" to Coffers";
+        public override string Name => $@"添加""打开所有""到宝箱中";
 
-        public override string Description => $@"Adds an ""Open All"" option to the right click menu of various items that stack and can be opened from the inventory.";
+        public override string Description => $@"将""全部打开""选项添加到堆叠的各种可以从物品中打开的道具的右键菜单中。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
         private IContextMenu contextMenu;
 
-        private static readonly SeString OpenString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("Open All"));
+        private static readonly SeString OpenString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("全部打开"));
 
         public override void Enable()
         {

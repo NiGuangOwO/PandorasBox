@@ -17,8 +17,8 @@ namespace PandorasBox.Features.Actions
 {
     internal unsafe class HotbarMapDecipher : Feature
     {
-        public override string Name { get; } = "Map Hotbar Decipher";
-        public override string Description { get; } = "Allows deciphering treaure maps from hotbar.";
+        public override string Name { get; } = "热键栏解读宝物地图";
+        public override string Description { get; } = "允许从热键栏中点击宝物地图道具来解读。";
         public override FeatureType FeatureType { get; } = FeatureType.Actions;
 
         public delegate bool UseActionDelegate(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, int pvp, bool* isGroundTarget);
@@ -27,7 +27,7 @@ namespace PandorasBox.Features.Actions
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("Automatically Decipher")]
+            [FeatureConfigOption("自动解读")]
             public bool AutoDecipher = false;
         }
 
