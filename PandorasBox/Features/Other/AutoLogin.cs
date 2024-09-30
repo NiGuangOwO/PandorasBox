@@ -69,7 +69,7 @@ namespace PandorasBox.Features.Other
                 return false;
             if (!addon->IsVisible)
                 return false;
-            Callback.Fire(addon, true, 1);
+            Callback.Fire(addon, true, 4);
             return true;
         }
 
@@ -96,7 +96,7 @@ namespace PandorasBox.Features.Other
                     continue;
                 if (s != world.Name.RawString)
                     continue;
-                Callback.Fire(addon, true, 9, 0, i);
+                Callback.Fire(addon, true, 24, 0, i);
                 return true;
             }
             return false;
@@ -107,7 +107,7 @@ namespace PandorasBox.Features.Other
             var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("_CharaSelectListMenu");
             if (addon == null)
                 return false;
-            Callback.Fire(addon, true, 18, 0, Config.CharacterSlot);
+            Callback.Fire(addon, true, 29, 0, Config.CharacterSlot);
             var nextAddon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectYesno");
             return nextAddon != null;
         }
