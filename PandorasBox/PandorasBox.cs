@@ -2,7 +2,6 @@ using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ECommons;
-using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using PandorasBox.Features;
 using PandorasBox.FeaturesSetup;
@@ -43,9 +42,9 @@ public class PandorasBox : IDalamudPlugin
 #if !DEBUG
         if (Svc.PluginInterface.IsDev || !Svc.PluginInterface.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
         {
-            Svc.NotificationManager.AddNotification(new Notification()
+            Svc.NotificationManager.AddNotification(new Dalamud.Interface.ImGuiNotification.Notification()
             {
-                Type = NotificationType.Error,
+                Type = Dalamud.Interface.ImGuiNotification.NotificationType.Error,
                 Title = "加载验证",
                 Content = "由于本地加载或安装来源仓库非NiGuangOwO个人仓库，插件加载失败",
             });

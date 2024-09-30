@@ -12,7 +12,7 @@ namespace PandorasBox.Features.Actions
 {
     internal class AutoMotif : Feature
     {
-        public override string Name => "自动绘画（脱战时））";
+        public override string Name => "自动绘画（脱战时）";
         public override string Description => "不在战斗状态且不在休息区时自动绘画。";
         public override FeatureType FeatureType => FeatureType.Actions;
 

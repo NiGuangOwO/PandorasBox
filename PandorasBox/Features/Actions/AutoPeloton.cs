@@ -36,7 +36,7 @@ namespace PandorasBox.Features
             [FeatureConfigOption("在住宅区禁用")]
             public bool ExcludeHousing = false;
 
-            [FeatureConfigOption("在倒计时期间中止使用")]
+            [FeatureConfigOption("在倒计时期间禁用")]
             public bool AbortCooldown = false;
         }
 
