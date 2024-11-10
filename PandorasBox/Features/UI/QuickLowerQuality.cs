@@ -34,7 +34,12 @@ namespace PandorasBox.Features.UI
                 return;
             }
             var rawText = payload2.Text!.Trim();
-            var trimmedText = rawText.Remove(rawText.LastIndexOf(' ')).TrimEnd();
+            var trimmedText = rawText.TrimEnd();
+            var lastSpaceIndex = rawText.LastIndexOf(' ');
+            if (lastSpaceIndex >= 0)
+            {
+                trimmedText = rawText.Remove(lastSpaceIndex).TrimEnd();
+            }
             var sheetText = Svc.Data.GetExcelSheet<Addon>()!.First(x => x.RowId == 155).Text.Payloads[2].RawString.Trim();
 
             if (sheetText == trimmedText)

@@ -54,9 +54,9 @@ namespace PandorasBox.Features.Actions
 
             var am = ActionManager.Instance();
             var isSprintReady = am->GetActionStatus(ActionType.GeneralAction, 4) == 0;
-            var hasSprintBuff = Svc.ClientState.LocalPlayer?.StatusList.Any(x => x.StatusId == 50);
+            var hasSprintBuff = Svc.ClientState.LocalPlayer?.StatusList.FirstOrDefault(x => x.StatusId == 50) != default;
 
-            if (isSprintReady && AgentMap.Instance()->IsPlayerMoving == 1 && !TaskManager.IsBusy)
+            if (isSprintReady && !hasSprintBuff && AgentMap.Instance()->IsPlayerMoving == 1 && !TaskManager.IsBusy)
             {
                 TaskManager.Enqueue(() => EzThrottler.Throttle("Sprinting", (int)(Config.ThrottleF * 1000)));
                 TaskManager.Enqueue(() => EzThrottler.Check("Sprinting"));
