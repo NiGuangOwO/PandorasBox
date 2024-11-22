@@ -1,9 +1,10 @@
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using PandorasBox.FeaturesSetup;
+using PandorasBox.Helpers;
 using System.Linq;
-using ECommons;
 
 namespace PandorasBox.Features.Targets
 {
@@ -27,7 +28,7 @@ namespace PandorasBox.Features.Targets
                 var tar = Svc.Targets.Target;
                 if (tar == null || tar.IsDead || (tar.Struct()->FateId == 0 && tar.IsHostile()))
                 {
-                    if (Svc.Objects.OrderBy(x => x.GetTargetDistance()).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
+                    if (Svc.Objects.OrderBy(GameObjectHelper.GetTargetDistance).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
                     {
                         Svc.Targets.Target = newTar;
                     }

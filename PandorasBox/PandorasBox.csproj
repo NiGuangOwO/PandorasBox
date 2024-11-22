@@ -2,11 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="Dalamud.Plugin.Bootstrap.targets" />
     <PropertyGroup>
-        <Version>1.6.1.1</Version>
+        <Version>1.6.1.4</Version>
         <IsPackable>false</IsPackable>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <Platforms>x64</Platforms>
-        <DalamudLibPath>D:\XIVLauncherCN\Roaming\addon\Hooks\dev\</DalamudLibPath>
+        <DalamudLibPath>$(appdata)\xivlaunchercn\Addon\Hooks\dev\</DalamudLibPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -44,8 +44,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
         <ProjectReference Include="..\..\PunishLib\PunishLib\PunishLib.csproj" />
-        <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
         <Reference Include="InteropGenerator.Runtime">
             <HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
             <Private>False</Private>

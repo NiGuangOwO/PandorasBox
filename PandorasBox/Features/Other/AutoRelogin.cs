@@ -86,7 +86,7 @@ namespace PandorasBox.Features.Other
                 if (!addon->IsVisible)
                     return;
 
-                WindowsKeypress.SendKeypress(Config.Key);
+                WindowsKeypress.SendKeypress((int)Config.Key);
             }
         }
 

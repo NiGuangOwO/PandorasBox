@@ -3,10 +3,12 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using ECommons.Automation;
 using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.GameHelpers;
+using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using PandorasBox.FeaturesSetup;
 using System;
+using System.Runtime.InteropServices;
 using static ECommons.GenericHelpers;
 
 
@@ -15,128 +17,135 @@ namespace PandorasBox.Features
     public unsafe class AutoRenewalRecruitment : Feature
     {
         public override string Name => "[国服限定] 招募自动续期";
-
         public override string Description => "当招募剩余时间不足时自动续期。";
-
         public override FeatureType FeatureType => FeatureType.UI;
-
         public override bool UseAutoConfig => true;
-
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption("剩余多少分钟时自动续期", IntMin = 1, IntMax = 59, EditorSize = 300)]
+            [FeatureConfigOption("在剩余多少分钟时进行续期", IntMin = 1, IntMax = 55, EditorSize = 300)]
             public int ThrottleF = 10;
+            [FeatureConfigOption("在编辑招募内容界面点击更新招募内容按钮延迟 (秒)", FloatMin = 1f, FloatMax = 5f, EditorSize = 300)]
+            public float ClickUpdateThrottleF = 1f;
         }
-
         public Configs Config { get; private set; }
 
-        private DateTime StartTime { get; set; } = DateTime.MinValue;
-        private bool isRunning { get; set; } = false;
+        private DateTime UpdateTime = DateTime.MinValue;
+        private DateTime RunningTime = DateTime.MinValue;
+        private bool isRunning;
+
+        internal delegate byte OpenPartyFinderInfoDelegate(void* agentLfg, ulong contentId);
+        internal OpenPartyFinderInfoDelegate? OpenPartyFinderInfo;
 
         private void CheckCondition(ConditionFlag flag, bool value)
         {
             if (flag == ConditionFlag.UsingPartyFinder && value)
             {
-                StartTime = DateTime.Now;
+                TaskManager.Abort();
+                UpdateTime = DateTime.Now.AddMinutes(60 - Config.ThrottleF);
                 var message = new XivChatEntry
                 {
                     Message = new SeStringBuilder()
-                .AddUiForeground($"[{P.Name}] ", 45)
-                .AddUiForeground($"{Name} ", 62)
-                .AddText("已开启招募自动续期")
-                .Build(),
+                    .AddUiForeground($"[{P.Name}] ", 45)
+                    .AddUiForeground($"{Name} ", 62)
+                    .AddText($"已开启招募自动续期，将在 {UpdateTime} 尝试自动续期")
+                    .Build(),
                 };
-
                 Svc.Chat.Print(message);
             }
 
-            if (flag is ConditionFlag.UsingPartyFinder or ConditionFlag.LoggingOut && !value)
+            if (flag == ConditionFlag.UsingPartyFinder && !value)
             {
-                StartTime = DateTime.MinValue;
+                TaskManager.Abort();
+                UpdateTime = DateTime.MinValue;
+                RunningTime = DateTime.MinValue;
                 isRunning = false;
+                var message = new XivChatEntry
+                {
+                    Message = new SeStringBuilder()
+                    .AddUiForeground($"[{P.Name}] ", 45)
+                    .AddUiForeground($"{Name} ", 62)
+                    .AddText("招募关闭，已自动停止招募自动续期。")
+                    .Build(),
+                };
+                Svc.Chat.Print(message);
             }
         }
 
         private void RunFeature(IFramework framework)
         {
-            if (StartTime == DateTime.MinValue)
+            if (UpdateTime == DateTime.MinValue)
                 return;
-
-            if ((DateTime.Now - StartTime).TotalMinutes >= 60 - Config.ThrottleF)
+            if (!Player.Available)
+                return;
+            if (isRunning && DateTime.Now > RunningTime.AddMinutes(1))
             {
-                if (isRunning)
-                    return;
+                TaskManager.Abort();
+                isRunning = false;
+                var message = new XivChatEntry
+                {
+                    Message = new SeStringBuilder()
+                    .AddUiForeground($"[{P.Name}] ", 45)
+                    .AddUiForeground($"{Name} ", 62)
+                    .AddText("自动续招募失败，正在重试...")
+                    .Build(),
+                };
+                Svc.Chat.Print(message);
+                return;
+            }
+
+            if (DateTime.Now > UpdateTime && !isRunning)
+            {
                 isRunning = true;
-                TaskManager.Enqueue(() => OpenPF(), "打开招募板");
-                TaskManager.Enqueue(() => OpenLookingForGroupDetail(), "打开招募详情");
+                RunningTime = DateTime.Now;
+                TaskManager.Enqueue(() => OpenSelfPF(), "打开自己招募");
                 TaskManager.Enqueue(() => ClickChange(), "点击更改");
+                var message = new XivChatEntry
+                {
+                    Message = new SeStringBuilder()
+                    .AddUiForeground($"[{P.Name}] ", 45)
+                    .AddUiForeground($"{Name} ", 62)
+                    .AddText($"开始尝试自动续招募，如果发生错误将在1分钟后自动重试。")
+                    .Build(),
+                };
+                Svc.Chat.Print(message);
             }
         }
 
-        private bool OpenPF()
+        internal bool OpenSelfPF()
         {
-            if (Svc.GameGui.GetAddonByName("LookingForGroup") != IntPtr.Zero)
-                return true;
-            if (Svc.Condition[ConditionFlag.BetweenAreas])
-                return false;
-            Chat.Instance.SendMessage("/partyfinder");
-            return Svc.GameGui.GetAddonByName("LookingForGroup") != IntPtr.Zero && ((AtkUnitBase*)Svc.GameGui.GetAddonByName("LookingForGroup"))->IsVisible;
-        }
-
-        private static bool OpenLookingForGroupDetail()
-        {
-            if (TryGetAddonByName<AddonLookingForGroupDetail>("LookingForGroupDetail", out var addon))
+            if (Player.Available)
             {
-                return addon->AtkUnitBase.IsVisible;
-            }
-            if (Svc.GameGui.GetAddonByName("LookingForGroup") != IntPtr.Zero)
-            {
-                var addon2 = (AtkUnitBase*)Svc.GameGui.GetAddonByName("LookingForGroup");
-                Callback.Fire(addon2, true, 14);
-                return true;
+                if (GenericThrottle)
+                {
+                    OpenPartyFinderInfoDetour(AgentLookingForGroup.Instance(), Player.CID);
+                    return true;
+                }
             }
             return false;
         }
 
         private static bool ClickChange()
         {
-            if (TryGetAddonByName<AddonLookingForGroupDetail>("LookingForGroupDetail", out var addon))
+            if (TryGetAddonMaster<AddonMaster.LookingForGroupDetail>(out var m) && m.IsAddonReady)
             {
-                Callback.Fire((AtkUnitBase*)addon, true, 0);
-                return true;
-            }
-            return false;
-        }
-
-        private bool ClickUpdate()
-        {
-            if (Svc.GameGui.GetAddonByName("LookingForGroupCondition") != IntPtr.Zero)
-            {
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("LookingForGroupCondition");
-                Callback.Fire(addon, true, 0);
-                StartTime = DateTime.Now;
-                var message = new XivChatEntry
+                if (GenericThrottle)
                 {
-                    Message = new SeStringBuilder()
-                .AddUiForeground($"[{P.Name}] ", 45)
-                .AddUiForeground($"{Name} ", 62)
-                .AddText("招募自动续期已完成")
-                .Build(),
-                };
-
-                Svc.Chat.Print(message);
-                return true;
+                    m.JoinEdit();
+                    return true;
+                }
             }
             return false;
         }
 
         private static bool ClosePF()
         {
-            if (Svc.GameGui.GetAddonByName("LookingForGroup") != IntPtr.Zero)
+            if (TryGetAddonMaster<AddonMaster.LookingForGroup>(out var m) && m.IsAddonReady)
             {
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("LookingForGroup");
-                Callback.Fire(addon, true, -1);
-                return true;
+                if (GenericThrottle)
+                {
+                    Chat.Instance.ExecuteCommand("/pfinder");
+                    return true;
+                }
             }
             return false;
         }
@@ -147,15 +156,42 @@ namespace PandorasBox.Features
                 return;
             if ((int)type == 2105 && message.TextValue == "招募队员已撤销。")
             {
+                TaskManager.DelayNext("点击更新招募内容按钮延迟", (int)(Config.ClickUpdateThrottleF * 1000));
                 TaskManager.Enqueue(() => ClickUpdate(), "点击更新");
                 TaskManager.Enqueue(() => ClosePF(), "关闭招募板");
                 TaskManager.Enqueue(() => { isRunning = false; });
             }
         }
 
+        private bool ClickUpdate()
+        {
+            if (TryGetAddonMaster<AddonMaster.LookingForGroupCondition>(out var m) && IsAddonReady(m.Base))
+            {
+                if (GenericThrottle)
+                {
+                    m.Recruit();
+                    UpdateTime = DateTime.Now.AddMinutes(60 - Config.ThrottleF);
+                    var message = new XivChatEntry
+                    {
+                        Message = new SeStringBuilder()
+                        .AddUiForeground($"[{P.Name}] ", 45)
+                        .AddUiForeground($"{Name} ", 62)
+                        .AddText($"招募自动续期已完成，将在 {UpdateTime} 进行下一次续期")
+                        .Build(),
+                    };
+                    Svc.Chat.Print(message);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         public override void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
+            var OpenPartyFinderInfoAddress = Svc.SigScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 84 C0 74 07 C6 83 ?? ?? ?? ?? ?? 48 83 C4 20 5B C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53");
+            OpenPartyFinderInfo = Marshal.GetDelegateForFunctionPointer<OpenPartyFinderInfoDelegate>(OpenPartyFinderInfoAddress);
             Svc.Condition.ConditionChange += CheckCondition;
             Svc.Chat.CheckMessageHandled += CheckMessage;
             Svc.Framework.Update += RunFeature;
@@ -170,5 +206,6 @@ namespace PandorasBox.Features
             Svc.Condition.ConditionChange -= CheckCondition;
             base.Disable();
         }
+        private void OpenPartyFinderInfoDetour(void* agentLfg, ulong contentId) => OpenPartyFinderInfo!.Invoke(agentLfg, contentId);
     }
 }
