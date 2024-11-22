@@ -1,4 +1,3 @@
-using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using ECommons.Automation;
@@ -36,39 +35,12 @@ namespace PandorasBox.Features
         internal delegate byte OpenPartyFinderInfoDelegate(void* agentLfg, ulong contentId);
         internal OpenPartyFinderInfoDelegate? OpenPartyFinderInfo;
 
-        private void CheckCondition(ConditionFlag flag, bool value)
+        private void Logout()
         {
-            if (flag == ConditionFlag.UsingPartyFinder && value)
-            {
-                TaskManager.Abort();
-                UpdateTime = DateTime.Now.AddMinutes(60 - Config.ThrottleF);
-                var message = new XivChatEntry
-                {
-                    Message = new SeStringBuilder()
-                    .AddUiForeground($"[{P.Name}] ", 45)
-                    .AddUiForeground($"{Name} ", 62)
-                    .AddText($"已开启招募自动续期，将在 {UpdateTime} 尝试自动续期")
-                    .Build(),
-                };
-                Svc.Chat.Print(message);
-            }
-
-            if (flag == ConditionFlag.UsingPartyFinder && !value)
-            {
-                TaskManager.Abort();
-                UpdateTime = DateTime.MinValue;
-                RunningTime = DateTime.MinValue;
-                isRunning = false;
-                var message = new XivChatEntry
-                {
-                    Message = new SeStringBuilder()
-                    .AddUiForeground($"[{P.Name}] ", 45)
-                    .AddUiForeground($"{Name} ", 62)
-                    .AddText("招募关闭，已自动停止招募自动续期。")
-                    .Build(),
-                };
-                Svc.Chat.Print(message);
-            }
+            TaskManager.Abort();
+            UpdateTime = DateTime.MinValue;
+            RunningTime = DateTime.MinValue;
+            isRunning = false;
         }
 
         private void RunFeature(IFramework framework)
@@ -95,6 +67,21 @@ namespace PandorasBox.Features
 
             if (DateTime.Now > UpdateTime && !isRunning)
             {
+                if (Player.Object.OnlineStatus.Id != 26)
+                {
+                    UpdateTime = DateTime.MinValue;
+                    var msg = new XivChatEntry
+                    {
+                        Message = new SeStringBuilder()
+                        .AddUiForeground($"[{P.Name}] ", 45)
+                        .AddUiForeground($"{Name} ", 62)
+                        .AddText("没有进行的招募，已自动停止招募自动续期。")
+                        .Build(),
+                    };
+                    Svc.Chat.Print(msg);
+                    return;
+                }
+
                 isRunning = true;
                 RunningTime = DateTime.Now;
                 TaskManager.Enqueue(() => OpenSelfPF(), "打开自己招募");
@@ -152,9 +139,41 @@ namespace PandorasBox.Features
 
         private void CheckMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
         {
-            if (!isRunning)
-                return;
-            if ((int)type == 2105 && message.TextValue == "招募队员已撤销。")
+            if (type == XivChatType.SystemMessage)
+            {
+                if (message.TextValue.Contains("开始招募队员"))
+                {
+                    TaskManager.Abort();
+                    UpdateTime = DateTime.Now.AddMinutes(60 - Config.ThrottleF);
+                    var msg = new XivChatEntry
+                    {
+                        Message = new SeStringBuilder()
+                        .AddUiForeground($"[{P.Name}] ", 45)
+                        .AddUiForeground($"{Name} ", 62)
+                        .AddText($"已开启招募自动续期，将在 {UpdateTime} 尝试自动续期")
+                        .Build(),
+                    };
+                    Svc.Chat.Print(msg);
+                }
+                else if (message.TextValue.Contains("招募队员结束"))
+                {
+                    TaskManager.Abort();
+                    UpdateTime = DateTime.MinValue;
+                    RunningTime = DateTime.MinValue;
+                    isRunning = false;
+                    var msg = new XivChatEntry
+                    {
+                        Message = new SeStringBuilder()
+                        .AddUiForeground($"[{P.Name}] ", 45)
+                        .AddUiForeground($"{Name} ", 62)
+                        .AddText("招募关闭，已自动停止招募自动续期。")
+                        .Build(),
+                    };
+                    Svc.Chat.Print(msg);
+                }
+            }
+
+            if ((int)type == 2105 && message.TextValue == "招募队员已撤销。" && isRunning)
             {
                 TaskManager.DelayNext("点击更新招募内容按钮延迟", (int)(Config.ClickUpdateThrottleF * 1000));
                 TaskManager.Enqueue(() => ClickUpdate(), "点击更新");
@@ -192,7 +211,7 @@ namespace PandorasBox.Features
             Config = LoadConfig<Configs>() ?? new Configs();
             var OpenPartyFinderInfoAddress = Svc.SigScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 84 C0 74 07 C6 83 ?? ?? ?? ?? ?? 48 83 C4 20 5B C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53");
             OpenPartyFinderInfo = Marshal.GetDelegateForFunctionPointer<OpenPartyFinderInfoDelegate>(OpenPartyFinderInfoAddress);
-            Svc.Condition.ConditionChange += CheckCondition;
+            Svc.ClientState.Logout += Logout;
             Svc.Chat.CheckMessageHandled += CheckMessage;
             Svc.Framework.Update += RunFeature;
             base.Enable();
@@ -201,9 +220,9 @@ namespace PandorasBox.Features
         public override void Disable()
         {
             SaveConfig(Config);
-            Svc.Framework.Update -= RunFeature;
+            Svc.ClientState.Logout -= Logout;
             Svc.Chat.CheckMessageHandled -= CheckMessage;
-            Svc.Condition.ConditionChange -= CheckCondition;
+            Svc.Framework.Update -= RunFeature;
             base.Disable();
         }
         private void OpenPartyFinderInfoDetour(void* agentLfg, ulong contentId) => OpenPartyFinderInfo!.Invoke(agentLfg, contentId);
