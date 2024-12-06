@@ -155,7 +155,7 @@ namespace PandorasBox.Features
                     };
                     Svc.Chat.Print(msg);
                 }
-                else if (message.TextValue.Contains("招募队员结束"))
+                else if (message.TextValue.Contains("招募队员结束") && UpdateTime != DateTime.MinValue)
                 {
                     TaskManager.Abort();
                     UpdateTime = DateTime.MinValue;
