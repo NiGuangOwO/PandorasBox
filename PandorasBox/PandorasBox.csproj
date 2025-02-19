@@ -2,9 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="Dalamud.Plugin.Bootstrap.targets" />
     <PropertyGroup>
-        <Version>1.6.1.4</Version>
-        <IsPackable>false</IsPackable>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <Authors>Puni.sh</Authors>
+        <Version>1.6.2.4</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <DalamudLibPath>$(appdata)\xivlaunchercn\Addon\Hooks\dev\</DalamudLibPath>
     </PropertyGroup>

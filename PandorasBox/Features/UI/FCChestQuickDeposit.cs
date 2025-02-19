@@ -2,26 +2,34 @@ using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Hooking;
+using ECommons;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using InteropGenerator.Runtime;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace PandorasBox.Features.UI
 {
     internal unsafe class FCChestQuickDeposit : Feature
     {
-        internal delegate nint AgentFreeCompanyChest_MoveFCItemDelegate(void* AgentFreeCompanyChest, InventoryType SourceInventory, uint SourceSlot, InventoryType TargetInventory, uint TargetSlot);
-        internal Hook<AgentFreeCompanyChest_MoveFCItemDelegate> AgentFreeCompanyChest_MoveFCItem;
+        public delegate nint MoveItemDelegate(void* agent, InventoryType srcInv, uint srcSlot, InventoryType dstInv, uint dstSlot);
+        public MoveItemDelegate? MoveItem;
+        internal nint address;
 
         public override string Name => "部队保险箱快速存入";
+
+        public override bool FeatureDisabled => false;
+
+        public override string DisabledReason => "Issues with crashing";
 
         public override string Description => "在部队保险箱打开时为道具添加右键菜单，以便快速存放它们。";
 
@@ -42,11 +50,14 @@ namespace PandorasBox.Features.UI
 
         public override void Enable()
         {
-            contextMenu = Svc.ContextMenu;
-            contextMenu.OnMenuOpened += AddInventoryItem;
-            AgentFreeCompanyChest_MoveFCItem ??= Svc.Hook.HookFromSignature<AgentFreeCompanyChest_MoveFCItemDelegate>("40 53 56 57 41 56 41 57 48 83 EC 30", MoveItem);
-            Config = LoadConfig<Configs>() ?? new Configs();
-            base.Enable();
+            if (Svc.SigScanner.TryScanText("40 53 55 56 57 41 57 48 83 EC ?? 45 33 FF", out address))
+            {
+                contextMenu = Svc.ContextMenu;
+                contextMenu.OnMenuOpened += AddInventoryItem;
+                MoveItem = Marshal.GetDelegateForFunctionPointer<MoveItemDelegate>(address);
+                Config = LoadConfig<Configs>() ?? new Configs();
+                base.Enable();
+            }
         }
 
         private void AddInventoryItem(IMenuOpenedArgs args)
@@ -71,12 +82,7 @@ namespace PandorasBox.Features.UI
             }
         }
 
-        private nint MoveItem(void* AgentFreeCompanyChest, InventoryType SourceInventory, uint SourceSlot, InventoryType TargetInventory, uint TargetSlot)
-        {
-            return AgentFreeCompanyChest_MoveFCItem.Original(AgentFreeCompanyChest, SourceInventory, SourceSlot, TargetInventory, TargetSlot);
-        }
-
-        private unsafe MenuItem CheckInventoryItem(uint ItemId, bool itemHq, uint itemAmount)
+        private unsafe MenuItem CheckInventoryItem(uint ItemId, bool itemHq, int itemAmount)
         {
             if (Svc.GameGui.GetAddonByName("FreeCompanyChest").GetAtkUnitBase(out var addon))
             {
@@ -97,7 +103,7 @@ namespace PandorasBox.Features.UI
             return null;
         }
 
-        private unsafe void DepositItem(uint ItemId, AtkUnitBase* addon, bool itemHq, uint itemAmount)
+        private unsafe void DepositItem(uint ItemId, AtkUnitBase* addon, bool itemHq, int itemAmount)
         {
             uint FCPage = (uint)InventoryType.FreeCompanyPage1;
 
@@ -124,12 +130,19 @@ namespace PandorasBox.Features.UI
             short destSlot = CheckFCChestSlots(FCPage, ItemId, itemAmount, itemHq);
             if (sourceInventory != null && destSlot != -1)
             {
-                AgentFreeCompanyChest_MoveFCItem.Original(UIModule.Instance()->GetAgentModule()->GetAgentByInternalId(AgentId.FreeCompanyChest), (InventoryType)sourceInventory, (uint)slot, (InventoryType)FCPage, (uint)destSlot);
+                try
+                {
+                    MoveItem(UIModule.Instance()->GetAgentModule()->GetAgentByInternalId(AgentId.FreeCompanyChest), (InventoryType)sourceInventory, (uint)slot, (InventoryType)FCPage, (uint)destSlot);
+                }
+                catch (Exception ex)
+                {
+                    ex.Log();
+                }
             }
 
         }
 
-        private unsafe short CheckFCChestSlots(uint fCPage, uint ItemId, uint stack, bool itemHq)
+        private unsafe short CheckFCChestSlots(uint fCPage, uint ItemId, int stack, bool itemHq)
         {
             var invManager = InventoryManager.Instance();
             InventoryType fcPage = (InventoryType)fCPage;
@@ -163,7 +176,7 @@ namespace PandorasBox.Features.UI
             return -1;
         }
 
-        private unsafe InventoryType? GetInventoryItemPage(uint ItemId, bool itemHq, uint itemAmount, out short slot)
+        private unsafe InventoryType? GetInventoryItemPage(uint ItemId, bool itemHq, int itemAmount, out short slot)
         {
             var invManager = InventoryManager.Instance();
 
@@ -206,7 +219,6 @@ namespace PandorasBox.Features.UI
 
         public override void Dispose()
         {
-            AgentFreeCompanyChest_MoveFCItem?.Dispose();
             base.Dispose();
         }
 

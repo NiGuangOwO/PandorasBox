@@ -18,6 +18,10 @@ namespace PandorasBox.Features.Other
 
         public override FeatureType FeatureType => FeatureType.Other;
 
+        public override bool FeatureDisabled => true;
+
+        public override string DisabledReason => "Feature not working, requires update.";
+
         public class Configs : FeatureConfig
         {
             [FeatureConfigOption("跳过账户验证错误")]

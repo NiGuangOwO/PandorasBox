@@ -5,7 +5,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using PandorasBox.FeaturesSetup;
 using System.Linq;
 using static ECommons.GenericHelpers;
-using Addon = Lumina.Excel.GeneratedSheets.Addon;
+using Addon = Lumina.Excel.Sheets.Addon;
 
 namespace PandorasBox.Features.UI
 {
@@ -15,7 +15,11 @@ namespace PandorasBox.Features.UI
 
         public override string Description => "This feature has been migrated to YesAlready found in our repo. This message will be removed in an upcoming version.";
 
-        public override FeatureType FeatureType => FeatureType.Disabled;
+        public override FeatureType FeatureType => FeatureType.UI;
+
+        public override bool FeatureDisabled => true;
+
+        public override string DisabledReason => "Moved to YesAlready";
 
         public Configs Config { get; private set; }
         public override bool UseAutoConfig => false;

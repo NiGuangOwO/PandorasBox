@@ -1,3 +1,4 @@
+using Dalamud.Interface.Components;
 using Dalamud.Memory;
 using ECommons;
 using ECommons.Automation;
@@ -8,7 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace PandorasBox.Features.UI
             public uint SelectedFertilizer = 0;
 
             public bool AutoConfirm = false;
+            public bool Fallback = false;
             public bool OnlyShowInventoryItems = false;
         }
 
@@ -50,9 +52,9 @@ namespace PandorasBox.Features.UI
         public override void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
-            Seeds = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.Row == 82 && x.FilterGroup == 20).ToDictionary(x => x.RowId, x => x);
-            Soils = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.Row == 82 && x.FilterGroup == 21).ToDictionary(x => x.RowId, x => x);
-            Fertilizers = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.Row == 82 && x.FilterGroup == 22).ToDictionary(x => x.RowId, x => x);
+            Seeds = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.RowId == 82 && x.FilterGroup == 20).ToDictionary(x => x.RowId, x => x);
+            Soils = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.RowId == 82 && x.FilterGroup == 21).ToDictionary(x => x.RowId, x => x);
+            Fertilizers = Svc.Data.GetExcelSheet<Item>().Where(x => x.ItemUICategory.RowId == 82 && x.FilterGroup == 22).ToDictionary(x => x.RowId, x => x);
             AddonText = Svc.Data.GetExcelSheet<Addon>().ToDictionary(x => x.RowId, x => x);
             Svc.Framework.Update += RunFeature;
             base.Enable();
@@ -61,10 +63,14 @@ namespace PandorasBox.Features.UI
         private void RunFeature(IFramework framework)
         {
             if (Svc.ClientState.LocalPlayer == null) return;
-            if (Config.IncludeFertilzing && Svc.GameGui.GetAddonByName("InventoryExpansion") != IntPtr.Zero && !Fertilized)
+            if (Config.IncludeFertilzing && (Svc.GameGui.GetAddonByName("InventoryExpansion") != IntPtr.Zero || Svc.GameGui.GetAddonByName("Inventory") != IntPtr.Zero || Svc.GameGui.GetAddonByName("InventoryLarge") != IntPtr.Zero) && !Fertilized)
             {
                 if (Config.SelectedFertilizer == 0) goto SoilSeeds;
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("InventoryExpansion");
+                var addon1 = (AtkUnitBase*)Svc.GameGui.GetAddonByName("InventoryExpansion");
+                var addon2 = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Inventory");
+                var addon3 = (AtkUnitBase*)Svc.GameGui.GetAddonByName("InventoryLarge");
+
+                var addon = addon1->IsVisible ? addon1 : addon2->IsVisible ? addon2 : addon3;
 
                 if (addon->IsVisible)
                 {
@@ -111,12 +117,12 @@ namespace PandorasBox.Features.UI
 
                         return;
                     }
+                    else
+                    {
+                        goto SoilSeeds;
+                    }
+                }
 
-                }
-                else
-                {
-                    goto SoilSeeds;
-                }
             }
             else
             {
@@ -157,6 +163,25 @@ namespace PandorasBox.Features.UI
                     }
                 }
 
+                if (Config.Fallback)
+                {
+                    soilIndex = 0;
+                    foreach (var cont in container)
+                    {
+                        for (var i = 0; i < cont->Size; i++)
+                        {
+                            if (invSoil.Any(x => cont->GetInventorySlot(i)->ItemId == x))
+                            {
+                                var item = cont->GetInventorySlot(i);
+                                if (item->ItemId == invSoil[0])
+                                    goto SetSeed;
+                                else
+                                    soilIndex++;
+                            }
+                        }
+                    }
+                }
+
             SetSeed:
                 var seedIndex = 0;
                 foreach (var cont in container)
@@ -170,6 +195,26 @@ namespace PandorasBox.Features.UI
                                 goto ClickItem;
                             else
                                 seedIndex++;
+                        }
+                    }
+                }
+
+                if (Config.Fallback)
+                {
+                    seedIndex = 0;
+                    foreach (var cont in container)
+                    {
+                        for (var i = 0; i < cont->Size; i++)
+                        {
+                            if (invSeeds.Any(x => cont->GetInventorySlot(i)->ItemId == x))
+                            {
+                                var item = cont->GetInventorySlot(i);
+
+                                if (item->ItemId == invSeeds[0])
+                                    goto ClickItem;
+                                else
+                                    seedIndex++;
+                            }
                         }
                     }
                 }
@@ -419,6 +464,10 @@ namespace PandorasBox.Features.UI
                     ImGui.EndCombo();
                 }
             }
+
+            if (ImGui.Checkbox("土壤/种子后备", ref Config.Fallback))
+                hasChanged = true;
+            ImGuiComponents.HelpMarker("启用后，如果未找到所选的主要土壤/种子，它将选择在您的库存中找到的第一个土壤/种子。");
 
             if (ImGui.Checkbox("自动确认", ref Config.AutoConfirm))
                 hasChanged = true;

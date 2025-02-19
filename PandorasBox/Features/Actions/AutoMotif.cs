@@ -20,7 +20,8 @@ namespace PandorasBox.Features.Actions
         {
             Svc.Framework.Update += CheckMotifs;
             Events.OnJobChanged += DelayStart;
-            EzSignatureHelper.Initialize(this);
+            if (SendActionHook is null) EzSignatureHelper.Initialize(this);
+            else SendActionHook?.Enable();
             base.Enable();
         }
 
@@ -38,7 +39,7 @@ namespace PandorasBox.Features.Actions
         private unsafe void CheckMotifs(IFramework framework)
         {
             if (Svc.ClientState.LocalPlayer is null) return;
-            if (Svc.ClientState.LocalPlayer.ClassJob.Id != 42) return;
+            if (Svc.ClientState.LocalPlayer.ClassJob.RowId != 42) return;
             if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat]) return;
             if (TerritoryInfo.Instance()->InSanctuary) return;
 

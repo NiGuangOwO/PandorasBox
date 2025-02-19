@@ -2,7 +2,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,11 @@ namespace PandorasBox.Features.UI
 
         public override string Description => "当您打开库存时，插件会尝试将同一物品的所有堆叠加到一起。";
 
-        public override FeatureType FeatureType => FeatureType.Disabled;
+        public override FeatureType FeatureType => FeatureType.UI;
+
+        public override bool FeatureDisabled => false;
+
+        public override string DisabledReason => "Issues with crashing";
 
         public List<InventorySlot> inventorySlots = new();
 
@@ -115,7 +119,7 @@ namespace PandorasBox.Features.UI
                     for (var i = 1; i < item.Count(); i++)
                     {
                         var slot = item.ToList()[i];
-                        //inv->MoveItemSlot(slot.Container, slot.Slot, firstSlot.Container, firstSlot.Slot, 1);
+                        inv->MoveItemSlot(slot.Container, (ushort)slot.Slot, firstSlot.Container, (ushort)firstSlot.Slot, 1);
                     }
                 }
 

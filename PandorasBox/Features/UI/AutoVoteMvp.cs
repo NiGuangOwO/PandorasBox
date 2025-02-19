@@ -178,13 +178,12 @@ public class AutoVoteMvp : Feature
             }
         }
 
-        var tanks = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 1);
-        var healer = list.Where(i => i.PartyMember.ClassJob.GameData!.Role == 4);
-        var dps = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2 or 3);
-        var melee = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 2);
-        var range = list.Where(i => i.PartyMember.ClassJob.GameData!.Role is 3);
-        var myjob = Svc.ClientState.LocalPlayer.ClassJob.GameData!.Role;
-
+        var tanks = list.Where(i => i.PartyMember.ClassJob.Value.Role == 1);
+        var healer = list.Where(i => i.PartyMember.ClassJob.Value.Role == 4);
+        var dps = list.Where(i => i.PartyMember.ClassJob.Value.Role is 2 or 3);
+        var melee = list.Where(i => i.PartyMember.ClassJob.Value.Role is 2);
+        var range = list.Where(i => i.PartyMember.ClassJob.Value.Role is 3);
+        var myjob = Svc.ClientState.LocalPlayer.ClassJob.Value.Role;
         (int index, IPartyMember member) voteTarget = new();
         if (myjob == 1)
         {
@@ -216,13 +215,13 @@ public class AutoVoteMvp : Feature
                     payload.AddRange(new List<Payload>()
                     {
                         new TextPayload("点赞给 "),
-                        voteTarget.member.ClassJob.GameData!.Role switch
+                        voteTarget.member.ClassJob.Value!.Role switch
                         {
                             1 => new IconPayload(BitmapFontIcon.Tank),
                             4 => new IconPayload(BitmapFontIcon.Healer),
                             _ => new IconPayload(BitmapFontIcon.DPS),
                         },
-                        new PlayerPayload(voteTarget.member.Name.TextValue, voteTarget.member.World.GameData!.RowId),
+                        new PlayerPayload(voteTarget.member.Name.TextValue, voteTarget.member.World.Value!.RowId),
                     });
                     Svc.Chat.Print(new SeString(payload));
                 }

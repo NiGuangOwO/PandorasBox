@@ -5,7 +5,7 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ namespace PandorasBox.Features.UI
             if (Svc.Data.GetExcelSheet<Item>().FindFirst(x => x.RowId == ItemId, out var sheetItem))
             {
                 if (sheetItem.StackSize <= 1) return null;
-                if (sheetItem.ItemAction.Row is 388 or 367 or 2462)
+                if (sheetItem.ItemAction.RowId is 388 or 367 or 2462)
                 {
                     var menuItem = new MenuItem();
                     menuItem.Name = OpenString;
@@ -133,7 +133,7 @@ namespace PandorasBox.Features.UI
 
                             TaskManager.Enqueue(() => !Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Casting]);
                             TaskManager.Enqueue(() => ActionManager.Instance()->GetActionStatus(ActionType.Item, ItemId, Svc.ClientState.LocalPlayer.GameObjectId) == 0);
-                            TaskManager.DelayNext("OpeningItem", 2200);
+                            TaskManager.Enqueue(() => ActionManager.Instance()->AnimationLock == 0);
                             TaskManager.Enqueue(() => OpenItem(ItemId));
 
                             return true;

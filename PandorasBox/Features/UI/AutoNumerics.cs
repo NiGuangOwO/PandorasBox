@@ -7,7 +7,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 
 namespace PandorasBox.Features.UI
@@ -18,11 +18,11 @@ namespace PandorasBox.Features.UI
 
         public override string Description => "自动填充任何数字输入对话框。适用于白名单系统。在打开要禁用的数字对话框时按住shift键。";
 
-        public override FeatureType FeatureType => FeatureType.Disabled;
+        public override FeatureType FeatureType => FeatureType.UI;
 
         public Configs Config { get; private set; }
 
-        private readonly string splitText = Svc.Data.GetExcelSheet<Addon>().Where(x => x.RowId == 533).First().Text.RawString;
+        private readonly string splitText = Svc.Data.GetExcelSheet<Addon>().Where(x => x.RowId == 533).First().Text.ToString();
 
         private bool hasDisabled;
 
