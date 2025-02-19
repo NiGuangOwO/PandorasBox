@@ -4,7 +4,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using System;
 using System.Linq;
@@ -94,7 +94,7 @@ namespace PandorasBox.Features.Other
                 var s = MemoryHelper.ReadStringNullTerminated(new IntPtr(n));
                 if (s.Trim().Length == 0)
                     continue;
-                if (s != world.Name.RawString)
+                if (s != world.Value.Name.ExtractText())
                     continue;
                 Callback.Fire(addon, true, 24, 0, i);
                 return true;
@@ -123,11 +123,11 @@ namespace PandorasBox.Features.Other
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool _) =>
         {
-            if (ImGui.BeginCombo("大区", Config.DataCenter == 0 ? "未选择" : Svc.Data.Excel.GetSheet<WorldDCGroupType>().GetRow(Config.DataCenter).Name.RawString))
+            if (ImGui.BeginCombo("大区", Config.DataCenter == 0 ? "未选择" : Svc.Data.Excel.GetSheet<WorldDCGroupType>().GetRow(Config.DataCenter).Name.ExtractText()))
             {
-                foreach (var dc in Svc.Data.Excel.GetSheet<WorldDCGroupType>().Where(w => w.Region == 5 && w.Name.RawString.Trim().Length > 0))
+                foreach (var dc in Svc.Data.Excel.GetSheet<WorldDCGroupType>().Where(w => w.Region == 5 && w.Name.ExtractText().Trim().Length > 0))
                 {
-                    if (ImGui.Selectable(dc.Name.RawString, dc.RowId == Config.DataCenter))
+                    if (ImGui.Selectable(dc.Name.ExtractText(), dc.RowId == Config.DataCenter))
                     {
                         Config.DataCenter = dc.RowId;
                         SaveConfig(Config);
@@ -137,11 +137,11 @@ namespace PandorasBox.Features.Other
             }
             if (Svc.Data.Excel.GetSheet<WorldDCGroupType>().GetRow(Config.DataCenter).Region != 0)
             {
-                if (ImGui.BeginCombo("服务器", Config.World == 0 ? "未选择" : Svc.Data.Excel.GetSheet<World>().GetRow(Config.World).Name.RawString))
+                if (ImGui.BeginCombo("服务器", Config.World == 0 ? "未选择" : Svc.Data.Excel.GetSheet<World>().GetRow(Config.World).Name.ExtractText()))
                 {
-                    foreach (var w in Svc.Data.Excel.GetSheet<World>().Where(w => w.DataCenter.Row == Config.DataCenter && w.IsPublic))
+                    foreach (var w in Svc.Data.Excel.GetSheet<World>().Where(w => w.DataCenter.RowId == Config.DataCenter && w.IsPublic))
                     {
-                        if (ImGui.Selectable(w.Name.RawString, w.RowId == Config.World))
+                        if (ImGui.Selectable(w.Name.ExtractText(), w.RowId == Config.World))
                         {
                             Config.World = w.RowId;
                             SaveConfig(Config);

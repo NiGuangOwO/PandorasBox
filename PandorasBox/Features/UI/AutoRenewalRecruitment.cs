@@ -35,7 +35,7 @@ namespace PandorasBox.Features
         internal delegate byte OpenPartyFinderInfoDelegate(void* agentLfg, ulong contentId);
         internal OpenPartyFinderInfoDelegate? OpenPartyFinderInfo;
 
-        private void Logout()
+        private void Logout(int type, int code)
         {
             TaskManager.Abort();
             UpdateTime = DateTime.MinValue;
@@ -67,7 +67,7 @@ namespace PandorasBox.Features
 
             if (DateTime.Now > UpdateTime && !isRunning)
             {
-                if (Player.Object.OnlineStatus.Id != 26)
+                if (Player.Object.OnlineStatus.RowId != 26)
                 {
                     UpdateTime = DateTime.MinValue;
                     var msg = new XivChatEntry
@@ -211,7 +211,7 @@ namespace PandorasBox.Features
             Config = LoadConfig<Configs>() ?? new Configs();
             var OpenPartyFinderInfoAddress = Svc.SigScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 84 C0 74 07 C6 83 ?? ?? ?? ?? ?? 48 83 C4 20 5B C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53");
             OpenPartyFinderInfo = Marshal.GetDelegateForFunctionPointer<OpenPartyFinderInfoDelegate>(OpenPartyFinderInfoAddress);
-            Svc.ClientState.Logout += Logout;
+            Svc.ClientState.Logout += Logout;            
             Svc.Chat.CheckMessageHandled += CheckMessage;
             Svc.Framework.Update += RunFeature;
             base.Enable();

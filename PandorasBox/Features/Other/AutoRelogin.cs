@@ -67,7 +67,7 @@ namespace PandorasBox.Features.Other
             }
         }
 
-        private void CheckLogout()
+        private void CheckLogout(int type, int code)
         {
             if ((AtkUnitBase*)Svc.GameGui.GetAddonByName("Dialogue") == null)
                 return;
