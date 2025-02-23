@@ -83,7 +83,7 @@ namespace PandorasBox.Features.Other
                 return false;
 
             var world = Svc.Data.Excel.GetSheet<World>()?.GetRow(Config.World);
-            if (world is not { IsPublic: true })
+            if (world.Value.RowId < 1000)
                 return false;
 
             for (var i = 0; i < 16; i++)
@@ -139,7 +139,7 @@ namespace PandorasBox.Features.Other
             {
                 if (ImGui.BeginCombo("服务器", Config.World == 0 ? "未选择" : Svc.Data.Excel.GetSheet<World>().GetRow(Config.World).Name.ExtractText()))
                 {
-                    foreach (var w in Svc.Data.Excel.GetSheet<World>().Where(w => w.DataCenter.RowId == Config.DataCenter && w.IsPublic))
+                    foreach (var w in Svc.Data.Excel.GetSheet<World>().Where(w => w.DataCenter.RowId == Config.DataCenter && w.RowId > 1000))
                     {
                         if (ImGui.Selectable(w.Name.ExtractText(), w.RowId == Config.World))
                         {
