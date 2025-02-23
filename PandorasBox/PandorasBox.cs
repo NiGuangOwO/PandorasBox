@@ -28,6 +28,7 @@ public class PandorasBox : IDalamudPlugin
     public List<FeatureProvider> FeatureProviders = new();
     private FeatureProvider provider;
     public IEnumerable<BaseFeature> Features => FeatureProviders.Where(x => !x.Disposed).SelectMany(x => x.Features).OrderBy(x => x.Name);
+    private bool isDev;
     public PandorasBox(IDalamudPluginInterface pluginInterface)
     {
         P = this;
@@ -37,20 +38,15 @@ public class PandorasBox : IDalamudPlugin
 
     private void Initialize()
     {
-        ECommonsMain.Init(pi, P, ECommons.Module.All);
-        PunishLibMain.Init(pi, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO" });
 #if !DEBUG
-        if (Svc.PluginInterface.IsDev || !Svc.PluginInterface.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
+        if (pi.IsDev || !pi.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
         {
-            Svc.NotificationManager.AddNotification(new Dalamud.Interface.ImGuiNotification.Notification()
-            {
-                Type = Dalamud.Interface.ImGuiNotification.NotificationType.Error,
-                Title = "加载验证",
-                Content = "由于本地加载或安装来源仓库非NiGuangOwO个人仓库，插件加载失败",
-            });
+            isDev = true;
             return;
         }
 #endif
+        ECommonsMain.Init(pi, P, ECommons.Module.All);
+        PunishLibMain.Init(pi, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO" });
         Ws = new();
         MainWindow = new();
         Ws.AddWindow(MainWindow);
@@ -79,12 +75,8 @@ public class PandorasBox : IDalamudPlugin
     public void Dispose()
     {
 #if !DEBUG
-        if (Svc.PluginInterface.IsDev || !Svc.PluginInterface.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
-        {
-            PunishLibMain.Dispose();
-            ECommonsMain.Dispose();
+        if (pi.IsDev || !pi.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
             return;
-        }
 #endif
         Svc.Commands.RemoveHandler(CommandName);
         foreach (var f in Features.Where(x => x is not null && x.Enabled))

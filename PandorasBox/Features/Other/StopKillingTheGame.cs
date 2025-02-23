@@ -20,7 +20,7 @@ namespace PandorasBox.Features.Other
 
         public override bool FeatureDisabled => true;
 
-        public override string DisabledReason => "Feature not working, requires update.";
+        public override string DisabledReason => "功能不起作用，需要更新。";
 
         public class Configs : FeatureConfig
         {

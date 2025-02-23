@@ -38,7 +38,7 @@ namespace PandorasBox.Features.Other
 
         public override bool FeatureDisabled => true;
 
-        public override string DisabledReason => "Use Fish Notify plugin from https://plugins.carvel.li/.";
+        public override string DisabledReason => "使用来自 https://plugins.carvel.li/ 的 Fish Notify 插件。";
 
         public class Configs : FeatureConfig
         {

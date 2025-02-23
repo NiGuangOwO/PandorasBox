@@ -11,15 +11,15 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class AutoCloseMenus : Feature
     {
-        public override string Name => "Auto-Close Menus";
+        public override string Name => "自动关闭菜单";
 
-        public override string Description => "This feature has been migrated to YesAlready found in our repo. This message will be removed in an upcoming version.";
+        public override string Description => "此功能已迁移至 YesAlready 在我们的存储库中找到。此消息将在即将推出的版本中删除。";
 
         public override FeatureType FeatureType => FeatureType.UI;
 
         public override bool FeatureDisabled => true;
 
-        public override string DisabledReason => "Moved to YesAlready";
+        public override string DisabledReason => "迁移至 to YesAlready";
 
         public Configs Config { get; private set; }
         public override bool UseAutoConfig => false;

@@ -350,7 +350,7 @@ internal class MainWindow : Window
                 ImGui.TextWrapped($"{feature.Description}");
             }
                 if (feature.FeatureDisabled)
-                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Disabled Reason: {feature.DisabledReason}");
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"禁用原因: {feature.DisabledReason}");
 
                 ImGui.Separator();
         }

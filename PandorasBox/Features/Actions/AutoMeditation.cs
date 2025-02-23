@@ -10,9 +10,9 @@ namespace PandorasBox.Features.Actions
 {
     internal class AutoMeditation : Feature
     {
-        public override string Name => "Auto-Meditation";
+        public override string Name => "自动斗气";
 
-        public override string Description => "Automatically use Meditation when out of combat.";
+        public override string Description => "脱战时自动使用斗气。";
 
         public override FeatureType FeatureType => FeatureType.Actions;
 

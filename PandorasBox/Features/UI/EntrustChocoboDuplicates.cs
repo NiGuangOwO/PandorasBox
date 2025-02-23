@@ -26,8 +26,8 @@ namespace PandorasBox.Features.UI
 {
     public unsafe class EntrustChocoboDuplicates : Feature
     {
-        public override string Name => "Saddlebag Entrust Duplicates";
-        public override string Description => "Adds a button to the bottom of the saddlebag to entrust duplicates.";
+        public override string Name => "鞍囊同类道具合并递交";
+        public override string Description => "在鞍囊底部添加一个按钮，用于同类道具合并递交。";
         public override FeatureType FeatureType => FeatureType.UI;
 
         private InventoryType[] playerInventory = [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
@@ -76,7 +76,7 @@ namespace PandorasBox.Features.UI
                 ImGui.Begin($"###DesynthAll{node->NodeId}", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoNavFocus
                     | ImGuiWindowFlags.AlwaysUseWindowPadding | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoSavedSettings);
 
-                if (ImGui.Button("Entrust Duplicates"))
+                if (ImGui.Button("同类道具合并递交"))
                 {
                     var inv = InventoryManager.Instance();
                     foreach (var inventory in playerInventory)
