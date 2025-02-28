@@ -1,3 +1,5 @@
+using Dalamud.Game.Addon.Lifecycle;
+using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using Dalamud.Interface.ImGuiNotification;
 using ECommons.Automation;
 using ECommons.DalamudServices;
@@ -5,20 +7,15 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
-using System;
 
 namespace PandorasBox.Features.Other
 {
     public unsafe class AutoRelogin : Feature
     {
         public override string Name => "[国服限定] 掉线自动重登";
-
         public override string Description => "在掉线时实现自动重新上线";
-
         public override FeatureType FeatureType => FeatureType.Other;
-
         public override bool UseAutoConfig => false;
-
         public Configs Config { get; private set; }
 
         public class Configs : FeatureConfig
@@ -67,31 +64,10 @@ namespace PandorasBox.Features.Other
             }
         }
 
-        private void CheckLogout(int type, int code)
-        {
-            if ((AtkUnitBase*)Svc.GameGui.GetAddonByName("Dialogue") == null)
-                return;
-            TaskManager.Enqueue(() => CheckTitle(), int.MaxValue, "CheckTitle");
-            TaskManager.Enqueue(() => ClickStart(), "开始游戏");
-            TaskManager.Enqueue(() => Message(), "发送提示");
-            TaskManager.Enqueue(() => SelectCharacter(), int.MaxValue, "选择角色");
-            TaskManager.Enqueue(() => SelectYes(), "点击确定");
-        }
-
-        private void CheckDialogue(IFramework framework)
-        {
-            if (Svc.GameGui.GetAddonByName("Dialogue") != IntPtr.Zero && !Svc.Condition.Any())
-            {
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dialogue");
-                if (!addon->IsVisible)
-                    return;
-
-                WindowsKeypress.SendKeypress((int)Config.Key);
-            }
-        }
-
         public bool CheckTitle()
         {
+            WindowsKeypress.SendKeypress((int)Config.Key);
+
             return (AtkUnitBase*)Svc.GameGui.GetAddonByName("_TitleMenu") != null
                 && ((AtkUnitBase*)Svc.GameGui.GetAddonByName("_TitleMenu"))->IsVisible;
         }
@@ -136,18 +112,31 @@ namespace PandorasBox.Features.Other
         public override void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
-            Svc.ClientState.Logout += CheckLogout;
             Svc.Framework.Update += CheckLogin;
-            Svc.Framework.Update += CheckDialogue;
+            Svc.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "Dialogue", HandleDialogue);
             base.Enable();
+        }
+
+        private void HandleDialogue(AddonEvent type, AddonArgs args)
+        {
+            if (Svc.Condition.Any())
+                return;
+            var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Dialogue");
+            if (!addon->IsVisible)
+                return;
+
+            TaskManager.Enqueue(() => CheckTitle(), int.MaxValue, "CheckTitle");
+            TaskManager.Enqueue(() => ClickStart(), "开始游戏");
+            TaskManager.Enqueue(() => Message(), "发送提示");
+            TaskManager.Enqueue(() => SelectCharacter(), int.MaxValue, "选择角色");
+            TaskManager.Enqueue(() => SelectYes(), "点击确定");
         }
 
         public override void Disable()
         {
             SaveConfig(Config);
-            Svc.ClientState.Logout -= CheckLogout;
             Svc.Framework.Update -= CheckLogin;
-            Svc.Framework.Update -= CheckDialogue;
+            Svc.AddonLifecycle.UnregisterListener(HandleDialogue);
             base.Disable();
         }
     }
