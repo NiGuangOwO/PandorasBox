@@ -1,5 +1,4 @@
 using Dalamud.Game.ClientState.Conditions;
-using ECommons;
 using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
@@ -26,13 +25,12 @@ namespace PandorasBox.Features.Actions
         {
             public float ThrottleF = 0.1f;
             public uint SelectedMount = 0;
-            public bool AbortIfMoving = false;
             public bool UseOnIsland = false;
             public bool JumpAfterMount = false;
             public bool MoveAfterMount = false;
         }
 
-        public Configs Config { get; private set; }
+        public Configs Config { get; private set; } = null!;
 
         public override bool UseAutoConfig => false;
         public override void Enable()
@@ -53,26 +51,26 @@ namespace PandorasBox.Features.Actions
             {
                 TaskManager.Enqueue(() => EzThrottler.Throttle("GatherMount", (int)(Config.ThrottleF * 1000)));
                 TaskManager.Enqueue(() => EzThrottler.Check("GatherMount"));
-                TaskManager.Enqueue(TryMount, 3000);
+                TaskManager.EnqueueWithTimeout(TryMount, 3000);
                 TaskManager.Enqueue(() =>
                 {
                     Svc.GameConfig.TryGet(Dalamud.Game.Config.UiControlOption.FlyingControlType, out uint type);
                     if (Config.JumpAfterMount && Svc.ClientState.LocalPlayer!.ClassJob.RowId != 18 && ZoneHasFlight())
                     {
-                        TaskManager.Enqueue(() => Svc.Condition[ConditionFlag.Mounted], 5000, true);
-                        TaskManager.DelayNext(50);
+                        TaskManager.EnqueueWithTimeout(() => Svc.Condition[ConditionFlag.Mounted], 5000);
+                        TaskManager.EnqueueDelay(50);
                         TaskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2));
                         if (type == 1)
                         {
-                            TaskManager.DelayNext(50);
+                            TaskManager.EnqueueDelay(50);
                             TaskManager.Enqueue(() => ActionManager.Instance()->UseAction(ActionType.GeneralAction, 2));
                         }
                     }
 
                     if (Config.MoveAfterMount)
                     {
-                        TaskManager.Enqueue(() => Svc.Condition[ConditionFlag.Mounted], 5000, true);
-                        TaskManager.Enqueue(() => Svc.Condition[ConditionFlag.InFlight] || Svc.Condition[ConditionFlag.Diving], 2000);
+                        TaskManager.EnqueueWithTimeout(() => Svc.Condition[ConditionFlag.Mounted], 5000);
+                        TaskManager.EnqueueWithTimeout(() => Svc.Condition[ConditionFlag.InFlight] || Svc.Condition[ConditionFlag.Diving], 3000);
                         TaskManager.Enqueue(() => { Chat.Instance.SendMessage("/automove on"); });
                     }
                 });
@@ -81,9 +79,6 @@ namespace PandorasBox.Features.Actions
 
         private bool? TryMount()
         {
-            if (Config.AbortIfMoving && IsMoving()) return true;
-
-            if (IsMoving()) return false;
             var am = ActionManager.Instance();
 
             if (Config.SelectedMount > 0)
@@ -140,7 +135,6 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("移动时中止", ref Config.AbortIfMoving)) hasChanged = true;
             if (ImGui.Checkbox("在无人岛中使用", ref Config.UseOnIsland)) hasChanged = true;
             if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) hasChanged = true;
             hasChanged |= ImGui.Checkbox("上坐骑后自动移动", ref Config.MoveAfterMount);

@@ -34,6 +34,7 @@ internal class MainWindow : Window
             MinimumSize = new Vector2(375, 330),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
+        Flags = ImGuiWindowFlags.NoScrollbar;
         RespectCloseHotkey = false;
     }
 
@@ -118,7 +119,7 @@ internal class MainWindow : Window
     }
 
     private string searchString = string.Empty;
-    private List<BaseFeature> FilteredFeatures = new();
+    private List<BaseFeature> filteredFeatures = new();
     private bool hornybonk;
 
     public override void Draw()
@@ -143,7 +144,7 @@ internal class MainWindow : Window
 
                     if (ThreadLoadImageHandler.TryGetTextureWrap(imagePath, out var logo))
                     {
-                        ImGuiEx.ImGuiLineCentered("###Logo", () => { ImGui.Image(logo.ImGuiHandle, new(125f.Scale(), 125f.Scale())); });
+                        ImGuiEx.LineCentered("###Logo", () => { ImGui.Image(logo.ImGuiHandle, new(125f.Scale(), 125f.Scale())); });
 
                     }
 
@@ -179,7 +180,7 @@ internal class MainWindow : Window
                     }
 
                     ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 45f);
-                    ImGuiEx.ImGuiLineCentered("###Search", () => { ImGui.Text($"搜索"); ImGuiComponents.HelpMarker("搜索给定单词或短语的功能名称和描述。"); });
+                    ImGuiEx.LineCentered("###Search", () => { ImGui.Text($"搜索"); ImGuiComponents.HelpMarker("搜索给定单词或短语的功能名称和描述。"); });
                     ImGuiEx.SetNextItemFullWidth();
                     if (ImGui.InputText("###FeatureSearch", ref searchString, 500))
                     {
@@ -192,7 +193,7 @@ internal class MainWindow : Window
                         {
                             hornybonk = false;
                         }
-                        FilteredFeatures.Clear();
+                        filteredFeatures.Clear();
                         if (searchString.Length > 0)
                         {
                             foreach (var feature in P.Features)
@@ -201,7 +202,7 @@ internal class MainWindow : Window
 
                                 if (feature.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
                                     feature.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase))
-                                    FilteredFeatures.Add(feature);
+                                    filteredFeatures.Add(feature);
                             }
                         }
                     }
@@ -210,11 +211,11 @@ internal class MainWindow : Window
                 ImGui.EndChild();
                 ImGui.PopStyleVar();
                 ImGui.TableNextColumn();
-                if (ImGui.BeginChild($"###PandoraRight", Vector2.Zero, false, (false ? ImGuiWindowFlags.AlwaysVerticalScrollbar : ImGuiWindowFlags.None) | ImGuiWindowFlags.NoDecoration))
+                if (ImGui.BeginChild($"###PandoraRight", Vector2.Zero, false, (OpenWindow != OpenWindow.None ? ImGuiWindowFlags.AlwaysVerticalScrollbar : ImGuiWindowFlags.None) | ImGuiWindowFlags.NoDecoration))
                 {
-                    if (FilteredFeatures.Count() > 0)
+                    if (filteredFeatures.Count() > 0)
                     {
-                        DrawFeatures(FilteredFeatures.ToArray());
+                        DrawFeatures(filteredFeatures.ToArray());
                     }
                     else
                     {
@@ -258,7 +259,7 @@ internal class MainWindow : Window
     private static void DrawCommands(BaseFeature[] features)
     {
         if (features == null || !features.Any() || features.Length == 0) return;
-        ImGuiEx.ImGuiLineCentered($"featureHeader{features.First().FeatureType}", () => ImGui.Text($"{features.First().FeatureType}"));
+        ImGuiEx.LineCentered($"featureHeader{features.First().FeatureType}", () => ImGui.Text($"{features.First().FeatureType}"));
         ImGui.Separator();
 
         if (ImGui.BeginTable("###CommandsTable", 5, ImGuiTableFlags.Borders))
@@ -298,7 +299,7 @@ internal class MainWindow : Window
 
         ImGuiEx.LineCentered($"featureHeader{features.First().FeatureType}", () =>
         {
-            if (FilteredFeatures.Count > 0)
+            if (filteredFeatures.Count > 0)
             {
                 ImGui.Text($"搜索结果");
             }

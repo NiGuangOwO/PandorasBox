@@ -65,7 +65,7 @@ namespace PandorasBox.Features.UI
                 return;
             }
             var id = AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId();
-            var addon = Common.GetAddonByID(id);
+            var addon = GetAddonByID(id);
             if (addon == null) return;
             if (addon->IsVisible && !InventoryOpened)
             {
@@ -125,7 +125,7 @@ namespace PandorasBox.Features.UI
 
                 if (inventorySlots.GroupBy(x => new { x.ItemId, x.ItemHQ }).Any(x => x.Count() > 1) && Config.SortAfter)
                 {
-                    TaskManager.DelayNext("Sort", 100);
+                    TaskManager.EnqueueDelay(100);
                     TaskManager.Enqueue(() => Chat.Instance.SendMessage("/isort condition inventory id"));
                     TaskManager.Enqueue(() => Chat.Instance.SendMessage("/isort execute inventory"));
                 }

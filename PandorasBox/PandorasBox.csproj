@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="Dalamud.Plugin.Bootstrap.targets" />
+<Project Sdk="Dalamud.NET.Sdk/12.0.2">
     <PropertyGroup>
         <Authors>Puni.sh</Authors>
-        <Version>1.6.2.6</Version>
+        <Version>1.6.3.6</Version>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
-        <Platforms>x64</Platforms>
-        <DalamudLibPath>$(appdata)\xivlaunchercn\Addon\Hooks\dev\</DalamudLibPath>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <OutputPath>bin/Release</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <OutputPath>$(DalamudDevPlugins)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NAudio" Version="2.1.0" />
+        <Reference Include="JetBrains.Annotations">
+            <Private>false</Private>
+            <HintPath>$(DalamudLibPath)\JetBrains.Annotations.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Icon.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="pandora.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="PandorasBox.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="pandora_g.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <EmbeddedResource Include="Icon.png" CopyToOutputDirectory="Always" />
+        <EmbeddedResource Include="pandora.png" CopyToOutputDirectory="Always" />
+        <EmbeddedResource Include="pandora_g.png" CopyToOutputDirectory="Always" />
+        <EmbeddedResource Include="PandorasBox.json" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,12 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
-        <ProjectReference Include="..\..\PunishLib\PunishLib\PunishLib.csproj" />
-        <Reference Include="InteropGenerator.Runtime">
-            <HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
+        <ProjectReference Include="..\PunishLib\PunishLib\PunishLib.csproj" />
+        <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     </ItemGroup>
-
 </Project>

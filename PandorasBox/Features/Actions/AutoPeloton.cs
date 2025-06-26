@@ -2,7 +2,6 @@ using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ImGuiNET;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
@@ -40,7 +39,7 @@ namespace PandorasBox.Features
             public bool AbortCooldown = false;
         }
 
-        public Configs Config { get; private set; }
+        public Configs Config { get; private set; } = null!;
 
         public override void Enable()
         {
@@ -69,7 +68,7 @@ namespace PandorasBox.Features
             var isPeletonReady = am->GetActionStatus(ActionType.Action, 7557) == 0;
             var hasPeletonBuff = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == 1199 || x.StatusId == 50);
 
-            if (isPeletonReady && !hasPeletonBuff && AgentMap.Instance()->IsPlayerMoving == 1 && !TaskManager.IsBusy)
+            if (isPeletonReady && !hasPeletonBuff && IsMoving() && !TaskManager.IsBusy)
             {
                 TaskManager.Enqueue(() => EzThrottler.Throttle("Pelotoning", (int)(Config.ThrottleF * 1000)));
                 TaskManager.Enqueue(() => EzThrottler.Check("Pelotoning"));
@@ -88,7 +87,7 @@ namespace PandorasBox.Features
             var isPeletonReady = am->GetActionStatus(ActionType.Action, 7557) == 0;
             var hasPeletonBuff = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == 1199 || x.StatusId == 50);
 
-            if (isPeletonReady && !hasPeletonBuff && AgentMap.Instance()->IsPlayerMoving == 1)
+            if (isPeletonReady && !hasPeletonBuff && IsMoving())
             {
                 am->UseAction(ActionType.Action, 7557);
             }

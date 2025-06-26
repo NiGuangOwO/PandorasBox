@@ -1,24 +1,19 @@
-using Dalamud.Hooking;
 using ECommons.Automation;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using FFXIVClientStructs.STD;
 using ImGuiNET;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Lumina.Excel.Sheets;
 using static ECommons.UIHelpers.AddonMasterImplementations.AddonMaster;
 using static FFXIVClientStructs.FFXIV.Component.GUI.AtkEventDispatcher;
 
@@ -31,13 +26,13 @@ namespace PandorasBox.Features.UI
         public override FeatureType FeatureType => FeatureType.UI;
 
         private InventoryType[] playerInventory = [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
-        private InventoryType[] saddlebag = [InventoryType.SaddleBag1, InventoryType.SaddleBag2];
+        private InventoryType[] saddlebag = [InventoryType.SaddleBag1, InventoryType.SaddleBag2, InventoryType.PremiumSaddleBag1, InventoryType.PremiumSaddleBag2];
 
         private Overlays Overlay { get; set; }
 
         public override void Enable()
         {
-            Overlay ??= new(this);
+            Overlay = new(this);
             base.Enable();
         }
 
@@ -97,10 +92,14 @@ namespace PandorasBox.Features.UI
                                     if (saddleItem->ItemId == 0)
                                         continue;
 
+                                    var saddleItemData = Svc.Data.GetExcelSheet<Item>().GetRow(saddleItem->ItemId);
+                                    if (saddleItemData.IsUnique)
+                                        continue;
+                                    
                                     if (saddleItem->ItemId == item->ItemId)
                                     {
                                         uint total = (uint)(saddleItem->Quantity + item->Quantity);
-                                        TaskManager.DelayNext(200);
+                                        TaskManager.EnqueueDelay(200);
                                         TaskManager.Enqueue(() =>
                                         {
                                             FireInventoryMenu(inventory, item, 56);
@@ -117,7 +116,6 @@ namespace PandorasBox.Features.UI
                 ImGui.GetFont().Scale = oldSize;
                 ImGui.PopFont();
                 ImGui.PopStyleColor();
-
             }
         }
 
@@ -141,6 +139,7 @@ namespace PandorasBox.Features.UI
         public override void Disable()
         {
             P.Ws.RemoveWindow(Overlay);
+            Overlay = null;
             base.Disable();
         }
     }

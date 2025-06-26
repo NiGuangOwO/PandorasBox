@@ -22,9 +22,9 @@ namespace PandorasBox.Features.Actions
         public override string Description { get; } = "允许从热键栏中点击宝物地图道具来解读。";
         public override FeatureType FeatureType { get; } = FeatureType.Actions;
 
-        public delegate bool UseActionDelegate(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, int pvp, bool* isGroundTarget);
+        public new delegate bool UseActionDelegate(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, int pvp, bool* isGroundTarget);
 
-        public static Hook<UseActionDelegate> UseActionHook;
+        public new static Hook<UseActionDelegate>? UseActionHook;
 
         public class Configs : FeatureConfig
         {
@@ -32,7 +32,7 @@ namespace PandorasBox.Features.Actions
             public bool AutoDecipher = false;
         }
 
-        public Configs Config { get; private set; }
+        public Configs Config { get; private set; } = null!;
 
         public override bool UseAutoConfig => true;
         public override void Enable()
@@ -50,7 +50,7 @@ namespace PandorasBox.Features.Actions
                 if (ActionManager.Instance()->GetActionStatus(ActionType.Item, actionID, Svc.ClientState.LocalContentId) != 0)
                 {
                     TaskManager.Abort();
-                    return UseActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+                    return UseActionHook!.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
                 }
 
                 if (Svc.Data.GetExcelSheet<Item>().FindFirst(x => x.RowId == actionID, out var item) && item.FilterGroup == 18)
@@ -59,13 +59,13 @@ namespace PandorasBox.Features.Actions
 
                     if (Config.AutoDecipher)
                     {
-                        TaskManager.DelayNext(200);
+                        TaskManager.EnqueueDelay(200);
                         TaskManager.Enqueue(() => ConfirmYesNo());
                     }
                 }
             }
 
-            return UseActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+            return UseActionHook!.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
         }
 
         private unsafe bool? OpenItem(uint ItemId)
@@ -172,7 +172,7 @@ namespace PandorasBox.Features.Actions
                 addon->YesButton->IsEnabled &&
                 addon->AtkUnitBase.UldManager.NodeList[15]->IsVisible())
             {
-                new SelectYesnoMaster((IntPtr)addon).Yes();
+                new AddonMaster.SelectYesno((IntPtr)addon).Yes();
                 return true;
             }
 
@@ -182,7 +182,7 @@ namespace PandorasBox.Features.Actions
         public override void Disable()
         {
             SaveConfig(Config);
-            UseActionHook.Disable();
+            UseActionHook?.Disable();
             base.Disable();
         }
 

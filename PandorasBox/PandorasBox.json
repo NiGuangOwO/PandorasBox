@@ -5,12 +5,13 @@
     "Description": "Pandora's Box是一个改善游戏体验和一些功能调整的集合",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
-    "DalamudApiLevel": 11,
+    "DalamudApiLevel": 12,
     "IconUrl": "https://s3.puni.sh/media/plugin/8/icon-9opcpzqyh1h.png",
     "RepoUrl": "https://github.com/PunishXIV/PandorasBox",
     "DownloadLinkTesting": "https://love.puni.sh/plugins/Pandora/Testing/latest.zip",
     "Tags": [
         "punish",
         "plugin"
-    ]
+    ],
+    "ChangeLog":  "- New command /puseitem."
 }

@@ -2,8 +2,8 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
-using ECommons.EzHookManager;
 using ECommons.GameHelpers;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using PandorasBox.FeaturesSetup;
 
 namespace PandorasBox.Features.Actions
@@ -18,12 +18,11 @@ namespace PandorasBox.Features.Actions
 
         public override void Enable()
         {
-            TaskManager.ShowDebug = false;
             Svc.Framework.Update += RunFeature;
             base.Enable();
         }
 
-        private void RunFeature(IFramework framework)
+        private unsafe void RunFeature(IFramework framework)
         {
             if (Player.Object is null) return;
             var isMonk = Player.Job == Job.MNK;
@@ -34,11 +33,14 @@ namespace PandorasBox.Features.Actions
 
             if (!Svc.Condition[ConditionFlag.InCombat])
             {
-                TaskManager.DelayNext(1000);
+                TaskManager.EnqueueDelay(1000);
                 TaskManager.Enqueue(() =>
                 {
                     if (Svc.Condition[ConditionFlag.InCombat]) return;
-                    if (Player.Level >= 54 && isMonk && Common.IsActionUnlocked(36942))
+
+                    if (TerritoryInfo.Instance()->InSanctuary) return;
+                    if (Player.Level >= 54 && isMonk && IsActionUnlocked(36942))
+
                     {
                         UseAction(36942);
                     }

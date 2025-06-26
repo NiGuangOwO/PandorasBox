@@ -21,39 +21,36 @@ public class PandorasBox : IDalamudPlugin
     internal WindowSystem Ws;
     internal MainWindow MainWindow;
 
-    internal static PandorasBox P;
-    internal static IDalamudPluginInterface pi;
-    internal static Configuration Config;
+    public static PandorasBox P { get; private set; } = null!;
+    public static Configuration Config { get; private set; } = null!;
 
-    public List<FeatureProvider> FeatureProviders = new();
+    public List<FeatureProvider> FeatureProviders = [];
     private FeatureProvider provider;
     public IEnumerable<BaseFeature> Features => FeatureProviders.Where(x => !x.Disposed).SelectMany(x => x.Features).OrderBy(x => x.Name);
     private bool isDev;
-    public PandorasBox(IDalamudPluginInterface pluginInterface)
+
+    public PandorasBox(IDalamudPluginInterface pluginInterface, IFramework framework)
     {
         P = this;
-        pi = pluginInterface;
-        Initialize();
+        Ws = new();
+        MainWindow = new();
+        provider = new FeatureProvider(Assembly.GetExecutingAssembly());
+        _ = framework.RunOnFrameworkThread(() =>
+        {
+            ECommonsMain.Init(pluginInterface, P, ECommons.Module.All);
+            Initialize();
+        });
     }
 
     private void Initialize()
     {
-#if !DEBUG
-        if (pi.IsDev || !pi.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
-        {
-            isDev = true;
-            return;
-        }
-#endif
-        ECommonsMain.Init(pi, P, ECommons.Module.All);
-        PunishLibMain.Init(pi, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO" });
-        Ws = new();
-        MainWindow = new();
+        PunishLibMain.Init(Svc.PluginInterface, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO"  });
+
         Ws.AddWindow(MainWindow);
-        Config = pi.GetPluginConfig() as Configuration ?? new Configuration();
+        Config = Svc.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Config.Initialize(Svc.PluginInterface);
 
-        Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
+        _ = Svc.Commands.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "打开PandorasBox菜单。",
             ShowInHelp = true
@@ -61,14 +58,10 @@ public class PandorasBox : IDalamudPlugin
 
         Svc.PluginInterface.UiBuilder.Draw += Ws.Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-        Common.Setup();
         PandoraIPC.Init();
         Events.Init();
-        AFKTimer.Init();
-        provider = new FeatureProvider(Assembly.GetExecutingAssembly());
         provider.LoadFeatures();
         FeatureProviders.Add(provider);
-
     }
 
 
@@ -90,16 +83,11 @@ public class PandorasBox : IDalamudPlugin
         Svc.PluginInterface.UiBuilder.Draw -= Ws.Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUI;
         Ws.RemoveAllWindows();
-        MainWindow = null;
-        Ws = null;
         ECommonsMain.Dispose();
         PunishLibMain.Dispose();
         FeatureProviders.Clear();
-        Common.Shutdown();
         PandoraIPC.Dispose();
         Events.Disable();
-        AFKTimer.Dispose();
-        P = null;
     }
 
     private void OnCommand(string command, string args)

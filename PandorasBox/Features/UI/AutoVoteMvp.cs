@@ -1,11 +1,9 @@
 using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Memory;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
-using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -71,8 +69,8 @@ public class AutoVoteMvp : Feature
             {
                 foreach (var partyMember in Svc.Party)
                 {
-                    Svc.Log.Debug($"Adding {partyMember.Name.ExtractText()} {partyMember.ObjectId} to premade list");
-                    PremadePartyID.Add(partyMember.Name.ExtractText());
+                    Svc.Log.Debug($"Adding {partyMember.Name.GetText()} {partyMember.ObjectId} to premade list");
+                    PremadePartyID.Add(partyMember.Name.GetText());
                 }
             }
 
@@ -161,7 +159,7 @@ public class AutoVoteMvp : Feature
         }
 
         var list = Svc.Party.Where(i =>
-        i.ObjectId != Player.Object.GameObjectId && i.GameObject != null && !PremadePartyID.Any(y => y == i.Name.ExtractText()))
+        i.ObjectId != Player.Object.GameObjectId && i.GameObject != null && !PremadePartyID.Any(y => y == i.Name.GetText()))
             .Select(PartyMember => (Math.Max(0, GetPartySlotIndex(PartyMember.ObjectId, hud) - 1), PartyMember))
             .ToList();
 
@@ -206,7 +204,8 @@ public class AutoVoteMvp : Feature
 
         for (int i = 22; i <= 22 + 7; i++)
         {
-            var name = MemoryHelper.ReadSeStringNullTerminated(new nint(bannerWindow->AtkValues[i].String)).ToString();
+            if (bannerWindow->AtkValues[i].Type != FFXIVClientStructs.FFXIV.Component.GUI.ValueType.String) continue;
+            var name = bannerWindow->AtkValues[i].String;
             if (name == voteTarget.member.Name.TextValue)
             {
                 if (!Config.HideChat)
@@ -280,7 +279,7 @@ public class AutoVoteMvp : Feature
 
         if (Config.ExcludeDeaths)
         {
-            if (ImGuiEx.InputIntBounded("大于等于多少次不投他？", ref Config.HowManyDeaths, 1, 100)) hasChanged = true;
+            if (ImGui.DragInt("大于等于多少次", ref Config.HowManyDeaths, 0.01f, 1, 100)) hasChanged = true;
             if (ImGui.Checkbox("团灭时重置死亡次数统计", ref Config.ResetOnWipe)) hasChanged = true;
         }
 

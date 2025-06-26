@@ -29,7 +29,7 @@ namespace PandorasBox.Features.UI
             {
                 if (IsPrivatePF(addon) || IsSelfParty(addon)) { TaskManager.Abort(); return; }
                 TaskManager.Enqueue(() => !(IsPrivatePF(addon) || IsSelfParty(addon)));
-                TaskManager.DelayNext($"ClickingJoin", 300);
+                TaskManager.EnqueueDelay(300);
                 TaskManager.Enqueue(() => Callback.Fire((AtkUnitBase*)addon, false, 0));
                 TaskManager.Enqueue(() => ConfirmYesNo());
             }
@@ -61,7 +61,7 @@ namespace PandorasBox.Features.UI
                 addon->YesButton->IsEnabled &&
                 addon->AtkUnitBase.UldManager.NodeList[15]->IsVisible())
             {
-                new SelectYesnoMaster((IntPtr)addon).Yes();
+                new AddonMaster.SelectYesno((IntPtr)addon).Yes();
                 return true;
             }
 

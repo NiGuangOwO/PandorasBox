@@ -5,6 +5,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using System.Linq;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace PandorasBox.Features.Targets
 {
@@ -23,12 +25,13 @@ namespace PandorasBox.Features.Targets
         private unsafe void Framework_Update(IFramework framework)
         {
             var fate = FateManager.Instance();
+            var am = ActionManager.Instance();
             if (fate != null && fate->CurrentFate != null && Svc.ClientState.LocalPlayer?.Level < fate->FateDirector->FateLevel + 6)
             {
                 var tar = Svc.Targets.Target;
                 if (tar == null || tar.IsDead || (tar.Struct()->FateId == 0 && tar.IsHostile()))
                 {
-                    if (Svc.Objects.OrderBy(GameObjectHelper.GetTargetDistance).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
+                    if (Svc.Objects.OrderBy(x => am->DistanceToTargetHitbox).TryGetFirst(x => x.Struct()->FateId == fate->CurrentFate->FateId && x.IsHostile(), out var newTar))
                     {
                         Svc.Targets.Target = newTar;
                     }
