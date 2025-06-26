@@ -31,6 +31,13 @@ public class PandorasBox : IDalamudPlugin
 
     public PandorasBox(IDalamudPluginInterface pluginInterface, IFramework framework)
     {
+#if !DEBUG
+        if (pluginInterface.IsDev || !pluginInterface.SourceRepository.Contains("NiGuangOwO"))
+        {
+            isDev = true;
+            return;
+        }
+#endif
         P = this;
         Ws = new();
         MainWindow = new();
@@ -44,7 +51,7 @@ public class PandorasBox : IDalamudPlugin
 
     private void Initialize()
     {
-        PunishLibMain.Init(Svc.PluginInterface, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO"  });
+        PunishLibMain.Init(Svc.PluginInterface, "Pandora's Box", new AboutPlugin() { Sponsor = "https://ko-fi.com/taurenkey", Translator = "NiGuangOwO", Afdian = "https://afdian.com/a/NiGuangOwO" });
 
         Ws.AddWindow(MainWindow);
         Config = Svc.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -67,10 +74,8 @@ public class PandorasBox : IDalamudPlugin
 
     public void Dispose()
     {
-#if !DEBUG
-        if (pi.IsDev || !pi.SourceRepository.Contains("NiGuangOwO/DalamudPlugins"))
+        if (isDev)
             return;
-#endif
         Svc.Commands.RemoveHandler(CommandName);
         foreach (var f in Features.Where(x => x is not null && x.Enabled))
         {

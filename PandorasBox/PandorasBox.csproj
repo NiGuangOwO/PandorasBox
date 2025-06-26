@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/12.0.2">
+<Project Sdk="Dalamud.CN.NET.Sdk/12.0.2">
     <PropertyGroup>
         <Authors>Puni.sh</Authors>
         <Version>1.6.3.6</Version>
         <LangVersion>preview</LangVersion>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <OutputPath>bin/Release</OutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <OutputPath>$(DalamudDevPlugins)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -45,7 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PunishLib\PunishLib\PunishLib.csproj" />
-        <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
+      <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
+      <ProjectReference Include="..\..\PunishLib\PunishLib\PunishLib.csproj" />
     </ItemGroup>
 </Project>
