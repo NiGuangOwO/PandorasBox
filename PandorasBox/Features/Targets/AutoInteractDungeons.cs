@@ -4,7 +4,7 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
@@ -127,7 +127,7 @@ namespace PandorasBox.Features.Targets
                     if (!TargetSystem.Instance()->IsObjectInViewRange(baseObj)) continue;
 
                     if (Svc.Data.GetExcelSheet<EObj>().TryGetFirst(x => x.RowId == baseObj->BaseId, out var sheetItem))
-                        if ((sheetItem.SgbPath.Value.SgbPath.ToString().Contains("bgcommon/world/lvd/shared/for_vfx/sgvf_w_lvd_b0005.sgb") || Exits.Contains(sheetItem.RowId)) && Config.ExcludeExit)
+                        if (Config.ExcludeExit && (sheetItem.SgbPath.ValueNullable?.SgbPath.ToString().Contains("bgcommon/world/lvd/shared/for_vfx/sgvf_w_lvd_b0005.sgb") == true || Exits.Contains(sheetItem.RowId)))
                             continue;
 
                     if (!TaskManager.IsBusy)

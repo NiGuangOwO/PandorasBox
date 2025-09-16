@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.CN.NET.Sdk/12.0.2">
+<Project Sdk="Dalamud.CN.NET.Sdk/13.1.0">
     <PropertyGroup>
         <Authors>Puni.sh</Authors>
-        <Version>1.6.3.6</Version>
+        <Version>1.6.3.18</Version>
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ECommons" Version="3.0.1.7" />
         <PackageReference Include="NAudio" Version="2.1.0" />
         <Reference Include="JetBrains.Annotations">
             <Private>false</Private>
             <HintPath>$(DalamudLibPath)\JetBrains.Annotations.dll</HintPath>
         </Reference>
+        <PackageReference Update="DalamudPackager" Version="13.0.0" />
     </ItemGroup>
 
     <ItemGroup>

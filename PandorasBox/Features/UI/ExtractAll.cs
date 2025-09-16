@@ -4,7 +4,7 @@ using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
@@ -41,7 +41,7 @@ namespace PandorasBox.Features.UI
             {
                 if (Svc.GameGui.GetAddonByName("Materialize", 1) != IntPtr.Zero)
                 {
-                    var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1);
+                    var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1).Address;
                     if (!ptr->IsVisible)
                         return;
 
@@ -85,9 +85,7 @@ namespace PandorasBox.Features.UI
                     {
                         if (ImGui.Button($"精制中...点击来中止###AbortExtract", size))
                         {
-                            Extracting = false;
-                            TaskManager.Abort();
-                            TaskManager.Enqueue(() => YesAlready.Unlock());
+                            Abort();
                         }
                     }
 
@@ -100,15 +98,20 @@ namespace PandorasBox.Features.UI
                 }
                 else
                 {
-                    Extracting = false;
-                    TaskManager.Abort();
-                    TaskManager.Enqueue(() => YesAlready.Unlock());
+                    Abort();
                 }
             }
             catch (Exception e)
             {
                 Svc.Log.Debug(e, "ExtractAllException");
             }
+        }
+
+        private void Abort()
+        {
+            Extracting = false;
+            TaskManager.Abort();
+            TaskManager.Enqueue(() => YesAlready.Unlock());
         }
 
         private void TryExtractAll()
@@ -355,8 +358,7 @@ namespace PandorasBox.Features.UI
                     TaskManager.Enqueue(() => ConfirmMateriaDialog(), "ConfirmMateriaDialog");
                 }
             }
-            TaskManager.Enqueue(() => { Extracting = false; return true; });
-            TaskManager.Enqueue(() => YesAlready.Unlock(), "YesAlreadyUnlock");
+            TaskManager.Enqueue(() => Abort());
         }
 
         public static unsafe void CloseMateriaMenu()
@@ -375,7 +377,7 @@ namespace PandorasBox.Features.UI
 
             if (Svc.GameGui.GetAddonByName("Materialize", 1) != IntPtr.Zero)
             {
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1);
+                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1).Address;
                 var values = stackalloc AtkValue[2];
                 values[0] = new AtkValue()
                 {
@@ -409,7 +411,7 @@ namespace PandorasBox.Features.UI
                 if (materializePTR == IntPtr.Zero)
                     return true;
 
-                var materalizeWindow = (AtkUnitBase*)materializePTR;
+                var materalizeWindow = (AtkUnitBase*)materializePTR.Address;
                 if (materalizeWindow == null)
                     return true;
 
@@ -444,7 +446,7 @@ namespace PandorasBox.Features.UI
                 UInt = 0,
             };
 
-            var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1);
+            var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1).Address;
             if (ptr == null) return true;
 
             ptr->FireCallback(2, values);
@@ -457,7 +459,7 @@ namespace PandorasBox.Features.UI
             OverlayWindow = null!;
             if (Svc.GameGui.GetAddonByName("Materialize", 1) != IntPtr.Zero)
             {
-                var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1);
+                var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1).Address;
 
                 var node = ptr->UldManager.NodeList[2];
 
