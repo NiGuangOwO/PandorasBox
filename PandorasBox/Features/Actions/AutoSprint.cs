@@ -1,9 +1,9 @@
+using Dalamud.Bindings.ImGui;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using System.Linq;
@@ -39,7 +39,8 @@ namespace PandorasBox.Features.Actions
 
         private void RunFeature(IFramework framework)
         {
-            if (Svc.Objects.LocalPlayer == null) return;
+            if (Svc.Objects.LocalPlayer == null)
+                return;
 
             if (!TerritoryInfo.Instance()->InSanctuary || MJIManager.Instance()->IsPlayerInSanctuary)
                 return;
@@ -48,7 +49,8 @@ namespace PandorasBox.Features.Actions
             {
                 var r = new Regex("/hou/|/ind/");
                 var loc = Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Svc.ClientState.TerritoryType).Bg.ToString();
-                if (r.IsMatch(loc)) return;
+                if (r.IsMatch(loc))
+                    return;
             }
 
             if (IsRpWalking() && !Config.RPWalk)
@@ -56,7 +58,7 @@ namespace PandorasBox.Features.Actions
 
             var am = ActionManager.Instance();
             var isSprintReady = am->GetActionStatus(ActionType.GeneralAction, 4) == 0;
-            var hasSprintBuff = Svc.Objects.LocalPlayer?.StatusList.Any(x => x.StatusId == 50);
+            var hasSprintBuff = Svc.Objects.LocalPlayer.StatusList.Any(x => x.StatusId == 50);
 
             if (isSprintReady && !hasSprintBuff && IsMoving() && !TaskManager.IsBusy)
             {
@@ -88,9 +90,12 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
-            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk)) hasChanged = true;
-            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing)) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f"))
+                hasChanged = true;
+            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk))
+                hasChanged = true;
+            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing))
+                hasChanged = true;
         };
     }
 }

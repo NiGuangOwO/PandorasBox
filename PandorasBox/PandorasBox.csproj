@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.CN.NET.Sdk/13.1.0">
+<Project Sdk="Dalamud.CN.NET.Sdk/14.0.1">
     <PropertyGroup>
         <Authors>Puni.sh</Authors>
         <Version>1.6.3.24</Version>
         <LangVersion>preview</LangVersion>
         <TargetFramework>net10.0-windows7.0</TargetFramework>
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NAudio" Version="2.1.0" />
+        <PackageReference Include="ECommons" Version="3.1.0.6" />
+        <PackageReference Include="NAudio" Version="2.2.1" />
         <Reference Include="JetBrains.Annotations">
             <Private>false</Private>
             <HintPath>$(DalamudLibPath)\JetBrains.Annotations.dll</HintPath>
         </Reference>
-        <PackageReference Update="DalamudPackager" Version="13.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,7 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
       <ProjectReference Include="..\..\PunishLib\PunishLib\PunishLib.csproj" />
     </ItemGroup>
 </Project>
