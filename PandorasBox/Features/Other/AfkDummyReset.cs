@@ -40,7 +40,7 @@ namespace PandorasBox.Features.Other
 
         private unsafe bool UseActionDetour(ActionManager* am, ActionType type, uint acId, long target, uint a5, uint a6, uint a7, void* a8)
         {
-            if (type is ActionType.Action or ActionType.Ability)
+            if (type is ActionType.Action)
             {
                 try
                 {
@@ -51,7 +51,7 @@ namespace PandorasBox.Features.Other
 
                     var delay = (Config.InactivityTimer * 1000) + (Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Action>().GetRow(am->GetAdjustedActionId(acId)).Cast100ms * 100);
                     TaskManager.EnqueueDelay(delay);
-                    TaskManager.Enqueue(() => { Chat.Instance.SendMessage("/presetenmity"); });
+                    TaskManager.Enqueue(() => { Chat.SendMessage("/presetenmity"); });
                 }
                 catch(Exception ex)
                 {
