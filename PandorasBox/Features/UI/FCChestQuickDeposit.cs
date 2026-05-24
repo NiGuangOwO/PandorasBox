@@ -1,42 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Utility;
 using ECommons;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace PandorasBox.Features.UI
 {
     internal unsafe class FCChestQuickDeposit : Feature
     {
-        public delegate nint MoveItemDelegate(void* agent, InventoryType srcInv, uint srcSlot, InventoryType dstInv, uint dstSlot);
-        public MoveItemDelegate? MoveItem;
-        internal nint address;
-
         public override string Name => "部队保险箱快速存入";
-
         public override bool FeatureDisabled => false;
-
-        public override string DisabledReason => "Issues with crashing";
-
+        public override string DisabledReason => "功能爆炸中";
         public override string Description => "在部队保险箱打开时为道具添加右键菜单，以便快速存放它们。";
-
         public override FeatureType FeatureType => FeatureType.UI;
 
-        private IContextMenu contextMenu;
-
-        private static readonly SeString DepositString = new SeString(PandoraPayload.Payloads.ToArray()).Append(new TextPayload("存入部队保险箱"));
-
+        public Configs Config { get; private set; } = null!;
         public override bool UseAutoConfig => true;
         public class Configs : FeatureConfig
         {
@@ -44,18 +34,14 @@ namespace PandorasBox.Features.UI
             public bool UseShortcut = false;
         }
 
-        public Configs Config { get; private set; }
+        private static readonly SeString DepositString = new SeString().Append(new TextPayload("Deposit into FC Chest"));
+        private readonly AgentFreeCompanyChest.Delegates.MoveItemInChest moveItemHook = Marshal.GetDelegateForFunctionPointer<AgentFreeCompanyChest.Delegates.MoveItemInChest>((nint)AgentFreeCompanyChest.MemberFunctionPointers.MoveItemInChest);
 
         public override void Enable()
         {
-            if (Svc.SigScanner.TryScanText("40 53 55 56 57 41 57 48 83 EC ?? 45 33 FF", out address))
-            {
-                contextMenu = Svc.ContextMenu;
-                contextMenu.OnMenuOpened += AddInventoryItem;
-                MoveItem = Marshal.GetDelegateForFunctionPointer<MoveItemDelegate>(address);
-                Config = LoadConfig<Configs>() ?? new Configs();
-                base.Enable();
-            }
+            Svc.ContextMenu.OnMenuOpened += AddInventoryItem;
+            Config = LoadConfig<Configs>() ?? new Configs();
+            base.Enable();
         }
 
         private void AddInventoryItem(IMenuOpenedArgs args)
@@ -80,19 +66,21 @@ namespace PandorasBox.Features.UI
             }
         }
 
-        private unsafe MenuItem CheckInventoryItem(uint ItemId, bool itemHq, int itemAmount)
+        private unsafe MenuItem? CheckInventoryItem(uint ItemId, bool itemHq, int itemAmount)
         {
-            
+
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("FreeCompanyChest", out var addon))
             {
                 if (!addon->IsVisible) return null;
                 if (addon->UldManager.NodeList[4]->IsVisible()) return null;
                 if (addon->UldManager.NodeList[7]->IsVisible()) return null;
 
+                if (ItemId >= 1_000_000) ItemId -= 1_000_000;
                 if (Svc.Data.GetExcelSheet<Item>()!.FindFirst(x => x.RowId == ItemId, out var sheetItem))
                 {
                     if (sheetItem.IsUntradable) return null;
                     var menu = new MenuItem();
+                    menu.Prefix = Dalamud.Game.Text.SeIconChar.BoxedLetterP;
                     menu.Name = DepositString;
                     menu.OnClicked += _ => DepositItem(ItemId, addon, itemHq, itemAmount);
                     return menu;
@@ -132,7 +120,7 @@ namespace PandorasBox.Features.UI
             {
                 try
                 {
-                    MoveItem(UIModule.Instance()->GetAgentModule()->GetAgentByInternalId(AgentId.FreeCompanyChest), (InventoryType)sourceInventory, (uint)slot, (InventoryType)FCPage, (uint)destSlot);
+                    moveItemHook(AgentFreeCompanyChest.Instance(), (InventoryType)sourceInventory, (uint)slot, (InventoryType)FCPage, (uint)destSlot);
                 }
                 catch (Exception ex)
                 {
@@ -212,16 +200,9 @@ namespace PandorasBox.Features.UI
 
         public override void Disable()
         {
-            contextMenu.OnMenuOpened -= AddInventoryItem;
+            Svc.ContextMenu.OnMenuOpened -= AddInventoryItem;
             SaveConfig(Config);
-            base.Disable();
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
 
         public const int SatisfactionSupplyItemIdx = 0x54;
         public const int SatisfactionSupplyItem1Id = 0x80 + 1 * 0x3C;
@@ -272,13 +253,7 @@ namespace PandorasBox.Features.UI
             return item;
         }
 
-        private uint GetObjectItemId(uint itemId)
-        {
-            if (itemId > 500000)
-                itemId -= 500000;
-
-            return itemId;
-        }
+        private static uint GetObjectItemId(uint itemId) => ItemUtil.GetBaseId(itemId).ItemId;
 
         private unsafe uint? GetObjectItemId(IntPtr agent, int offset)
             => agent != IntPtr.Zero ? GetObjectItemId(*(uint*)(agent + offset)) : null;

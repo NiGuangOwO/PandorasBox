@@ -17,9 +17,9 @@ namespace PandorasBox.Features.UI
 
         public override FeatureType FeatureType => FeatureType.UI;
 
-        public override bool FeatureDisabled => false;
+        public override bool FeatureDisabled => true;
 
-        public override string DisabledReason => "Issues with crashing";
+        public override string DisabledReason => "Moved to CBT";
 
         public List<InventorySlot> inventorySlots = new();
 

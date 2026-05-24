@@ -5,7 +5,7 @@
     "Description": "Pandora's Box是一个改善游戏体验和一些功能调整的集合",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
-    "DalamudApiLevel": 14,
+    "DalamudApiLevel": 15,
     "IconUrl": "https://s3.puni.sh/media/plugin/8/icon-9opcpzqyh1h.png",
     "RepoUrl": "https://github.com/PunishXIV/PandorasBox",
     "DownloadLinkTesting": "https://love.puni.sh/plugins/Pandora/Testing/latest.zip",
@@ -13,5 +13,5 @@
         "punish",
         "plugin"
     ],
-    "ChangeLog":  "- 7.4"
+    "ChangeLog":  "- Add new feature to disable known glamours in glamour creation"
 }

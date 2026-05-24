@@ -1,26 +1,23 @@
+using System.Collections.Generic;
+using System.Linq;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.DutyState;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using PandorasBox.FeaturesSetup;
-using System.Collections.Generic;
-using System.Linq;
-using PlayerState = FFXIVClientStructs.FFXIV.Client.Game.UI.PlayerState;
 
 namespace PandorasBox.Features.Actions
 {
     public unsafe class AutoTankStance : Feature
     {
         public override string Name => "自动盾姿";
-
         public override string Description => "在切换职业或进入迷宫时自动激活你的盾姿。";
-
         public override FeatureType FeatureType => FeatureType.Actions;
 
-        public List<uint> Stances { get; set; } = new List<uint>() { 79, 91, 743, 1833 };
-
+        public List<uint> Stances { get; set; } = [79, 91, 743, 1833];
         public uint MainTank = 0;
 
         public class Configs : FeatureConfig
@@ -44,32 +41,52 @@ namespace PandorasBox.Features.Actions
             public bool ActivateInFate = false;
         }
 
-        public Configs? Config { get; private set; }
-
+        public Configs? Config { get; private set; } = null!;
         public override bool UseAutoConfig => true;
-
 
         public override void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
-            Events.OnJobChanged += RunFeature;
-            Svc.ClientState.TerritoryChanged += CheckIfDungeon;
+            Svc.ClientState.ClassJobChanged += OnClassChange;
+            Svc.ClientState.LevelChanged += OnLevelChange;
+            Svc.DutyState.DutyStarted += OnDutyStart;
             Svc.Framework.Update += CheckParty;
-            Svc.Framework.Update += CheckForFateSync;
             base.Enable();
+        }
+
+        private void OnLevelChange(uint classJobId, uint level)
+        {
+            if (HasStance()) return;
+            if (Config!.ActivateInFate && FateManager.Instance()->CurrentFate != null)
+                TaskManager!.Enqueue(EnableStance, "FateSync");
+        }
+
+        private void OnDutyStart(IDutyStateEventArgs args)
+        {
+            if (HasStance()) return;
+            if (GameMain.Instance()->CurrentContentFinderConditionId == 0)
+            {
+                TaskManager!.Abort();
+                return;
+            }
+            TaskManager!.Enqueue(() => Player.Available);
+            TaskManager!.Enqueue(() => Svc.DutyState.IsDutyStarted);
+            TaskManager!.Enqueue(() => EnableStance(), "TankStanceDungeonEnabled");
+        }
+
+        private void OnClassChange(uint classJobId)
+        {
+            if (HasStance(classJobId)) return;
+            TaskManager!.Enqueue(EnableStance, "JobChange");
         }
 
         private void CheckParty(IFramework framework)
         {
             if (Svc.Party.Length == 0 || Svc.Party.Any(x => x == null) || Svc.Objects.LocalPlayer == null || Svc.Condition[ConditionFlag.BetweenAreas]) return;
             if (Config!.ActivateOnDeath && Svc.Party.Any(x => x != null && x.EntityId != Svc.Objects.LocalPlayer?.GameObjectId && x.Statuses.Any(y => Stances.Any(z => y.StatusId == z))))
-            {
                 MainTank = Svc.Party.First(x => x != null && x.EntityId != Svc.Objects.LocalPlayer.GameObjectId && x.Statuses.Any(y => Stances.Any(z => y.StatusId == z))).EntityId;
-            }
             else
-            {
                 MainTank = 0;
-            }
 
             if (Svc.Party.Any(x => x.EntityId == MainTank))
             {
@@ -81,39 +98,10 @@ namespace PandorasBox.Features.Actions
             }
         }
 
-        private void CheckIfDungeon(ushort e)
-        {
-            if (GameMain.Instance()->CurrentContentFinderConditionId == 0)
-            {
-                TaskManager!.Abort();
-                return;
-            }
-            TaskManager!.Enqueue(() => Player.Available);
-            TaskManager!.Enqueue(() => Svc.DutyState.IsDutyStarted);
-            TaskManager!.Enqueue(() => EnableStance(), "TankStanceDungeonEnabled");
-
-        }
-
-        private void CheckForFateSync(IFramework framework)
-        {
-            if (HasStance()) return;
-            var ps = PlayerState.Instance();
-            if (Config!.ActivateInFate && FateManager.Instance()->CurrentFate != null)
-            {
-                TaskManager!.Enqueue(() => EnableStance(), "FateSync");
-            }
-        }
-
-        private void RunFeature(uint? jobId)
-        {
-            if (HasStance()) return;
-            EnableStance();
-        }
-
-        private bool HasStance()
+        private static bool HasStance(uint classJobId = 0)
         {
             if (!Player.Available) return false;
-            ushort stance = Svc.Objects.LocalPlayer?.ClassJob.RowId switch
+            ushort stance = (classJobId == 0 ? Svc.Objects.LocalPlayer?.ClassJob.RowId : classJobId) switch
             {
                 1 or 19 => 79,
                 3 or 21 => 91,
@@ -126,6 +114,7 @@ namespace PandorasBox.Features.Actions
             if (Svc.Objects.LocalPlayer!.StatusList.Any(x => x.StatusId == stance)) return true;
             return false;
         }
+
         private bool EnableStance()
         {
             if (Svc.Objects.LocalPlayer?.GetRole() is not CombatRole.Tank) return true;
@@ -166,10 +155,10 @@ namespace PandorasBox.Features.Actions
         public override void Disable()
         {
             SaveConfig(Config);
-            Events.OnJobChanged -= RunFeature;
-            Svc.ClientState.TerritoryChanged -= CheckIfDungeon;
+            Svc.ClientState.ClassJobChanged -= OnClassChange;
+            Svc.ClientState.LevelChanged -= OnLevelChange;
+            Svc.DutyState.DutyStarted -= OnDutyStart;
             Svc.Framework.Update -= CheckParty;
-            Svc.Framework.Update -= CheckForFateSync;
             base.Disable();
         }
     }

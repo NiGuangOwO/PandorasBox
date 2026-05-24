@@ -2,15 +2,16 @@
 <Project Sdk="Dalamud.CN.NET.Sdk/14.0.1">
     <PropertyGroup>
         <Authors>Puni.sh</Authors>
-        <Version>1.6.3.24</Version>
+        <Version>1.6.4.3</Version>
         <LangVersion>preview</LangVersion>
         <TargetFramework>net10.0-windows7.0</TargetFramework>
         <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ECommons" Version="3.1.0.6" />
-        <PackageReference Include="NAudio" Version="2.2.1" />
+        <PackageReference Include="AllaganLib.GameSheets" Version="2.2.0" />
+        <PackageReference Include="ECommons" Version="3.2.0.16" />
+        <PackageReference Include="NAudio" Version="2.1.0" />
         <Reference Include="JetBrains.Annotations">
             <Private>false</Private>
             <HintPath>$(DalamudLibPath)\JetBrains.Annotations.dll</HintPath>

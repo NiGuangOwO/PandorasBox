@@ -5,6 +5,7 @@ using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
+using Dalamud.Game.Chat;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Text;
@@ -138,8 +139,7 @@ namespace PandorasBox.Features.Other
             (39591, new uint[]{846, 844, 824, 823}),                                         // Ophiotauroskin
          };
 
-        private delegate void QuickGatherToggleDelegate(AddonGathering* a1);
-        private Hook<QuickGatherToggleDelegate> quickGatherToggle;
+        private Hook<AddonGathering.Delegates.NotifyQuickGatherState> quickGatherToggle = null!;
 
         internal Vector4 DarkTheme = new Vector4(0.26f, 0.26f, 0.26f, 1f);
         internal Vector4 LightTheme = new Vector4(0.97f, 0.87f, 0.75f, 1f);
@@ -228,7 +228,7 @@ namespace PandorasBox.Features.Other
             overlay = new Overlays(this);
             Config = LoadConfig<Configs>() ?? new Configs();
 
-            quickGatherToggle ??= Svc.Hook.HookFromSignature<QuickGatherToggleDelegate>("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 80 B9 ?? ?? ?? ?? ?? 0F 85 ?? ?? ?? ?? 48 8B 84 24 ?? ?? ?? ??", QuickGatherToggle);
+            quickGatherToggle ??= Svc.Hook.HookFromAddress<AddonGathering.Delegates.NotifyQuickGatherState>((nint)AddonGathering.MemberFunctionPointers.NotifyQuickGatherState, QuickGatherToggle);
 
             Svc.AddonLifecycle.RegisterListener(AddonEvent.PostReceiveEvent, "Gathering", OnEvent);
             Svc.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "Gathering", AddonSetup);
@@ -249,9 +249,9 @@ namespace PandorasBox.Features.Other
             }
         }
 
-        private void CheckRevisit(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
+        private void CheckRevisit(IHandleableChatMessage handler)
         {
-            if (type is (XivChatType)2107 && CurrentIntegrity == 0)
+            if (handler.LogKind is (XivChatType)2107 && CurrentIntegrity == 0)
             {
                 TaskManager.Abort();
                 TaskManager.EnqueueDelay(1000);
@@ -319,7 +319,7 @@ namespace PandorasBox.Features.Other
                     1 => LightTheme,
                     2 => ClassicFFTheme,
                     3 => LightBlueTheme,
-                    _ => throw new NotImplementedException()
+                    _ => DarkTheme
                 };
 
                 if (color == 3)
@@ -1084,13 +1084,13 @@ namespace PandorasBox.Features.Other
 
         }
 
-        private void QuickGatherToggle(AddonGathering* a1)
+        private void QuickGatherToggle(AddonGathering* thisPtr)
         {
-            if (a1 == null && Svc.GameGui.GetAddonByName("Gathering") != nint.Zero)
-                a1 = (AddonGathering*)Svc.GameGui.GetAddonByName("Gathering", 1).Address;
+            if (thisPtr == null && Svc.GameGui.GetAddonByName("Gathering") != nint.Zero)
+                thisPtr = (AddonGathering*)Svc.GameGui.GetAddonByName("Gathering", 1).Address;
 
-            a1->QuickGatheringComponentCheckBox->AtkComponentButton.Flags ^= 0x40000;
-            quickGatherToggle?.Original(a1);
+            thisPtr->QuickGatheringComponentCheckBox->AtkComponentButton.Flags ^= 0x40000;
+            quickGatherToggle?.Original(thisPtr);
         }
 
         private bool? UseWisdom()
