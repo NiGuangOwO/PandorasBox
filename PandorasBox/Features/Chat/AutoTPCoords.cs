@@ -1,7 +1,6 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Chat;
 using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using ECommons;
 using ECommons.DalamudServices;
@@ -78,7 +77,8 @@ namespace PandorasBox.Features.ChatFeature
                     coordX = mapLinkload.XCoord;
                     coordY = mapLinkload.YCoord;
                     Svc.Log.Debug($"TerritoryId: {mapLinkload.TerritoryType.RowId} {mapLinkload.PlaceName} ({coordX} ,{coordY})");
-                    if (Config.DisableSameZone && maplinkPayload.TerritoryType.RowId == Svc.ClientState.TerritoryType) return;
+                    if (Config.DisableSameZone && maplinkPayload.TerritoryType.RowId == Svc.ClientState.TerritoryType)
+                        return;
                 }
             }
 
@@ -115,11 +115,14 @@ namespace PandorasBox.Features.ChatFeature
                     return sameText;
                 });
 
-                if (alreadyInList) filteredOut = true;
-                if (!filteredOut && Config.FilteredChannels.IndexOf(handler.LogKind) != -1) filteredOut = true;
+                if (alreadyInList)
+                    filteredOut = true;
+                if (!filteredOut && Config.FilteredChannels.IndexOf(handler.LogKind) != -1)
+                    filteredOut = true;
                 if (!filteredOut)
                 {
-                    if (Config.IgnorePOS && newMapLinkMessage.Text.Contains("Z:")) return;
+                    if (Config.IgnorePOS && newMapLinkMessage.Text.Contains("Z:"))
+                        return;
 
                     MapLinkMessageList.Add(newMapLinkMessage);
                     TeleportToAetheryte(newMapLinkMessage);
@@ -155,9 +158,12 @@ namespace PandorasBox.Features.ChatFeature
             double distance = 0;
             foreach (var data in Aetherytes)
             {
-                if (!data.IsAetheryte) continue;
-                if (data.Territory.ValueNullable == null) continue;
-                if (data.PlaceName.ValueNullable == null) continue;
+                if (!data.IsAetheryte)
+                    continue;
+                if (data.Territory.ValueNullable == null)
+                    continue;
+                if (data.PlaceName.ValueNullable == null)
+                    continue;
                 var scale = maplinkMessage.Scale;
                 if (data.Territory.Value.RowId == maplinkMessage.TerritoryId)
                 {
@@ -205,7 +211,8 @@ namespace PandorasBox.Features.ChatFeature
 
         private void CheckForTeleporter(IFramework framework)
         {
-            if (Svc.ClientState.IsLoggedIn && !TeleporterIPC.IsEnabled()) this.Disable();
+            if (Svc.ClientState.IsLoggedIn && !TeleporterIPC.IsEnabled())
+                this.Disable();
         }
 
         public override void Disable()
@@ -218,15 +225,18 @@ namespace PandorasBox.Features.ChatFeature
 
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
-            if (ImGui.Checkbox("包括Sonar链接", ref Config.IncludeSonar)) hasChanged = true;
-            if (ImGui.Checkbox("忽略 <pos> 标签", ref Config.IgnorePOS)) hasChanged = true;
+            if (ImGui.Checkbox("包括Sonar链接", ref Config.IncludeSonar))
+                hasChanged = true;
+            if (ImGui.Checkbox("忽略 <pos> 标签", ref Config.IgnorePOS))
+                hasChanged = true;
 
             if (ImGui.CollapsingHeader("频道过滤 (白名单)"))
             {
                 ImGui.Indent();
                 foreach (XivChatType chatType in Enum.GetValues(typeof(XivChatType)))
                 {
-                    if (HiddenChatType.IndexOf(chatType) != -1) continue;
+                    if (HiddenChatType.IndexOf(chatType) != -1)
+                        continue;
 
                     var chatTypeName = Enum.GetName(typeof(XivChatType), chatType);
                     var checkboxClicked = Config.FilteredChannels.IndexOf(chatType) == -1;

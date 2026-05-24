@@ -1,8 +1,8 @@
-using PandorasBox.FeaturesSetup;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Dalamud.Game.ClientState.Conditions;
+using PandorasBox.FeaturesSetup;
 
 namespace PandorasBox.Features.Actions
 {
@@ -35,15 +35,20 @@ namespace PandorasBox.Features.Actions
 
         private void RunFeature(IFramework framework)
         {
-            if (!Svc.Condition[ConditionFlag.NormalConditions] || Svc.Condition[ConditionFlag.Casting] || IsMoving()) return;
-            if (Svc.Condition[ConditionFlag.InCombat] && !Config.UseInCombat) return;
-            if (Svc.Party.Length > 1 && !Config.UseInParty) return;
-            if (IsAFK() && Config.AfkCheck) return;
+            if (!Svc.Condition[ConditionFlag.NormalConditions] || Svc.Condition[ConditionFlag.Casting] || IsMoving())
+                return;
+            if (Svc.Condition[ConditionFlag.InCombat] && !Config.UseInCombat)
+                return;
+            if (Svc.Party.Length > 1 && !Config.UseInParty)
+                return;
+            if (IsAFK() && Config.AfkCheck)
+                return;
 
             var am = ActionManager.Instance();
             if (UIState.Instance()->Buddy.CompanionInfo.TimeLeft <= Config.RemainingTimeLimit)
             {
-                if (am->GetActionStatus(ActionType.Item, 4868) != 0) return;
+                if (am->GetActionStatus(ActionType.Item, 4868) != 0)
+                    return;
                 am->UseAction(ActionType.Item, 4868, extraParam: 65535);
             }
         }

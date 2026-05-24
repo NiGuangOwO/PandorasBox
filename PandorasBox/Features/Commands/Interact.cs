@@ -12,11 +12,11 @@ namespace PandorasBox.Features.Commands
 
         public override string Description => "与当前目标互动。";
 
-        protected unsafe override void OnCommand(List<string> args)
+        protected override unsafe void OnCommand(List<string> args)
         {
             var target = TargetSystem.Instance()->Target;
             if (target != null)
-            TargetSystem.Instance()->InteractWithObject(target);
+                TargetSystem.Instance()->InteractWithObject(target);
         }
     }
 }

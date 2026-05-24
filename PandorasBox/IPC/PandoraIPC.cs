@@ -62,11 +62,13 @@ namespace PandorasBox.IPC
                 {
                     var config = feature.GetType().GetProperties().FirstOrDefault(x => x.PropertyType.IsSubclassOf(typeof(FeatureConfig)))?.GetValue(feature);
 
-                    if (config == null) return;
+                    if (config == null)
+                        return;
 
                     var prop = config.GetFoP(configPropName);
 
-                    if (prop == null) return;
+                    if (prop == null)
+                        return;
 
                     config.SetFoP(configPropName, state);
                 }
@@ -81,11 +83,13 @@ namespace PandorasBox.IPC
                 {
                     var config = feature.GetType().GetProperties().FirstOrDefault(x => x.PropertyType.IsSubclassOf(typeof(FeatureConfig)))?.GetValue(feature);
 
-                    if (config == null) return null;
+                    if (config == null)
+                        return null;
 
                     var prop = config.GetFoP(configPropName);
 
-                    if (prop == null) return null;
+                    if (prop == null)
+                        return null;
 
                     return (bool?)prop;
                 }
@@ -123,7 +127,8 @@ namespace PandorasBox.IPC
 
         private static void PauseFeature(string featureName, int pauseMS)
         {
-            if (GetFeatureEnabled(featureName) == null) return;
+            if (GetFeatureEnabled(featureName) == null)
+                return;
             if (GetFeatureEnabled(featureName)!.Value)
             {
                 SetFeatureEnabled(featureName, false);
@@ -140,11 +145,13 @@ namespace PandorasBox.IPC
                 {
                     var config = feature.GetType().GetProperties().FirstOrDefault(x => x.PropertyType.IsSubclassOf(typeof(FeatureConfig)))?.GetValue(feature);
 
-                    if (config == null) return;
+                    if (config == null)
+                        return;
 
                     var prop = config.GetFoP(configPropName);
 
-                    if (prop == null) return;
+                    if (prop == null)
+                        return;
 
                     config.SetFoP(configPropName, state);
                 }
@@ -159,11 +166,13 @@ namespace PandorasBox.IPC
                 {
                     var config = feature.GetType().GetProperties().FirstOrDefault(x => x.PropertyType.IsSubclassOf(typeof(FeatureConfig)))?.GetValue(feature);
 
-                    if (config == null) return null;
+                    if (config == null)
+                        return null;
 
                     var prop = config.GetFoP(configPropName);
 
-                    if (prop == null) return null;
+                    if (prop == null)
+                        return null;
 
                     return (bool?)prop;
                 }
@@ -201,7 +210,8 @@ namespace PandorasBox.IPC
 
         private static void PauseFeatureInternal(string internalName, int pauseMS)
         {
-            if (GetFeatureEnabledInternal(internalName) == null) return;
+            if (GetFeatureEnabledInternal(internalName) == null)
+                return;
             if (GetFeatureEnabledInternal(internalName)!.Value)
             {
                 SetFeatureEnabledInternal(internalName, false);

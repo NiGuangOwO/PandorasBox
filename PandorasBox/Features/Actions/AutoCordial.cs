@@ -46,10 +46,14 @@ namespace PandorasBox.Features.Actions
 
         private void RunFeature(IFramework framework)
         {
-            if (Svc.Objects.LocalPlayer is null) return;
-            if (!(Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 16 || Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 17 || Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 18)) return;
-            if (Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 18 && !Config.UseOnFisher) return;
-            if (Svc.Objects.LocalPlayer.CurrentGp >= Config.Threshold) return;
+            if (Svc.Objects.LocalPlayer is null)
+                return;
+            if (!(Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 16 || Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 17 || Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 18))
+                return;
+            if (Svc.Objects.LocalPlayer.ClassJob.Value.RowId == 18 && !Config.UseOnFisher)
+                return;
+            if (Svc.Objects.LocalPlayer.CurrentGp >= Config.Threshold)
+                return;
 
             var im = InventoryManager.Instance();
             var inv1 = im->GetInventoryContainer(InventoryType.Inventory1);

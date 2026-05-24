@@ -35,7 +35,8 @@ namespace PandorasBox.Features.Other
 
         private void RunFeature(IFramework framework)
         {
-            if (Svc.Objects.LocalPlayer == null) return;
+            if (Svc.Objects.LocalPlayer == null)
+                return;
 
             var nearbyNodes = Svc.Objects.Where(x => x.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.GatheringPoint && GameObjectHelper.GetTargetDistance(x) <= 10).ToList();
             if (nearbyNodes.Count == 0)
@@ -72,9 +73,11 @@ namespace PandorasBox.Features.Other
 
         private static unsafe bool SwitchJobGearset(uint cjID)
         {
-            if (Svc.Objects.LocalPlayer?.ClassJob.RowId == cjID) return true;
+            if (Svc.Objects.LocalPlayer?.ClassJob.RowId == cjID)
+                return true;
             var gs = GetGearsetForClassJob(cjID);
-            if (gs is null) return true;
+            if (gs is null)
+                return true;
 
             Chat.SendMessage($"/gearset change {gs.Value + 1}");
 
@@ -87,10 +90,14 @@ namespace PandorasBox.Features.Other
             for (var i = 0; i < 100; i++)
             {
                 var gearset = gearsetModule->GetGearset(i);
-                if (gearset == null) continue;
-                if (!gearset->Flags.HasFlag(RaptureGearsetModule.GearsetFlag.Exists)) continue;
-                if (gearset->Id != i) continue;
-                if (gearset->ClassJob == cjId) return gearset->Id;
+                if (gearset == null)
+                    continue;
+                if (!gearset->Flags.HasFlag(RaptureGearsetModule.GearsetFlag.Exists))
+                    continue;
+                if (gearset->Id != i)
+                    continue;
+                if (gearset->ClassJob == cjId)
+                    return gearset->Id;
             }
             return null;
         }

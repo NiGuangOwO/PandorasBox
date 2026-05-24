@@ -1,10 +1,9 @@
-using Dalamud.Interface.Windowing;
 using Dalamud.Bindings.ImGui;
-using PandorasBox.Features;
-using System.Linq;
-using ECommons.Reflection;
+using Dalamud.Interface.Windowing;
 using ECommons.DalamudServices;
+using PandorasBox.Features;
 using System;
+using System.Linq;
 
 namespace PandorasBox.UI
 {

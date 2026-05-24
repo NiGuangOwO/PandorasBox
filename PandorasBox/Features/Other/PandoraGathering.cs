@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
@@ -9,7 +5,6 @@ using Dalamud.Game.Chat;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Hooking;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
@@ -25,6 +20,10 @@ using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using Action = Lumina.Excel.Sheets.Action;
 
 namespace PandorasBox.Features.Other
@@ -289,18 +288,24 @@ namespace PandorasBox.Features.Other
             base.Dispose();
         }
 
-        public unsafe override void Draw()
+        public override unsafe void Draw()
         {
             if (Svc.GameGui.GetAddonByName("Gathering") != nint.Zero)
             {
                 var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Gathering").Address;
-                if (addon == null) return;
-                if (!addon->IsVisible) return;
+                if (addon == null)
+                    return;
+                if (!addon->IsVisible)
+                    return;
 
-                if (addon->UldManager.NodeListCount < 5) return;
-                if (addon->UldManager.NodeList[2] is null) return;
-                if (addon->UldManager.NodeList[2]->GetAsAtkComponentNode()->Component->UldManager.NodeList[10] is null) return;
-                if (!addon->UldManager.NodeList[2]->GetAsAtkComponentNode()->Component->UldManager.NodeList[10]->IsVisible()) return;
+                if (addon->UldManager.NodeListCount < 5)
+                    return;
+                if (addon->UldManager.NodeList[2] is null)
+                    return;
+                if (addon->UldManager.NodeList[2]->GetAsAtkComponentNode()->Component->UldManager.NodeList[10] is null)
+                    return;
+                if (!addon->UldManager.NodeList[2]->GetAsAtkComponentNode()->Component->UldManager.NodeList[10]->IsVisible())
+                    return;
 
                 var node = addon->UldManager.NodeList[10];
 
@@ -600,7 +605,8 @@ namespace PandorasBox.Features.Other
                 {
                     var addon = (AddonGathering*)Svc.GameGui.GetAddonByName("Gathering", 1).Address;
 
-                    if (addon == null) return;
+                    if (addon == null)
+                        return;
 
                     var ids = new List<uint>();
                     for (int i = 6; i <= (11 * 8); i += 11)
@@ -742,7 +748,7 @@ namespace PandorasBox.Features.Other
             if (Config.RememberLastNode)
             {
                 using var _ = ImRaii.PushIndent();
-                if (ImGui.Checkbox("Don't Buff if Item Not Present", ref Config.DontBuffIfItemNotPresent))
+                if (ImGui.Checkbox("若目标道具不存在则不使用增益技能", ref Config.DontBuffIfItemNotPresent))
                     SaveConfig(Config);
             }
 
@@ -863,11 +869,14 @@ namespace PandorasBox.Features.Other
             TaskManager.Enqueue(() =>
             {
                 var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Gathering").Address;
-                if (addon is null) return;
+                if (addon is null)
+                    return;
 
-                if (addon is null) return;
+                if (addon is null)
+                    return;
                 var checkBox = addon->GetNodeById(17 + (uint)index)->GetAsAtkComponentCheckBox();
-                if (checkBox is null) return;
+                if (checkBox is null)
+                    return;
                 checkBox->AtkComponentButton.IsChecked = true;
                 ECommons.Automation.Callback.Fire(addon, true, index);
                 CheckNodeAndClick(index);
@@ -897,17 +906,23 @@ namespace PandorasBox.Features.Other
         {
             foreach (var id in ids.Where(x => x != 0))
             {
-                if (Svc.Data.GetExcelSheet<GatheringItem>().FindFirst(x => x.Item.RowId == id, out var item) && item.IsHidden) return false; //The node is exposed, don't need to expose it.
-                if (Maps.Any(x => x.MapId == id)) return false;
-                if (Items.Any(x => x.ItemId == id)) return false;
+                if (Svc.Data.GetExcelSheet<GatheringItem>().FindFirst(x => x.Item.RowId == id, out var item) && item.IsHidden)
+                    return false; //The node is exposed, don't need to expose it.
+                if (Maps.Any(x => x.MapId == id))
+                    return false;
+                if (Items.Any(x => x.ItemId == id))
+                    return false;
 
             }
-            if (Seeds.Any(x => ids.Any(y => x.ItemId == y))) return true;
+            if (Seeds.Any(x => ids.Any(y => x.ItemId == y)))
+                return true;
             var NodeId = Svc.Objects.LocalPlayer?.TargetObject?.BaseId;
             var baseNode = Svc.Data.GetExcelSheet<GatheringPoint>()?.Where(x => x.RowId == NodeId).First().GatheringPointBase.Value;
             Svc.Log.Debug($"{baseNode?.RowId}");
-            if (Items.Any(x => x.NodeId == baseNode?.RowId)) return true;
-            if (Maps.Any(x => x.NodeIds.Any(y => y == baseNode?.RowId))) return true;
+            if (Items.Any(x => x.NodeId == baseNode?.RowId))
+                return true;
+            if (Maps.Any(x => x.NodeIds.Any(y => y == baseNode?.RowId)))
+                return true;
 
 
             return false;

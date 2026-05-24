@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Game.Text.SeStringHandling;
@@ -15,6 +12,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace PandorasBox.Features.UI
 {
@@ -46,8 +46,10 @@ namespace PandorasBox.Features.UI
 
         private void AddInventoryItem(IMenuOpenedArgs args)
         {
-            if (args.AddonName == "ArmouryBoard") return;
-            if (args.MenuType != ContextMenuType.Inventory) return;
+            if (args.AddonName == "ArmouryBoard")
+                return;
+            if (args.MenuType != ContextMenuType.Inventory)
+                return;
             var invItem = ((MenuTargetInventory)args.Target).TargetItem!.Value;
 
             var item = CheckInventoryItem(invItem.ItemId, invItem.IsHq, invItem.Quantity);
@@ -71,14 +73,19 @@ namespace PandorasBox.Features.UI
 
             if (GenericHelpers.TryGetAddonByName<AtkUnitBase>("FreeCompanyChest", out var addon))
             {
-                if (!addon->IsVisible) return null;
-                if (addon->UldManager.NodeList[4]->IsVisible()) return null;
-                if (addon->UldManager.NodeList[7]->IsVisible()) return null;
+                if (!addon->IsVisible)
+                    return null;
+                if (addon->UldManager.NodeList[4]->IsVisible())
+                    return null;
+                if (addon->UldManager.NodeList[7]->IsVisible())
+                    return null;
 
-                if (ItemId >= 1_000_000) ItemId -= 1_000_000;
+                if (ItemId >= 1_000_000)
+                    ItemId -= 1_000_000;
                 if (Svc.Data.GetExcelSheet<Item>()!.FindFirst(x => x.RowId == ItemId, out var sheetItem))
                 {
-                    if (sheetItem.IsUntradable) return null;
+                    if (sheetItem.IsUntradable)
+                        return null;
                     var menu = new MenuItem();
                     menu.Prefix = Dalamud.Game.Text.SeIconChar.BoxedLetterP;
                     menu.Name = DepositString;
@@ -97,7 +104,8 @@ namespace PandorasBox.Features.UI
             for (int i = 101; i >= 97; i--)
             {
                 var radioButton = addon->UldManager.NodeList[i];
-                if (!radioButton->IsVisible()) continue;
+                if (!radioButton->IsVisible())
+                    continue;
 
                 if (radioButton->GetAsAtkComponentNode()->Component->UldManager.NodeList[2]->IsVisible())
                 {
@@ -142,7 +150,8 @@ namespace PandorasBox.Features.UI
                 for (var i = 0; i < container->Size; i++)
                 {
                     var item = container->GetInventorySlot(i);
-                    if ((item->Flags.HasFlag(InventoryItem.ItemFlags.HighQuality) && !itemHq) || (!item->Flags.HasFlag(InventoryItem.ItemFlags.HighQuality) && itemHq)) continue;
+                    if ((item->Flags.HasFlag(InventoryItem.ItemFlags.HighQuality) && !itemHq) || (!item->Flags.HasFlag(InventoryItem.ItemFlags.HighQuality) && itemHq))
+                        continue;
 
                     if (item->ItemId == ItemId && (item->Quantity + stack) <= sheetItem.StackSize)
                     {
@@ -246,7 +255,8 @@ namespace PandorasBox.Features.UI
             if (item == null)
             {
                 var guiHoveredItem = Svc.GameGui.HoveredItem;
-                if (guiHoveredItem >= 2000000 || guiHoveredItem == 0) return null;
+                if (guiHoveredItem >= 2000000 || guiHoveredItem == 0)
+                    return null;
                 item = (uint)guiHoveredItem % 500_000;
             }
 

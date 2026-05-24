@@ -1,7 +1,7 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
@@ -39,7 +39,8 @@ namespace PandorasBox.Features.Actions
 
         private void RunFeature(uint e)
         {
-            if (!Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == e).Mount) return;
+            if (!Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == e).Mount)
+                return;
 
             if (Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == e).Bg.ToString().Contains("/hou/") && Config.ExcludeHousing)
             {
@@ -65,22 +66,27 @@ namespace PandorasBox.Features.Actions
         private static bool NotBetweenAreas => !Svc.Condition[ConditionFlag.BetweenAreas];
         private bool? TryMount()
         {
-            if (Svc.Objects.LocalPlayer is null) return false;
-            if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51]) return false;
-            if (Svc.Condition[ConditionFlag.Mounted]) return true;
+            if (Svc.Objects.LocalPlayer is null)
+                return false;
+            if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
+                return false;
+            if (Svc.Condition[ConditionFlag.Mounted])
+                return true;
 
             var am = ActionManager.Instance();
 
             if (Config.SelectedMount > 0)
             {
-                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0) return false;
+                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0)
+                    return false;
                 am->UseAction(ActionType.Mount, Config.SelectedMount);
 
                 return true;
             }
             else
             {
-                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0) return false;
+                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0)
+                    return false;
                 am->UseAction(ActionType.GeneralAction, 9);
 
                 return true;
@@ -98,7 +104,8 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f"))
+                hasChanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
             if (ImGui.BeginCombo("选择坐骑", preview))
@@ -126,8 +133,10 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing)) hasChanged = true;
-            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) hasChanged = true;
+            if (ImGui.Checkbox("在房区内禁用", ref Config.ExcludeHousing))
+                hasChanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount))
+                hasChanged = true;
 
         };
     }

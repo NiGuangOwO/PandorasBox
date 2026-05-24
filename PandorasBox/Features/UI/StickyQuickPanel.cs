@@ -8,8 +8,8 @@ namespace PandorasBox.Features.UI
 {
     internal unsafe class StickyQuickPanel : Feature
     {
-        public override string Name { get; } = "Sticky Command Panel";
-        public override string Description { get; } = "Prevents the Command Panel from closing during load screens.";
+        public override string Name { get; } = "固定快捷指令面板";
+        public override string Description { get; } = "防止快捷指令面板在读取界面时自动关闭。";
         public override FeatureType FeatureType => FeatureType.UI;
 
         public override void Enable()
@@ -31,4 +31,4 @@ namespace PandorasBox.Features.UI
             addon->DisableFocusability = true;
         }
     }
-} 
+}

@@ -15,7 +15,8 @@ internal static class YesAlready
 
     internal static void GetData()
     {
-        if (Data != null) return;
+        if (Data != null)
+            return;
         if (Svc.PluginInterface.TryGetData<HashSet<string>>("YesAlready.StopRequests", out var data))
         {
             Data = data;

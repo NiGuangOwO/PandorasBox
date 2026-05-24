@@ -23,14 +23,17 @@ namespace PandorasBox.Features.Actions
 
         public Configs Config { get; private set; } = null!;
 
-        
+
         private void ActivateBuff(uint? jobValue)
         {
-            if (jobValue is null) return;
-            if (jobValue is not (18)) return;
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas]) return;
+            if (jobValue is null)
+                return;
+            if (jobValue is not (18))
+                return;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas])
+                return;
             TaskManager.EnqueueDelay((int)(Config.ThrottleF * 1000));
-            var am = ActionManager.Instance();   
+            var am = ActionManager.Instance();
             if (Svc.Objects.LocalPlayer?.StatusList.Where(x => x.StatusId == 805).Count() == 1)
                 return;
             if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Gathering])

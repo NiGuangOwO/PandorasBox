@@ -15,9 +15,9 @@ namespace PandorasBox.Features.UI
 {
     internal class DisableKnownGlam : Feature
     {
-        public override string Name => "Disable Known Glamours in Glamour Creation";
+        public override string Name => "禁止重复添加已知幻化到幻化衣柜";
 
-        public override string Description => "Disables items from being transferred to the glamour dresser if it already exists in it";
+        public override string Description => "如果道具已存在于幻化衣柜中，则禁止将其再次投入幻化衣柜";
 
         public override FeatureType FeatureType => FeatureType.UI;
 

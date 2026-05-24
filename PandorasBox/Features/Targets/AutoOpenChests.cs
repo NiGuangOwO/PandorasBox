@@ -59,28 +59,36 @@ namespace PandorasBox.Features.Targets
                 return;
 
             var player = Player.Object;
-            if (player == null) return; 
+            if (player == null)
+                return;
             var treasure = Svc.Objects.FirstOrDefault(o =>
             {
-                if (o == null) return false;
+                if (o == null)
+                    return false;
                 var dis = Vector3.Distance(player.Position, o.Position);
-                if (dis > 2f) return false;
+                if (dis > 2f)
+                    return false;
 
                 var obj = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)(void*)o.Address;
-                if (!obj->GetIsTargetable()) return false;
-                if ((ObjectKind)obj->ObjectKind != ObjectKind.Treasure) return false;
+                if (!obj->GetIsTargetable())
+                    return false;
+                if ((ObjectKind)obj->ObjectKind != ObjectKind.Treasure)
+                    return false;
 
                 foreach (var item in Loot.Instance()->Items)
-                    if (item.ChestObjectId == o.GameObjectId) return false;
+                    if (item.ChestObjectId == o.GameObjectId)
+                        return false;
 
                 var tr = (FFXIVClientStructs.FFXIV.Client.Game.Object.Treasure*)obj;
                 if (tr->Flags.HasFlag(FFXIVClientStructs.FFXIV.Client.Game.Object.Treasure.TreasureFlags.Opened) ||
-                    tr->Flags.HasFlag(FFXIVClientStructs.FFXIV.Client.Game.Object.Treasure.TreasureFlags.FadedOut)) return false;
+                    tr->Flags.HasFlag(FFXIVClientStructs.FFXIV.Client.Game.Object.Treasure.TreasureFlags.FadedOut))
+                    return false;
 
                 return true;
             });
 
-            if (treasure == null) return;
+            if (treasure == null)
+                return;
             try
             {
                 TargetSystem.Instance()->InteractWithObject((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)(void*)treasure.Address);
@@ -98,11 +106,13 @@ namespace PandorasBox.Features.Targets
         private static DateTime CloseWindowTime = DateTime.Now;
         private static unsafe void CloseWindow()
         {
-            if (CloseWindowTime < DateTime.Now) return;
+            if (CloseWindowTime < DateTime.Now)
+                return;
             if (Svc.GameGui.GetAddonByName("NeedGreed", 1) != IntPtr.Zero)
             {
                 var needGreedWindow = (AtkUnitBase*)Svc.GameGui.GetAddonByName("NeedGreed", 1).Address;
-                if (needGreedWindow == null) return;
+                if (needGreedWindow == null)
+                    return;
 
                 if (needGreedWindow->IsVisible)
                 {

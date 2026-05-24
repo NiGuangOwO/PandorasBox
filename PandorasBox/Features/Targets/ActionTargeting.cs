@@ -1,13 +1,13 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
-using Dalamud.Bindings.ImGui;
+using ECommons.GameFunctions;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using System;
 using System.Linq;
 using System.Numerics;
-using ECommons.GameFunctions;
 
 namespace PandorasBox.Features.Targets
 {
@@ -116,7 +116,8 @@ namespace PandorasBox.Features.Targets
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("最大距离（yalms）", ref Config.MaxDistance, 0.1f, 30f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("最大距离（yalms）", ref Config.MaxDistance, 0.1f, 30f, "%.1f"))
+                hasChanged = true;
 
             if (ImGui.RadioButton("不要取消选中", !Config.UnsetTargetRange && !Config.UnsetTargetCombat))
             {

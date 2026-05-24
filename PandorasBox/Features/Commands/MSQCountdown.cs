@@ -10,7 +10,7 @@ namespace PandorasBox.Features.Commands
     {
         public override string Name => "主线任务倒计数";
 
-        public override bool Disabled => false;  
+        public override bool Disabled => false;
 
         public override string Description => "在聊天中打印一条消息，说明当前大版本中还有多少主线任务需要完成。";
 

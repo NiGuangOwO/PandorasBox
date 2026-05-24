@@ -1,8 +1,8 @@
+using Dalamud.Bindings.ImGui;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Bindings.ImGui;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
@@ -134,10 +134,11 @@ namespace PandorasBox.Features.UI
 
         private bool? ConfirmDialog()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
-            if (Svc.GameGui.GetAddonByName("PurifyResult",1) != IntPtr.Zero)
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                return false;
+            if (Svc.GameGui.GetAddonByName("PurifyResult", 1) != IntPtr.Zero)
             {
-                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("PurifyResult",1).Address;
+                var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("PurifyResult", 1).Address;
                 addon->Close(true);
                 return true;
             }
@@ -147,7 +148,8 @@ namespace PandorasBox.Features.UI
 
         private bool? SelectFirstItem(AtkUnitBase* addon)
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                return false;
             TaskManager.InsertMulti([new(() => EzThrottler.Throttle("Generating", 1000)), new(() => EzThrottler.Check("Generating"))]);
 
             var values = stackalloc AtkValue[2];

@@ -30,7 +30,7 @@ namespace PandorasBox.Features.Other
         internal Hook<UseActionDelegate> UseActionHook;
 
 
-        public unsafe override void Enable()
+        public override unsafe void Enable()
         {
             Config = LoadConfig<Configs>() ?? new Configs();
             UseActionHook ??= Svc.Hook.HookFromAddress<UseActionDelegate>(ActionManager.Addresses.UseAction.Value, UseActionDetour);
@@ -53,7 +53,7 @@ namespace PandorasBox.Features.Other
                     TaskManager.EnqueueDelay(delay);
                     TaskManager.Enqueue(() => { Chat.SendMessage("/presetenmity"); });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ex.Log();
                 }

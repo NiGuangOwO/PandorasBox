@@ -43,8 +43,10 @@ namespace PandorasBox.Features.UI
             {
                 for (var i = 1; i <= addon->EntryCount; i++)
                 {
-                    if (SlotsFilled.Contains(addon->EntryCount)) ConfirmOrAbort(addon);
-                    if (SlotsFilled.Contains(i)) return;
+                    if (SlotsFilled.Contains(addon->EntryCount))
+                        ConfirmOrAbort(addon);
+                    if (SlotsFilled.Contains(i))
+                        return;
                     var val = i;
                     TaskManager.EnqueueDelay(10);
                     TaskManager.Enqueue(() => TryClickItem(addon, val));
@@ -59,7 +61,8 @@ namespace PandorasBox.Features.UI
 
         private bool? TryClickItem(AddonRequest* addon, int i)
         {
-            if (SlotsFilled.Contains(i)) return true;
+            if (SlotsFilled.Contains(i))
+                return true;
 
             var contextMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContextIconMenu", 1).Address;
 

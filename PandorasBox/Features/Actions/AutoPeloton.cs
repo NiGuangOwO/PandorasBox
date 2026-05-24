@@ -1,14 +1,13 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Dalamud.Bindings.ImGui;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
-using PandorasBox.Helpers;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace PandorasBox.Features
 {
@@ -51,13 +50,18 @@ namespace PandorasBox.Features
 
         private void RunFeature(IFramework framework)
         {
-            if (Svc.Objects.LocalPlayer == null) return;
+            if (Svc.Objects.LocalPlayer == null)
+                return;
 
-            if (IsRpWalking() && !Config.RPWalk) return;
-            if (Svc.Condition[ConditionFlag.InCombat]) return;
-            if (Svc.Objects.LocalPlayer is null) return;
+            if (IsRpWalking() && !Config.RPWalk)
+                return;
+            if (Svc.Condition[ConditionFlag.InCombat])
+                return;
+            if (Svc.Objects.LocalPlayer is null)
+                return;
             var r = new Regex("/hou/|/ind/");
-            if (r.IsMatch(Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Svc.ClientState.TerritoryType).Bg.ToString()) && Config.ExcludeHousing) return;
+            if (r.IsMatch(Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Svc.ClientState.TerritoryType).Bg.ToString()) && Config.ExcludeHousing)
+                return;
 
             if (Config.AbortCooldown && AgentCountDownSettingDialog.Instance()->TimeRemaining > 0)
             {
@@ -79,10 +83,14 @@ namespace PandorasBox.Features
 
         private void UsePeloton()
         {
-            if (IsRpWalking() && !Config.RPWalk) return;
-            if (Svc.Condition[ConditionFlag.InCombat]) return;
-            if (Svc.Objects.LocalPlayer is null) return;
-            if (Config.OnlyInDuty && GameMain.Instance()->CurrentContentFinderConditionId == 0) return;
+            if (IsRpWalking() && !Config.RPWalk)
+                return;
+            if (Svc.Condition[ConditionFlag.InCombat])
+                return;
+            if (Svc.Objects.LocalPlayer is null)
+                return;
+            if (Config.OnlyInDuty && GameMain.Instance()->CurrentContentFinderConditionId == 0)
+                return;
 
             var am = ActionManager.Instance();
             var isPeletonReady = am->GetActionStatus(ActionType.Action, 7557) == 0;
@@ -105,11 +113,16 @@ namespace PandorasBox.Features
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
-            if (ImGui.Checkbox("仅在副本内使用", ref Config.OnlyInDuty)) hasChanged = true;
-            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk)) hasChanged = true;
-            if (ImGui.Checkbox("在住宅区禁用", ref Config.ExcludeHousing)) hasChanged = true;
-            if (ImGui.Checkbox($"在倒计时期间中止使用", ref Config.AbortCooldown)) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f"))
+                hasChanged = true;
+            if (ImGui.Checkbox("仅在副本内使用", ref Config.OnlyInDuty))
+                hasChanged = true;
+            if (ImGui.Checkbox("在行走状态时使用", ref Config.RPWalk))
+                hasChanged = true;
+            if (ImGui.Checkbox("在住宅区禁用", ref Config.ExcludeHousing))
+                hasChanged = true;
+            if (ImGui.Checkbox($"在倒计时期间中止使用", ref Config.AbortCooldown))
+                hasChanged = true;
         };
     }
 }

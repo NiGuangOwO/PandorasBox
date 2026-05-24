@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
@@ -15,6 +12,9 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using PandorasBox.FeaturesSetup;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PandorasBox.Features.UI;
 
@@ -86,14 +86,17 @@ public class AutoVoteMvp : Feature
 
     private unsafe void FrameworkUpdate(IFramework framework)
     {
-        if (Player.Object == null) return;
-        if (Svc.ClientState.IsPvP) return;
+        if (Player.Object == null)
+            return;
+        if (Svc.ClientState.IsPvP)
+            return;
         CheckForDeadPartyMembers();
     }
 
     private unsafe void OnBannerSetup(AddonEvent type, AddonArgs args)
     {
-        if (Svc.ClientState.IsPvP) return;
+        if (Svc.ClientState.IsPvP)
+            return;
         var atk = (AtkUnitBase*)args.Addon.Address;
         try
         {
@@ -122,7 +125,8 @@ public class AutoVoteMvp : Feature
         {
             if (pm.GameObject?.IsDead ?? false)
             {
-                if (DeadPlayers.Contains(pm.EntityId)) continue;
+                if (DeadPlayers.Contains(pm.EntityId))
+                    continue;
                 DeadPlayers.Add(pm.EntityId);
                 if (DeathTracker.ContainsKey(pm.EntityId))
                     DeathTracker[pm.EntityId] += 1;
@@ -137,13 +141,15 @@ public class AutoVoteMvp : Feature
     private unsafe int ChoosePlayer(AtkUnitBase* bannerWindow)
     {
         var hud = UIModule.Instance()->GetAgentModule()->GetAgentHUD();
-        if (hud == null) throw new Exception("HUD is empty!");
+        if (hud == null)
+            throw new Exception("HUD is empty!");
 
         var list = Svc.Party.Where(i => i.EntityId != Svc.Objects.LocalPlayer?.GameObjectId && i.GameObject != null && !PremadePartyID.Any(y => y == i.Name.TextValue))
                 .Select(PartyMember => (Math.Max(0, GetPartySlotIndex(PartyMember.EntityId, hud) - 1), PartyMember))
                 .ToList();
 
-        if (!list.Any()) return -1;
+        if (!list.Any())
+            return -1;
 
         if (Config.ExcludeDeaths)
         {
@@ -161,7 +167,7 @@ public class AutoVoteMvp : Feature
         var dps = list.Where(i => i.PartyMember.ClassJob.Value.Role is 2 or 3);
         var melee = list.Where(i => i.PartyMember.ClassJob.Value.Role is 2);
         var range = list.Where(i => i.PartyMember.ClassJob.Value.Role is 3);
-        var myjob = Svc.ClientState.LocalPlayer.ClassJob.Value.Role;
+        var myjob = Svc.Objects.LocalPlayer?.ClassJob.Value.Role;
         (int index, IPartyMember member) voteTarget = new();
         if (myjob == 1)
         {
@@ -180,11 +186,13 @@ public class AutoVoteMvp : Feature
             voteTarget = range.Any() ? range.FirstOrDefault() : melee.FirstOrDefault();
         }
 
-        if (voteTarget.member == null) return -1;
+        if (voteTarget.member == null)
+            return -1;
 
         for (int i = 22; i <= 22 + 7; i++)
         {
-            if (bannerWindow->AtkValues[i].Type != AtkValueType.String) continue;
+            if (bannerWindow->AtkValues[i].Type != AtkValueType.String)
+                continue;
             var name = bannerWindow->AtkValues[i].String.ToString();
             if (name == voteTarget.member.Name.TextValue)
             {
@@ -232,7 +240,8 @@ public class AutoVoteMvp : Feature
 
     private static unsafe void VoteBanner(AtkUnitBase* bannerWindow, int index)
     {
-        if (index == -1) return;
+        if (index == -1)
+            return;
         var atkValues = stackalloc AtkValue[2];
         atkValues[0].SetInt(12);
         atkValues[1].SetInt(index);
@@ -251,8 +260,10 @@ public class AutoVoteMvp : Feature
 
         if (Config.ExcludeDeaths)
         {
-            if (ImGui.DragInt("大于等于多少次", ref Config.HowManyDeaths, 0.01f, 1, 100)) hasChanged = true;
-            if (ImGui.Checkbox("团灭时重置死亡次数统计", ref Config.ResetOnWipe)) hasChanged = true;
+            if (ImGui.DragInt("大于等于多少次", ref Config.HowManyDeaths, 0.01f, 1, 100))
+                hasChanged = true;
+            if (ImGui.Checkbox("团灭时重置死亡次数统计", ref Config.ResetOnWipe))
+                hasChanged = true;
         }
 
         if (hasChanged)

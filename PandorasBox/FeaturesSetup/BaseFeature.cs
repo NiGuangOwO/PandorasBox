@@ -1,8 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
@@ -24,6 +19,11 @@ using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace PandorasBox.Features;
 
@@ -58,7 +58,8 @@ public abstract class BaseFeature
 
     protected bool IsAFK(int minutes = 5)
     {
-        if (!UseAFKTimer) return false;
+        if (!UseAFKTimer)
+            return false;
         return AFKTimer.Elapsed.TotalMinutes >= minutes;
     }
 
@@ -113,7 +114,8 @@ public abstract class BaseFeature
         {
             var configDirectory = Svc.PluginInterface.GetPluginConfigDirectory();
             var configFile = Path.Combine(configDirectory, key + ".json");
-            if (!File.Exists(configFile)) return default;
+            if (!File.Exists(configFile))
+                return default;
             var jsonString = File.ReadAllText(configFile);
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
@@ -156,12 +158,14 @@ public abstract class BaseFeature
                 .Select(f => (f, f.GetCustomAttribute(typeof(FeatureConfigOptionAttribute)) as FeatureConfigOptionAttribute))
                 .OrderBy(a => a.Item2?.Priority).ThenBy(a => a.Item2?.Name);
 
-            if (fields is null) return;
+            if (fields is null)
+                return;
 
             var configOptionIndex = 0;
             foreach (var (f, attr) in fields)
             {
-                if (attr is null) continue;
+                if (attr is null)
+                    continue;
                 if (attr.Disabled)
                     ImGui.BeginDisabled();
 
@@ -171,11 +175,13 @@ public abstract class BaseFeature
                     if (conditionalMethod != null)
                     {
                         var shouldShow = (bool)(conditionalMethod.Invoke(configObj, Array.Empty<object>()) ?? true);
-                        if (!shouldShow) continue;
+                        if (!shouldShow)
+                            continue;
                     }
                 }
 
-                if (attr.SameLine) ImGui.SameLine();
+                if (attr.SameLine)
+                    ImGui.SameLine();
 
                 if (attr.Editor != null)
                 {
@@ -211,8 +217,10 @@ public abstract class BaseFeature
                     if (v % attr.IntIncrements != 0)
                     {
                         v = v.RoundOff(attr.IntIncrements);
-                        if (v < attr.IntMin) v = attr.IntMin;
-                        if (v > attr.IntMax) v = attr.IntMax;
+                        if (v < attr.IntMin)
+                            v = attr.IntMin;
+                        if (v > attr.IntMax)
+                            v = attr.IntMax;
                     }
 
                     if (attr.EnforcedLimit && v < attr.IntMin)
@@ -247,8 +255,10 @@ public abstract class BaseFeature
                     if (v % attr.FloatIncrements != 0)
                     {
                         v = v.RoundOff(attr.FloatIncrements);
-                        if (v < attr.FloatMin) v = attr.FloatMin;
-                        if (v > attr.FloatMax) v = attr.FloatMax;
+                        if (v < attr.FloatMin)
+                            v = attr.FloatMin;
+                        if (v > attr.FloatMax)
+                            v = attr.FloatMax;
                     }
 
                     if (attr.EnforcedLimit && v < attr.FloatMin)
@@ -271,13 +281,13 @@ public abstract class BaseFeature
                 }
                 else
                 {
-                    ImGui.Text($"Invalid Auto Field Type: {f.Name}");
+                    ImGui.Text($"无效的自动字段类型: {f.Name}");
                 }
 
                 if (attr.Disabled)
                 {
                     ImGui.EndDisabled();
-                    ImGuiComponents.HelpMarker("Currently Disabled");
+                    ImGuiComponents.HelpMarker("当前已禁用");
                 }
 
             }
@@ -290,7 +300,7 @@ public abstract class BaseFeature
         }
         catch (Exception ex)
         {
-            ImGui.Text($"Error with AutoConfig: {ex.Message}");
+            ImGui.Text($"自动配置出错: {ex.Message}");
             ImGui.TextWrapped($"{ex.StackTrace}");
         }
     }
@@ -327,7 +337,8 @@ public abstract class BaseFeature
             ImGui.PopStyleColor();
         }
 
-        if (hasChanged && Enabled) ConfigChanged();
+        if (hasChanged && Enabled)
+            ConfigChanged();
         return configTreeOpen;
     }
 
@@ -336,7 +347,8 @@ public abstract class BaseFeature
 
     protected virtual void ConfigChanged()
     {
-        if (this is null) return;
+        if (this is null)
+            return;
 
         var config = this.GetType().GetProperties().FirstOrDefault(p => p.PropertyType.IsSubclassOf(typeof(FeatureConfig)));
 
@@ -433,7 +445,8 @@ public abstract class BaseFeature
     public unsafe bool IsActionUnlocked(uint id)
     {
         var unlockLink = Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Action>().GetRow(id).UnlockLink.RowId;
-        if (unlockLink == 0) return true;
+        if (unlockLink == 0)
+            return true;
         return UIState.Instance()->IsUnlockLinkUnlockedOrQuestCompleted(unlockLink);
     }
 
@@ -444,7 +457,8 @@ public abstract class BaseFeature
             try
             {
                 var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectYesno", i).Address;
-                if (addon == null) return null;
+                if (addon == null)
+                    return null;
                 if (GenericHelpers.IsAddonReady(addon))
                 {
                     var textNode = addon->UldManager.NodeList[15]->GetAsAtkTextNode();
@@ -472,7 +486,8 @@ public abstract class BaseFeature
             try
             {
                 var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SelectYesno", i).Address;
-                if (addon == null) return null;
+                if (addon == null)
+                    return null;
                 if (GenericHelpers.IsAddonReady(addon))
                 {
                     var textNode = addon->UldManager.NodeList[15]->GetAsAtkTextNode();
@@ -497,7 +512,8 @@ public abstract class BaseFeature
 
     public unsafe bool ZoneHasFlight()
     {
-        if (Svc.Objects.LocalPlayer is null) return false;
+        if (Svc.Objects.LocalPlayer is null)
+            return false;
         var territory = Svc.Data.Excel.GetSheet<TerritoryType>()?.GetRow(Svc.ClientState.TerritoryType);
         return territory?.TerritoryIntendedUse.RowId is 1 or 47 or 49;
     }
@@ -505,7 +521,8 @@ public abstract class BaseFeature
     public unsafe bool UseAction(uint id)
     {
         var am = ActionManager.Instance();
-        if (am->GetActionStatus(ActionType.Action, id) != 0) return false;
+        if (am->GetActionStatus(ActionType.Action, id) != 0)
+            return false;
         return am->UseAction(ActionType.Action, id);
     }
 

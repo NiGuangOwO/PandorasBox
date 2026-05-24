@@ -1,3 +1,4 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.Automation;
 using ECommons.DalamudServices;
@@ -5,7 +6,6 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
@@ -83,14 +83,16 @@ namespace PandorasBox.Features.Actions
 
             if (Config.SelectedMount > 0)
             {
-                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0) return false;
+                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0)
+                    return false;
                 TaskManager.Enqueue(() => am->UseAction(ActionType.Mount, Config.SelectedMount));
 
                 return true;
             }
             else
             {
-                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0) return false;
+                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0)
+                    return false;
                 TaskManager.Enqueue(() => am->UseAction(ActionType.GeneralAction, 9));
 
                 return true;
@@ -107,7 +109,8 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) hasChanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f"))
+                hasChanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
             if (ImGui.BeginCombo("选择坐骑", preview))
@@ -135,8 +138,10 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("在无人岛中使用", ref Config.UseOnIsland)) hasChanged = true;
-            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) hasChanged = true;
+            if (ImGui.Checkbox("在无人岛中使用", ref Config.UseOnIsland))
+                hasChanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount))
+                hasChanged = true;
             hasChanged |= ImGui.Checkbox("上坐骑后自动移动", ref Config.MoveAfterMount);
         };
     }

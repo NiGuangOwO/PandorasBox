@@ -19,7 +19,7 @@ namespace PandorasBox.Features.Other
 
         public class Configs : FeatureConfig
         {
-            [FeatureConfigOption($@"排除 ""重生之境"" 区域", "" , 1)]
+            [FeatureConfigOption($@"排除 ""重生之境"" 区域", "", 1)]
             public bool ExcludeARR = false;
 
             [FeatureConfigOption($@"排除 ""苍穹之禁城"" 区域", "", 2)]
@@ -67,14 +67,21 @@ namespace PandorasBox.Features.Other
             if (value != 0)
             {
                 var zone = Svc.Data.GetExcelSheet<TerritoryType>().Where(x => x.RowId == Svc.ClientState.TerritoryType).First();
-                if (zone.ExVersion.RowId == 0 && Config.ExcludeARR) return;
-                if (zone.ExVersion.RowId == 1 && Config.ExcludeHW) return;
-                if (zone.ExVersion.RowId == 2 && Config.ExcludeSB) return;
-                if (zone.ExVersion.RowId == 3 && Config.ExcludeShB) return;
-                if (zone.ExVersion.RowId == 4 && Config.ExcludeEW) return;
-                if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat] && Config.ExcludeCombat) return;
+                if (zone.ExVersion.RowId == 0 && Config.ExcludeARR)
+                    return;
+                if (zone.ExVersion.RowId == 1 && Config.ExcludeHW)
+                    return;
+                if (zone.ExVersion.RowId == 2 && Config.ExcludeSB)
+                    return;
+                if (zone.ExVersion.RowId == 3 && Config.ExcludeShB)
+                    return;
+                if (zone.ExVersion.RowId == 4 && Config.ExcludeEW)
+                    return;
+                if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat] && Config.ExcludeCombat)
+                    return;
                 // lsync does not work for DoH/DoL, so exclude them
-                if (Svc.Objects.LocalPlayer?.ClassJob.Value.ClassJobCategory is { RowId: 32 or 33 }) return;
+                if (Svc.Objects.LocalPlayer?.ClassJob.Value.ClassJobCategory is { RowId: 32 or 33 })
+                    return;
 
                 if (Svc.Objects.LocalPlayer?.Level > FateMaxLevel)
                     Chat.SendMessage("/lsync");

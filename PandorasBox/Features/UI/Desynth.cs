@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Hooking;
 using ECommons.DalamudServices;
@@ -12,6 +9,9 @@ using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 using static ECommons.GenericHelpers;
 
 namespace PandorasBox.Features.UI
@@ -161,27 +161,33 @@ namespace PandorasBox.Features.UI
 
         private bool? CloseResults()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied])
+                return false;
             var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SalvageResult", 1).Address;
-            if (addon == null || !addon->IsVisible) return false;
+            if (addon == null || !addon->IsVisible)
+                return false;
             addon->Close(true);
             return true;
         }
 
         private bool? ConfirmDesynth()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied])
+                return false;
             var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SalvageDialog", 1).Address;
-            if (addon == null || !addon->IsVisible) return false;
+            if (addon == null || !addon->IsVisible)
+                return false;
             ECommons.Automation.Callback.Fire(addon, false, 0, false);
             return Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39];
         }
 
         private static bool? DesynthFirst()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied])
+                return false;
             var addon = (AtkUnitBase*)Svc.GameGui.GetAddonByName("SalvageItemSelector", 1).Address;
-            if (addon == null) return null;
+            if (addon == null)
+                return null;
             ECommons.Automation.Callback.Fire(addon, false, 12, 0);
             return true;
         }

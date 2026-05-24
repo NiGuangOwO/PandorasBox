@@ -13,7 +13,7 @@ namespace PandorasBox.Features.Commands
         public override string Command { get; set; } = "/pdfleave";
 
         public override string Description => "快速离开副本。";
-        protected unsafe override void OnCommand(List<string> args)
+        protected override unsafe void OnCommand(List<string> args)
         {
             if (GameMain.Instance()->CurrentContentFinderConditionId != 0 && !Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat])
             {

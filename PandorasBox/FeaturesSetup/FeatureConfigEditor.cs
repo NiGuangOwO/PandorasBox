@@ -1,7 +1,7 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using ECommons.ImGuiMethods;
 using ECommons.ImGuiMethods.TerritorySelection;
-using Dalamud.Bindings.ImGui;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -54,7 +54,7 @@ namespace PandorasBox.FeaturesSetup
                     return true;
                 }
                 ImGui.SameLine();
-                ImGui.TextUnformatted($"Zone Whitelist ({territories.Count} territories selected)");
+                ImGui.TextUnformatted($"地区白名单（已选 {territories.Count} 个地区）");
             }
             return false;
         }

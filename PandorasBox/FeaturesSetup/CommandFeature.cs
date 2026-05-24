@@ -30,7 +30,8 @@ public abstract partial class CommandFeature : Feature
 
     public override void Enable()
     {
-        if (Disabled) return;
+        if (Disabled)
+            return;
 
         if (Svc.Commands.Commands.ContainsKey(Command))
         {
@@ -74,7 +75,8 @@ public abstract partial class CommandFeature : Feature
     public static List<string> GetArgumentList(string args) => ArgumentRegex().Matches(args)
     .Select(m =>
     {
-        if (m.Value.StartsWith('"') && m.Value.EndsWith('"')) { return m.Value[1..^1]; }
+        if (m.Value.StartsWith('"') && m.Value.EndsWith('"'))
+        { return m.Value[1..^1]; }
         return m.Value;
     })
     .ToList();

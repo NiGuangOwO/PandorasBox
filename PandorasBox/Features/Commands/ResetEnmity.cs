@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using System.Collections.Generic;
+using System.Linq;
 using Character = Dalamud.Game.ClientState.Objects.Types.ICharacter;
 
 namespace PandorasBox.Features.Commands

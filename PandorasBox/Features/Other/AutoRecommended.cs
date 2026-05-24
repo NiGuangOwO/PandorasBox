@@ -31,8 +31,10 @@ namespace PandorasBox.Features.Other
 
         private void AutoEquip(uint? jobId)
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat]) return;
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas]) return;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat])
+                return;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.BetweenAreas])
+                return;
             var mod = RecommendEquipModule.Instance();
             //TaskManager.Abort();
             TaskManager!.EnqueueDelay(500);

@@ -61,10 +61,12 @@ namespace PandorasBox.Features.UI
                     foreach (var index in Enumerable.Range(0, list->ListLength))
                     {
                         var listItemRenderer = list->ItemRendererList[index].AtkComponentListItemRenderer;
-                        if (listItemRenderer is null) continue;
+                        if (listItemRenderer is null)
+                            continue;
 
                         var buttonTextNode = listItemRenderer->AtkComponentButton.ButtonTextNode;
-                        if (buttonTextNode is null) continue;
+                        if (buttonTextNode is null)
+                            continue;
 
                         UpdateAddonText(buttonTextNode, out var questReplacedId);
                     }
@@ -87,10 +89,12 @@ namespace PandorasBox.Features.UI
                     foreach (var index in Enumerable.Range(0, list->ListLength))
                     {
                         var listItemRenderer = list->ItemRendererList[index].AtkComponentListItemRenderer;
-                        if (listItemRenderer is null) continue;
+                        if (listItemRenderer is null)
+                            continue;
 
                         var buttonTextNode = listItemRenderer->AtkComponentButton.ButtonTextNode;
-                        if (buttonTextNode is null) continue;
+                        if (buttonTextNode is null)
+                            continue;
 
                         UpdateAddonText(buttonTextNode, out var questReplacedId);
                     }

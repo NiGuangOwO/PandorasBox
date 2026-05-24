@@ -34,7 +34,8 @@ namespace PandorasBox.Features.UI
 
         private void AddInventoryItem(IMenuOpenedArgs args)
         {
-            if (args.MenuType != ContextMenuType.Inventory) return;
+            if (args.MenuType != ContextMenuType.Inventory)
+                return;
             var argItem = ((MenuTargetInventory)args.Target).TargetItem!.Value;
             var item = CheckInventoryItem(argItem.ItemId);
             if (item != null)
@@ -45,7 +46,8 @@ namespace PandorasBox.Features.UI
         {
             if (Svc.Data.GetExcelSheet<Item>().FindFirst(x => x.RowId == ItemId, out var sheetItem))
             {
-                if (sheetItem.StackSize <= 1) return null;
+                if (sheetItem.StackSize <= 1)
+                    return null;
                 if (sheetItem.ItemAction.RowId is 388 or 367 or 2462)
                 {
                     var menuItem = new MenuItem();
@@ -99,7 +101,7 @@ namespace PandorasBox.Features.UI
                     if (item->ItemId == ItemId)
                     {
                         var ag = AgentInventoryContext.Instance();
-                        ag->OpenForItemSlot(container->Type, i,0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
+                        ag->OpenForItemSlot(container->Type, i, 0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
                         var contextMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContextMenu", 1).Address;
                         if (contextMenu != null)
                         {

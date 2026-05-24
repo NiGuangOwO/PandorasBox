@@ -1,10 +1,10 @@
+using Dalamud.Bindings.ImGui;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Bindings.ImGui;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
@@ -372,7 +372,8 @@ namespace PandorasBox.Features.UI
 
         public unsafe bool? SwitchTabs(int section)
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                return false;
             TaskManager.InsertMulti([new(() => EzThrottler.Throttle("Switching", 300)), new(() => EzThrottler.Check("Switching"))]);
 
             if (Svc.GameGui.GetAddonByName("Materialize", 1) != IntPtr.Zero)
@@ -404,8 +405,10 @@ namespace PandorasBox.Features.UI
         {
             try
             {
-                if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
-                if (Svc.GameGui.GetAddonByName("Materialize") == IntPtr.Zero) return true;
+                if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                    return false;
+                if (Svc.GameGui.GetAddonByName("Materialize") == IntPtr.Zero)
+                    return true;
 
                 var materializePTR = Svc.GameGui.GetAddonByName("MaterializeDialog", 1);
                 if (materializePTR == IntPtr.Zero)
@@ -431,7 +434,8 @@ namespace PandorasBox.Features.UI
 
         public bool? GenerateAndFireCallback()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                return false;
             TaskManager.InsertMulti([new(() => EzThrottler.Throttle("Generating", 100), "Generating"), new(() => EzThrottler.Check("Generating"), "GeneratingCheck")]);
 
             var values = stackalloc AtkValue[2];
@@ -447,7 +451,8 @@ namespace PandorasBox.Features.UI
             };
 
             var ptr = (AtkUnitBase*)Svc.GameGui.GetAddonByName("Materialize", 1).Address;
-            if (ptr == null) return true;
+            if (ptr == null)
+                return true;
 
             ptr->FireCallback(2, values);
 

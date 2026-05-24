@@ -1,23 +1,18 @@
-using ECommons.Automation;
+using Dalamud.Bindings.ImGui;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Bindings.ImGui;
+using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
 using PandorasBox.UI;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Lumina.Excel.Sheets;
-using static ECommons.UIHelpers.AddonMasterImplementations.AddonMaster;
-using static FFXIVClientStructs.FFXIV.Component.GUI.AtkEventDispatcher;
-using ECommons.UIHelpers.AddonMasterImplementations;
 using System.Linq;
+using System.Numerics;
 
 namespace PandorasBox.Features.UI
 {
@@ -97,7 +92,7 @@ namespace PandorasBox.Features.UI
                                     var saddleItemData = Svc.Data.GetExcelSheet<Item>().GetRow(saddleItem->ItemId);
                                     if (saddleItemData.IsUnique)
                                         continue;
-                                    
+
                                     if (saddleItem->ItemId == item->ItemId)
                                     {
                                         uint total = (uint)(saddleItem->Quantity + item->Quantity);
@@ -124,16 +119,17 @@ namespace PandorasBox.Features.UI
         private static void FireInventoryMenu(InventoryType inventory, InventoryItem* item, int eventId)
         {
             var ag = AgentInventoryContext.Instance();
-            ag->OpenForItemSlot(inventory, item->Slot,0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
+            ag->OpenForItemSlot(inventory, item->Slot, 0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
             var contextMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContextMenu", 1).Address;
-            if (contextMenu == null) return;
+            if (contextMenu == null)
+                return;
 
             for (int e = 0; e <= contextMenu->AtkValuesCount; e++)
             {
                 if (ag->EventIds[e] == eventId)
                 {
                     new AddonMaster.ContextMenu(contextMenu).Entries.First().Select();
-                   //ECommons.Automation.Callback.Fire(contextMenu, true, 0, e - 7, 0, 0, 0);
+                    //ECommons.Automation.Callback.Fire(contextMenu, true, 0, e - 7, 0, 0, 0);
                     return;
                 }
             }

@@ -1,18 +1,17 @@
+using Dalamud.Bindings.ImGui;
+using Dalamud.Game.Chat;
 using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static ECommons.ExcelServices.TerritoryIntendedUseEnum;
-using Dalamud.Game.Chat;
 
 namespace PandorasBox.Features.ChatFeature;
 
@@ -113,11 +112,14 @@ internal class AutoOpenCoords : Feature
                 return sameText;
             });
 
-            if (alreadyInList) filteredOut = true;
-            if (!filteredOut && Config.FilteredChannels.IndexOf(handler.LogKind) != -1) filteredOut = true;
+            if (alreadyInList)
+                filteredOut = true;
+            if (!filteredOut && Config.FilteredChannels.IndexOf(handler.LogKind) != -1)
+                filteredOut = true;
             if (!filteredOut)
             {
-                if (Config.IgnorePOS && newMapLinkMessage.Text.Contains("Z:")) return;
+                if (Config.IgnorePOS && newMapLinkMessage.Text.Contains("Z:"))
+                    return;
 
                 MapLinkMessageList.Add(newMapLinkMessage);
                 PlaceMapMarker(newMapLinkMessage);
@@ -168,8 +170,10 @@ internal class AutoOpenCoords : Feature
 
     protected override DrawConfigDelegate DrawConfigTree => (ref bool hasChanged) =>
     {
-        if (ImGui.Checkbox("包括 Sonar 链接", ref Config.IncludeSonar)) hasChanged = true;
-        if (ImGui.Checkbox("忽略 <pos> 标志", ref Config.IgnorePOS)) hasChanged = true;
+        if (ImGui.Checkbox("包括 Sonar 链接", ref Config.IncludeSonar))
+            hasChanged = true;
+        if (ImGui.Checkbox("忽略 <pos> 标志", ref Config.IgnorePOS))
+            hasChanged = true;
         //ImGui.Checkbox("Set <flag> without opening the map", ref Config.DontOpenMap);
 
         if (ImGui.CollapsingHeader("频道过滤器（白名单）"))
@@ -177,7 +181,8 @@ internal class AutoOpenCoords : Feature
             ImGui.Indent();
             foreach (XivChatType chatType in Enum.GetValues(typeof(XivChatType)))
             {
-                if (HiddenChatType.IndexOf(chatType) != -1) continue;
+                if (HiddenChatType.IndexOf(chatType) != -1)
+                    continue;
 
                 var chatTypeName = Enum.GetName(typeof(XivChatType), chatType);
                 var checkboxClicked = Config.FilteredChannels.IndexOf(chatType) == -1;

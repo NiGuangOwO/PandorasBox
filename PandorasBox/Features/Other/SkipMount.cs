@@ -8,16 +8,18 @@ namespace PandorasBox.Features.Other
 {
     internal class SkipMount : Feature
     {
-        public override string Name => "Skip '/mount' In Macros If Mounted";
+        public override string Name => "宏中已骑乘时跳过 '/mount'";
 
-        public override string Description => "Using a macro with /mount in it will skip that line if you're already mounted";
+        public override string Description => "在宏中使用 /mount 时，如果已骑乘坐骑则跳过该行";
 
         public override FeatureType FeatureType => FeatureType.Other;
 
         public override void Enable()
         {
-            if (UseActionHook is null) EzSignatureHelper.Initialize(this);
-            else UseActionHook?.Enable();
+            if (UseActionHook is null)
+                EzSignatureHelper.Initialize(this);
+            else
+                UseActionHook?.Enable();
             base.Enable();
         }
 

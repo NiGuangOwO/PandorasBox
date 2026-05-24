@@ -12,7 +12,6 @@ using PandorasBox.Helpers;
 using System;
 using System.Collections.Generic;
 using static ECommons.GenericHelpers;
-using ValueType = FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace PandorasBox.Features.Actions
 {
@@ -105,7 +104,7 @@ namespace PandorasBox.Features.Actions
                     if (item->ItemId == ItemId)
                     {
                         var ag = AgentInventoryContext.Instance();
-                        ag->OpenForItemSlot(container->Type, i,0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
+                        ag->OpenForItemSlot(container->Type, i, 0, AgentModule.Instance()->GetAgentByInternalId(AgentId.Inventory)->GetAddonId());
                         var contextMenu = (AtkUnitBase*)Svc.GameGui.GetAddonByName("ContextMenu", 1).Address;
                         if (contextMenu != null)
                         {
@@ -119,7 +118,8 @@ namespace PandorasBox.Features.Actions
                                 {
                                     var label = MemoryHelper.ReadSeStringNullTerminated(new IntPtr(contextObj.String));
 
-                                    if (Svc.Data.GetExcelSheet<Addon>().GetRow(8100).Text == label.TextValue) indexDecipher = loops;
+                                    if (Svc.Data.GetExcelSheet<Addon>().GetRow(8100).Text == label.TextValue)
+                                        indexDecipher = loops;
 
                                     loops++;
                                 }

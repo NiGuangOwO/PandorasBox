@@ -1,25 +1,23 @@
 using ECommons.DalamudServices;
+using ECommons.Logging;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lumina.Excel.Sheets;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using ECommons.Logging;
 
 namespace PandorasBox.Features.Commands
 {
     internal class UseItem : CommandFeature
     {
         public override string Command { get; set; } = "/puseitem";
-        public override string Name => "Use Item";
-        public override string Description => $@"Uses an Item from your inventory.";
+        public override string Name => "使用道具";
+        public override string Description => $@"从您的背包中使用一个道具。";
 
         public override List<string> Parameters => new() { "itemName" };
 
-        protected unsafe override void OnCommand(List<string> args)
+        protected override unsafe void OnCommand(List<string> args)
         {
             if (args == null || args.Count == 0)
             {

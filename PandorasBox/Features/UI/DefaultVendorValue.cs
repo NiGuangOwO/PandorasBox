@@ -180,7 +180,7 @@ namespace PandorasBox.Features.UI
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ex.Log();
             }

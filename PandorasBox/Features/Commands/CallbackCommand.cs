@@ -9,12 +9,12 @@ namespace PandorasBox.Features.Commands
 {
     public unsafe class CallbackCommand : CommandFeature
     {
-        public override string Name => "Callback";
+        public override string Name => "回调指令";
         public override string Command { get; set; } = "/pcallback";
         public override string[] Alias => new string[] { "/pcall" };
 
         public override List<string> Parameters => new() { "addonName", "updateStateBool", "atkValues" };
-        public override string Description => "Fires arbitrary callbacks to any addon of your choosing. Play with responsibly.";
+        public override string Description => "向您选择的任何界面元素触发任意回调。请负责任地使用。";
 
         protected override void OnCommandInternal(string _, string args)
         {
@@ -56,10 +56,14 @@ namespace PandorasBox.Features.Commands
                     }
                     else
                     {
-                        if (int.TryParse(args[i], out var iValue)) valueArgs.Add(iValue);
-                        else if (uint.TryParse(args[i].TrimEnd('U', 'u'), out var uValue)) valueArgs.Add(uValue);
-                        else if (bool.TryParse(args[i], out var bValue)) valueArgs.Add(bValue);
-                        else valueArgs.Add(args[i]);
+                        if (int.TryParse(args[i], out var iValue))
+                            valueArgs.Add(iValue);
+                        else if (uint.TryParse(args[i].TrimEnd('U', 'u'), out var uValue))
+                            valueArgs.Add(uValue);
+                        else if (bool.TryParse(args[i], out var bValue))
+                            valueArgs.Add(bValue);
+                        else
+                            valueArgs.Add(args[i]);
                     }
                 }
                 else

@@ -22,8 +22,10 @@ internal class AutoMeditation : Feature
     {
         Svc.Framework.Update += RunFeature;
         Events.OnJobChanged += DelayStart;
-        if (SendActionHook is null) EzSignatureHelper.Initialize(this);
-        else SendActionHook?.Enable();
+        if (SendActionHook is null)
+            EzSignatureHelper.Initialize(this);
+        else
+            SendActionHook?.Enable();
         base.Enable();
     }
 
@@ -34,14 +36,19 @@ internal class AutoMeditation : Feature
 
     private static unsafe void RunFeature(IFramework framework)
     {
-        if (Player.Object is null) return;
+        if (Player.Object is null)
+            return;
         var isMonk = Player.Job == Job.MNK;
         var isPugilist = Player.Job == Job.PGL;
-        if (!isMonk && !isPugilist) return;
+        if (!isMonk && !isPugilist)
+            return;
         var gauge = Svc.Gauges.Get<MNKGauge>();
-        if (gauge.Chakra == 5) return;
-        if (Svc.Condition[ConditionFlag.InCombat]) return;
-        if (TerritoryInfo.Instance()->InSanctuary) return;
+        if (gauge.Chakra == 5)
+            return;
+        if (Svc.Condition[ConditionFlag.InCombat])
+            return;
+        if (TerritoryInfo.Instance()->InSanctuary)
+            return;
 
         if (!Svc.Condition[ConditionFlag.InCombat] && EzThrottler.Throttle("PCTMotifs", 1500))
         {

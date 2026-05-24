@@ -40,7 +40,7 @@ namespace PandorasBox.Features.Commands
 
             var sortedArgs = new Dictionary<string, List<string>>();
 
-            for(var i = 0; i < args.Count; i++)
+            for (var i = 0; i < args.Count; i++)
             {
                 var currentArg = args[i];
 
@@ -145,7 +145,7 @@ namespace PandorasBox.Features.Commands
                         LinkPlateToGearset(plate);
                         break;
                 }
-            }             
+            }
         }
 
         private void ParseGearset(List<string> args, byte plate)
@@ -162,7 +162,7 @@ namespace PandorasBox.Features.Commands
 
                     var name = gs->NameString;
                     var jobAbbrMatch = Svc.Data.GetExcelSheet<ClassJob>().Where(x => x.Abbreviation.ToString().Equals(arg, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                    
+
                     if (arg.Equals(name, StringComparison.CurrentCultureIgnoreCase)
                         || (jobAbbrMatch.Count > 0 && jobAbbrMatch[0].RowId.Equals(gs->ClassJob))
                         || arg.Equals(gs->Id.ToString(), StringComparison.CurrentCultureIgnoreCase)

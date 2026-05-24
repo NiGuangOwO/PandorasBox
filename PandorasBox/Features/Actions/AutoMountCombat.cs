@@ -1,9 +1,9 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
-using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using PandorasBox.FeaturesSetup;
 using PandorasBox.Helpers;
@@ -64,11 +64,16 @@ namespace PandorasBox.Features.Actions
         private static bool NotInCombat => !Svc.Condition[ConditionFlag.InCombat];
         private bool? TryMount()
         {
-            if (Svc.Objects.LocalPlayer is null) return false;
-            if (Svc.Condition[ConditionFlag.InCombat]) return false;
-            if (Config.DisableInFates && FateManager.Instance()->CurrentFate != null) return false;
-            if (Svc.Condition[ConditionFlag.Mounted]) return true;
-            if (!Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == Svc.ClientState.TerritoryType).Mount) return false;
+            if (Svc.Objects.LocalPlayer is null)
+                return false;
+            if (Svc.Condition[ConditionFlag.InCombat])
+                return false;
+            if (Config.DisableInFates && FateManager.Instance()->CurrentFate != null)
+                return false;
+            if (Svc.Condition[ConditionFlag.Mounted])
+                return true;
+            if (!Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == Svc.ClientState.TerritoryType).Mount)
+                return false;
 
             if (Svc.Data.GetExcelSheet<TerritoryType>().First(x => x.RowId == Svc.ClientState.TerritoryType).Bg.ToString().Contains("/hou/") && Config.ExcludeHousing)
             {
@@ -80,14 +85,16 @@ namespace PandorasBox.Features.Actions
 
             if (Config.SelectedMount > 0)
             {
-                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0) return false;
+                if (am->GetActionStatus(ActionType.Mount, Config.SelectedMount) != 0)
+                    return false;
                 am->UseAction(ActionType.Mount, Config.SelectedMount);
 
                 return true;
             }
             else
             {
-                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0) return false;
+                if (am->GetActionStatus(ActionType.GeneralAction, 9) != 0)
+                    return false;
                 am->UseAction(ActionType.GeneralAction, 9);
 
                 return true;
@@ -105,7 +112,8 @@ namespace PandorasBox.Features.Actions
         protected override DrawConfigDelegate DrawConfigTree => (ref bool haschanged) =>
         {
             ImGui.PushItemWidth(300);
-            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f")) haschanged = true;
+            if (ImGui.SliderFloat("设置延迟 (秒)", ref Config.ThrottleF, 0.1f, 10f, "%.1f"))
+                haschanged = true;
             var ps = PlayerState.Instance();
             var preview = Svc.Data.GetExcelSheet<Mount>().First(x => x.RowId == Config.SelectedMount).Singular.ExtractText().ToTitleCase();
             if (ImGui.BeginCombo("选择坐骑", preview))
@@ -133,9 +141,12 @@ namespace PandorasBox.Features.Actions
                 ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox("在Fate中禁用", ref Config.DisableInFates)) haschanged = true;
-            if (ImGui.Checkbox("在房区中禁用", ref Config.ExcludeHousing)) haschanged = true;
-            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount)) haschanged = true;
+            if (ImGui.Checkbox("在Fate中禁用", ref Config.DisableInFates))
+                haschanged = true;
+            if (ImGui.Checkbox("在房区中禁用", ref Config.ExcludeHousing))
+                haschanged = true;
+            if (ImGui.Checkbox("上坐骑后自动跳跃", ref Config.JumpAfterMount))
+                haschanged = true;
 
         };
     }

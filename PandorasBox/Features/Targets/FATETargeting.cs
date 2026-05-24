@@ -1,12 +1,10 @@
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using PandorasBox.FeaturesSetup;
-using PandorasBox.Helpers;
 using System.Linq;
-using ECommons;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace PandorasBox.Features.Targets
 {

@@ -27,7 +27,8 @@ namespace PandorasBox.Features.UI
         {
             if (TryGetAddonByName<AddonLookingForGroupDetail>("LookingForGroupDetail", out var addon))
             {
-                if (IsPrivatePF(addon) || IsSelfParty(addon)) { TaskManager.Abort(); return; }
+                if (IsPrivatePF(addon) || IsSelfParty(addon))
+                { TaskManager.Abort(); return; }
                 TaskManager.Enqueue(() => !(IsPrivatePF(addon) || IsSelfParty(addon)));
                 TaskManager.EnqueueDelay(300);
                 TaskManager.Enqueue(() => Callback.Fire((AtkUnitBase*)addon, false, 0));
@@ -53,7 +54,8 @@ namespace PandorasBox.Features.UI
 
         internal static bool ConfirmYesNo()
         {
-            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39]) return false;
+            if (Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Occupied39])
+                return false;
 
             if (TryGetAddonByName<AddonLookingForGroupDetail>("LookingForGroupDetail", out var r) &&
                 r->AtkUnitBase.IsVisible && TryGetAddonByName<AddonSelectYesno>("SelectYesno", out var addon) &&
